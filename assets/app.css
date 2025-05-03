@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+    --primary-background-color: hsl(0,0%,5%);
+    --primary-text-color: hsl(0,0%,88%);
+}
+
+.text-primary {
+    @apply text-[var(--primary-text-color)];
+}
+
+.bg-primary {
+    @apply bg-[var(--primary-background-color)];
+}
+
+
+.gfr-title {
+    @apply from-[#DB4A4A] via-[#8FB5E7] to-white bg-clip-text text-transparent bg-gradient-to-r;
+}

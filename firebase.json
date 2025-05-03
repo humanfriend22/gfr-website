@@ -1,0 +1,48 @@
+{
+    "emulators": {
+        "firestore": {
+            "port": 8080
+        },
+        "ui": {
+            "enabled": true
+        },
+        "singleProjectMode": true,
+        "auth": {
+            "port": 9099
+        },
+        "functions": {
+            "port": 5001
+        },
+        "hosting": {
+            "port": 5002
+        }
+    },
+    "firestore": {
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
+    },
+    "functions": [
+        {
+            "source": "functions",
+            "codebase": "default",
+            "ignore": [
+                "node_modules",
+                ".git",
+                "firebase-debug.log",
+                "firebase-debug.*.log",
+                "*.local"
+            ],
+            "predeploy": [
+                "cd functions && bun run build"
+            ]
+        }
+    ],
+    "hosting": {
+        "public": ".output/public",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ]
+    }
+}
