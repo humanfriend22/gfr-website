@@ -1,4 +1,5 @@
 export default defineAppConfig({
+    description: "",
     links: {
         "Home": "/",
         "About Us": "/about",
