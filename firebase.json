@@ -33,7 +33,7 @@
                 "*.local"
             ],
             "predeploy": [
-                "cd functions && bun run build"
+                "cd functions && npm run build"
             ]
         }
     ],
