@@ -9,7 +9,7 @@
             <div v-for="i in Array(4)" class="text-white w-full flex gap-7 justify-center items-center border-4 rounded-xl border-gray-600 hover:border-gray-400 cursor-pointer duration-500">
                 <div class="grid grid-cols-2 gap-x-5">
                     <div class="w-fit">
-                        <NuxtImg src="RLogo.png" width="200" height="200" />
+                        <NuxtImg src="VLogo.png" width="200" height="200" />
                     </div>
                     <div class="w-full">
                         <p class="h1 font-bold text-5xl">5327V</p>
