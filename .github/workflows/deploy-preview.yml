@@ -24,6 +24,8 @@ jobs:
 
         - name: Build the app
           run: bun run build
+          env: # Or as an environment variable
+            NUXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
 
         - uses: FirebaseExtended/action-hosting-deploy@v0
           with:
@@ -31,6 +33,4 @@ jobs:
             firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAEL_FORCE_ROBOTICS_HF }}
             projectId: gael-force-robotics-hf
             channelId: preview
-          env: # Or as an environment variable
-            NUXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
             
