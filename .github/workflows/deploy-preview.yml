@@ -3,6 +3,10 @@ name: Deploy Preview
 on:
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./app
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,11 +14,16 @@ jobs:
         - name: Checkout Code
           uses: actions/checkout@v4
 
+        - name: Install Bun
+          uses: oven-sh/setup-bun@v2
+          with:
+            bun-version: latest
+
         - name: Install dependencies
-          run: npm ci
+          run: bun install
 
         - name: Build the app
-          run: npm run build
+          run: bun run build
 
         - uses: FirebaseExtended/action-hosting-deploy@v0
           with:

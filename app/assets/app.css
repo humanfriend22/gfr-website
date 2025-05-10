@@ -4,6 +4,8 @@
 :root {
     --primary-background-color: hsl(0,0%,5%);
     --primary-text-color: hsl(0,0%,88%);
+    --gfr-red: #d94c4e;
+    --gfr-blue: @apply text-blue-500;
 }
 
 .text-primary {

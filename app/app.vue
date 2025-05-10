@@ -8,6 +8,8 @@ const app = initializeApp(runtimeConfig.public.firebase);
 const auth = getAuth(app);
 const firestore = getFirestore();
 
+firestore.app.automaticDataCollectionEnabled = false;
+
 inject<Auth>('firebase-auth', auth);
 </script>
 
@@ -24,6 +26,7 @@ body {
 }
 
 /* SIZING DEBUG */
+
 /* * {
     outline: 1px solid red;
 } */

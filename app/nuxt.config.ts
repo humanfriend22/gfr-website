@@ -13,12 +13,21 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             firebase: {
-                apiKey: "AIzaSyBn9nC-Tuavh3Rn_7bVaI4SWT66Qu1KpTs",
+                // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
+                apiKey: "",
                 authDomain: "gael-force-robotics-hf.firebaseapp.com",
                 projectId: "gael-force-robotics-hf",
                 storageBucket: "gael-force-robotics-hf.firebasestorage.app",
                 messagingSenderId: "585677099356",
                 appId: "1:585677099356:web:f682381cb210a4abcff199",
+            },
+            links: {
+                "Home": "/",
+                "About Us": "/about",
+                "Teams": "/teams",
+                "Events": "/events",
+                "Sponsors": "/sponsors",
+                "Contact": "/contact",
             },
         },
     },
