@@ -1,3 +1,9 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
-    About
+    <PageContainer>
+        <p>About</p>
+    </PageContainer>
 </template>

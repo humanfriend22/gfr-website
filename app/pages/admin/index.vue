@@ -1,0 +1,3 @@
+<template>
+    Your Account
+</template>

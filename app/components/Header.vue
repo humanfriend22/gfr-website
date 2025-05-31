@@ -6,21 +6,21 @@ const { isAdmin } = defineProps({
     }
 });
 
-const appConfig = useAppConfig();
+const links = useRuntimeConfig().public.links;
 </script>
 
 <template>
-    <div class="flex items-center lg:justify-center h-24 w-full max-w-screen-xl mx-auto sticky top-0 left-0 z-10 text-primary bg-gradient-to-b from-black/80 to-black/1 px-3">
+    <div class="flex items-center lg:justify-center h-24 w-full max-w-screen-xl mx-auto sticky top-0 left-0 z-30 text-primary bg-gradient-to-b from-black/80 to-black/1 px-3">
         <NuxtLink to="/" class="flex items-center gap-5 text-lg font-extrabold tracking-wide sm:text-lg">
             <NuxtImg src="gfr.png" width="50" height="50" class="inline" />
             <h1 class="gfr-title bg-clip-text text-transparent bg-gradient-to-r">
-                {{ isAdmin ? 'Admin Panel' : 'Gael Force Robotics' }}
+                <slot />
             </h1>
         </NuxtLink>
 
         <!-- Desktop -->
         <div id="links" class="ml-auto items-center justify-end hidden lg:flex">
-            <NuxtLink v-if="!isAdmin" v-for="(link, name) in appConfig.links" :key="name" :to="link" class="mx-4 text-lg font-[550] tracking-wide text-white hover:text-[var(--gfr-red)] duration-300">
+            <NuxtLink v-if="!isAdmin" v-for="(link, name) in links" :key="name" :to="link" class="mx-4 text-lg font-[550] tracking-wide text-white hover:text-[var(--gfr-red)] duration-300">
                 {{ name }}
             </NuxtLink>
             <button class="btn" v-else>Logout</button>

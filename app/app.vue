@@ -1,20 +1,9 @@
 <script setup lang="ts">
-import { initializeApp } from 'firebase/app';
-import { getAuth, type Auth } from 'firebase/auth';
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
-const runtimeConfig = useRuntimeConfig();
-const app = initializeApp(runtimeConfig.public.firebase);
-const auth = getAuth(app);
-const firestore = getFirestore();
-
-firestore.app.automaticDataCollectionEnabled = false;
-
-inject<Auth>('firebase-auth', auth);
 </script>
 
 <template>
-    <NuxtLayout>
+    <NuxtLayout data-theme="dark">
         <NuxtPage></NuxtPage>
     </NuxtLayout>
 </template>

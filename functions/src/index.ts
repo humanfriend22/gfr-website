@@ -7,13 +7,27 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import { onRequest } from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+import * as functions from "firebase-functions/v1";
+import { getFirestore } from "firebase-admin/firestore";
+import { initializeApp } from "firebase-admin/app";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const helloWorld = onRequest((request, response) => {
-    logger.info("Hello logs!", { structuredData: true });
-    response.send("Hello from Firebase!");
-});
+initializeApp();
+
+export const createUserDocument = functions.auth.user().onCreate(
+    async (user) => {
+        const firestore = getFirestore();
+
+        const userRef = firestore.collection("users").doc(user.uid);
+
+        await userRef.create({
+            name: user.displayName,
+            email: user.email,
+            team: "",
+            role: "",
+            canBlog: false, // default to false
+        });
+    },
+);

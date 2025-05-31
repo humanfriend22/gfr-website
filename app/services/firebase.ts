@@ -1,4 +1,5 @@
-import { type Database } from "~/app/services/app.config";
+import { type Database } from "@/services/app.config";
+import { useStorage } from "@vueuse/core";
 
 const database: Database = {
     users: [],
