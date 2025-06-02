@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { SeasonOfficerMap } from '@/plugins/firebase.client';
+// import type { SeasonOfficerMap } from '~/plugins/firebase.client';
 import debounce from 'debounce';
+
+import { users } from '~/composables/firebase';
 
 const app = useNuxtApp();
 
@@ -25,7 +27,7 @@ const positionsMap: { [key: string]: string } = {
 const currentPosition = ref('president');
 const officerSearchTerm = ref('');
 const officerSearchResults = computed(() => {
-    return app.$firebase.users
+    return users.value
         .filter(user => (user.name.toLowerCase().includes(officerSearchTerm.value.toLowerCase()) && !Object.values(officers.value).includes(user.name)))
         .slice(0, 3);
 });

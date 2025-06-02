@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { users } from '~/composables/firebase';
 
 const nuxtApp = useNuxtApp();
 
@@ -8,7 +9,7 @@ const teamLogo = useTemplateRef('team-logo');
 const teamLogoPreview = ref('');
 const captainSearchTerm = ref('');
 const captainsSearchResults = computed((): string[] => {
-    return nuxtApp.$firebase.users
+    return users.value
         .map(user => user.name)
         .filter(name => (name.toLowerCase().includes(captainSearchTerm.value.toLowerCase()) && !captains.value.includes(name) && name !== ''))
         .slice(0, 3);
@@ -92,10 +93,12 @@ function updateTeamLogo() {
                                 </div>
 
                                 <div class="h-64 mt-8">
-                                    <div v-show="captains.length < 2 && captainSearchTerm !== ''" v-for="name in captainsSearchResults" @click="() => addCaptain(name)"
-                                        class="p-3 mb-2 min-w-46 bg-base-200 cursor-pointer rounded-lg text-sm">
-                                        {{ name }}
-                                    </div>
+                                    <ClientOnly>
+                                        <div v-show="captains.length < 2 && captainSearchTerm !== ''" v-for="name in captainsSearchResults" @click="() => addCaptain(name)"
+                                            class="p-3 mb-2 min-w-46 bg-base-200 cursor-pointer rounded-lg text-sm">
+                                            {{ name }}
+                                        </div>
+                                    </ClientOnly>
                                 </div>
                             </div>
                         </div>

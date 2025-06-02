@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <PageContainer>
+    <Section>
         <p>About</p>
-    </PageContainer>
+    </Section>
 </template>

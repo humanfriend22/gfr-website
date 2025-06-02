@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { User } from '@/plugins/firebase.client';
+import { users } from '~/composables/firebase';
 
 const userCategory = ref('Officer');
-const users = ref<User[]>([]);
 
 const tabs = ref<{ [key: string]: string }>({
     'all': 'All',
@@ -14,11 +13,6 @@ const tabs = ref<{ [key: string]: string }>({
     'kreamers': 'Kreamers'
 });
 const activeTab = ref('club_roster');
-
-onMounted(async () => {
-    const app = useNuxtApp();
-    users.value = app.$firebase.users;
-});
 </script>
 
 <template>
