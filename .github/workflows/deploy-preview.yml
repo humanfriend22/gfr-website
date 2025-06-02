@@ -33,6 +33,7 @@ jobs:
               echo "Unsupported branch for deployment: $BRANCH_NAME"
               exit 1
             fi
+            echo "Channel ID is $CHANNEL_ID"
 
         - name: Build the app
           run: npm run build
