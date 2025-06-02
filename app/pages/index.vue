@@ -1,5 +1,5 @@
 <template>
-    <PageContainer>
+    <Section>
         <Hero>
             <template v-slot:title>
                 Dublin High's
@@ -13,6 +13,5 @@
                 <NuxtImg class="rounded-lg ring-4 ring-gray-700" src="/gfr-worlds-2023.jpg" alt="GFR at 2023 worlds" priority />
             </Tilt>
         </Hero>
-    </PageContainer>
-
+    </Section>
 </template>

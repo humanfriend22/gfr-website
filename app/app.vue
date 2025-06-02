@@ -9,12 +9,8 @@
 </template>
 
 <style>
-html,
-body {
-    background-color: #0d0d0d;
-}
-
 /* SIZING DEBUG */
+
 
 /* * {
     outline: 1px solid red;
