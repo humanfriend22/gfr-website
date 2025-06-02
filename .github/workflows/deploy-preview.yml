@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - preview-*
   workflow_dispatch:
 
 defaults:
@@ -20,10 +21,18 @@ jobs:
         - name: Install dependencies
           run: npm ci
 
-        - name: Secret Test
-          run: echo $NUXT_PUBLIC_FIREBASE_API_KEY
-          env:
-            NUXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        - name: Compute Channel ID
+          run: |
+            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+            echo "Branch name is $BRANCH_NAME"
+            if [[ "$BRANCH_NAME" == "main" ]]; then
+              echo "CHANNEL_ID=preview" >> $GITHUB_ENV
+            elif [[ "$BRANCH_NAME" == preview-* ]]; then
+              echo "CHANNEL_ID=$BRANCH_NAME" >> $GITHUB_ENV
+            else
+              echo "Unsupported branch for deployment: $BRANCH_NAME"
+              exit 1
+            fi
 
         - name: Build the app
           run: npm run build
@@ -35,5 +44,5 @@ jobs:
             repoToken: ${{ secrets.GITHUB_TOKEN }}
             firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAEL_FORCE_ROBOTICS_HF }}
             projectId: gael-force-robotics-hf
-            channelId: preview
+            channelId: ${{ env.CHANNEL_ID }}
             
