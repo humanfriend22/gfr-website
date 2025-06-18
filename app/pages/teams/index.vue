@@ -28,38 +28,38 @@ const teams = [
         <div class="min-h-screen flex flex-col items-center justify-center px-6 py-20">
             <!-- Title -->
             <div class="text-center mb-16">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
                     Meet Our <span class="text-[var(--gfr-red)]">Competition</span> Teams
                 </h1>
             </div>
 
             <!-- Teams Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl w-full">
                 <div 
                     v-for="team in teams" 
                     :key="team.name"
-                    class="bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300 hover:transform hover:scale-105"
+                    class="bg-gray-900/90 backdrop-blur-sm rounded-3xl p-8 border border-gray-700/30 hover:border-gray-600/50 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-2xl"
                 >
-                    <div class="flex items-center gap-6">
+                    <div class="flex flex-col items-center text-center">
                         <!-- Team Logo -->
-                        <div class="flex-shrink-0">
-                            <div class="w-24 h-24 md:w-28 md:h-28 rounded-xl bg-gray-800/50 flex items-center justify-center overflow-hidden">
+                        <div class="mb-6">
+                            <div class="w-32 h-32 rounded-2xl bg-gray-800/50 flex items-center justify-center overflow-hidden border border-gray-700/50">
                                 <NuxtImg 
                                     :src="team.logo" 
                                     :alt="`${team.name} logo`"
-                                    width="112" 
-                                    height="112" 
-                                    class="w-full h-full object-contain rounded-xl"
+                                    width="120" 
+                                    height="120" 
+                                    class="w-full h-full object-contain rounded-2xl"
                                 />
                             </div>
                         </div>
 
                         <!-- Team Info -->
-                        <div class="flex-1 min-w-0">
-                            <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
+                        <div class="w-full">
+                            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
                                 {{ team.name }}
                             </h2>
-                            <div class="text-gray-400 text-sm md:text-base">
+                            <div class="text-gray-400 text-lg">
                                 <template v-if="team.captains.length === 1">
                                     {{ team.captains[0] }}
                                 </template>
@@ -77,7 +77,7 @@ const teams = [
 
 <style scoped>
 /* Additional hover effects */
-.bg-gray-900\/80:hover {
-    background-color: rgba(17, 24, 39, 0.9);
+.bg-gray-900\/90:hover {
+    background-color: rgba(17, 24, 39, 0.95);
 }
 </style>
