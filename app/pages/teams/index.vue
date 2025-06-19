@@ -30,9 +30,7 @@ const teams = [
                 <div class="justify-start font-bold md:text-5xl text-2xl">
                     Meet Our <span class="gfr-gradient">Competition</span> Teams
                 </div>
-                <div class="w-3/4 h-0 mx-auto relative">
-                    <div class="w-full h-0 left-0 top-0 absolute outline-1 outline-offset-[-0.50px] outline-gray-400"></div>
-                </div>
+                <Divider />
                 <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-5">
                     <div class="px-5 inline-flex gap-6 overflow-hidden" v-for="team in teams">
                         <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />

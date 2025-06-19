@@ -5,6 +5,8 @@
             <div class="text-center text-gray-500 text-lg">
                 <p>Learn more about our club and get monthly insights into our Competition Teams!</p>
             </div>
+            <Divider />
+
             <div class="hidden lg:flex flex-col w-full events-desktop h-fit">
                 <BlogPreviewCardDesktop first id="test" />
                 <BlogPreviewCardDesktop left />
