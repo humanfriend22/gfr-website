@@ -21,15 +21,20 @@ watch(currentUser, () => {
     };
 });
 
-function handleSave() {
+const saving = ref(false);
+async function handleSave() {
     if (currentUser.value && name.value.length > 5 && name.value.length < 30 && name.value !== currentUser.value.displayName) {
-        updateProfile(currentUser.value, {
-            displayName: name.value
-        }).then(() => {
-            document.querySelector<HTMLButtonElement>('#edit_profile_modal #close')!.click();
-        }).catch((error) => {
-            console.error('Error updating profile:', error);
-        });
+        saving.value = true;
+        try {
+            await updateProfile(currentUser.value, {
+                displayName: name.value
+            });
+        } catch (error) {
+            window.alert('Error updating profile: ' + error);
+        }
+        saving.value = false;
+        await nextTick();
+        document.querySelector<HTMLButtonElement>('#edit_profile_modal #close')!.click();
     };
 };
 </script>
@@ -62,8 +67,11 @@ function handleSave() {
                     </div>
                 </div>
                 <div class="modal-action">
-                    <button class="btn" id="close" onclick="edit_profile_modal.close()">Close</button>
-                    <button class="btn bg-[var(--gfr-blue)]" @click="handleSave">Save</button>
+                    <button class="btn" id="close" :disabled="saving" onclick="edit_profile_modal.close()">Close</button>
+                    <button class="btn bg-[var(--gfr-blue)]" :disabled="saving" @click="handleSave">
+                        <div class="loading w-4" v-if="saving"></div>
+                        Save
+                    </button>
                 </div>
             </div>
         </dialog>
@@ -103,7 +111,6 @@ function handleSave() {
                                     </svg>
                                     Profile
                                 </a>
-
                             </li>
                             <li>
                                 <a class="font-semibold">
