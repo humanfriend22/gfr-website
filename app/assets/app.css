@@ -13,6 +13,9 @@
 html,
 body {
     @apply h-screen w-screen;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
     background-color: var(--primary-background-color);
 }
 
@@ -25,7 +28,7 @@ body {
 }
 
 
-.gfr-title {
+.gfr-gradient {
     @apply from-[#DB4A4A] via-[#8FB5E7] to-white bg-clip-text text-transparent bg-gradient-to-r
 }
 
@@ -38,6 +41,5 @@ body {
 }
 
 div > section:first-of-type {
-    @apply pt-24;
-    height: calc(100vh - 96px);
+    @apply pt-24 min-h-screen;
 }

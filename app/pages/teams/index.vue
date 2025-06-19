@@ -1,43 +1,50 @@
 <script setup lang="ts">
-
-
+const teams = [
+    {
+        name: 'Resurgence',
+        captains: 'Rishi Shirol & Saketh Chakravadhanula',
+        logo: 'RLogo.png',
+    },
+    {
+        name: 'Velocity',
+        captains: 'Sammy Sadheesh & Connor Wong-Woo',
+        logo: 'VLogo.png',
+    },
+    {
+        name: 'Ascension',
+        captains: 'Rishi Thota',
+        logo: 'ALogo.jpg',
+    },
+    {
+        name: 'Kreamers',
+        captains: 'Jack Wu & Eric Tao',
+        logo: 'KLogo.png',
+    },
+];
 </script>
 
 <template>
     <Section>
-        <div class="lg:flex h-body items-center justify-center">
-            <div class="grid grid-cols-2 gap-4 w-full">
-                <div v-for="i in Array(4)" class="text-white flex justify-center items-center border-4 rounded-xl border-gray-600 hover:border-gray-400 cursor-pointer duration-500">
-                    <div class="grid grid-cols-1 gap-x-5 p-5">
-                        <div class="flex">
-                            <div class="w-full py-2 text-center">
-                                <p class="h1 font-bold md:text-3xl text-xl">Resurgence</p>
-                                <div class="w-fit">
-                                    <NuxtImg src="RLogo.png" width="200" height="200" class="rounded-md" />
-                                </div>
-                                <p class="text-md mt-2">
-                                    <i class="text-gray-400">
-                                        <span class="">Led by </span>
-                                        <span class="font-bold">Kaushik Chandolu</span>
-                                    </i>
-                                </p>
-                            </div>
+        <div class="h-full md:justify-center items-center flex flex-col px-5">
+            <div class="flex flex-col justify-center items-center gap-7 w-full h-full md:w-5/6 md:mx-0 mt-10">
+                <div class="justify-start font-bold md:text-5xl text-2xl">
+                    Meet Our <span class="gfr-gradient">Competition</span> Teams
+                </div>
+                <div class="w-3/4 h-0 mx-auto relative">
+                    <div class="w-full h-0 left-0 top-0 absolute outline-1 outline-offset-[-0.50px] outline-gray-400"></div>
+                </div>
+                <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-5">
+                    <div class="px-5 inline-flex gap-6 overflow-hidden" v-for="team in teams">
+                        <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />
+
+                        <div class="py-2.5 flex flex-col gap-2">
+                            <div class="text-white text-2xl md:text-4xl font-semibold leading-10">{{ team.name }}</div>
+                            <div class="text-gray-500 text-md md:text-2xl font-normal">{{ team.captains }}</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </Section>
 </template>
-
-<style scoped>
-#background {
-    background: url('/gfr-bg.png') no-repeat center center fixed;
-    background-size: cover;
-    opacity: 0.2;
-}
-
-/* * {
-    outline: 1px solid red;
-} */
-</style>

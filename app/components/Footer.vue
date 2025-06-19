@@ -11,7 +11,7 @@ const appConfig = useAppConfig();
                 <NuxtImg src="gfr.png" width="50" height="50" class="inline" />
             </div>
             <p>
-                <span class="gfr-title font-semibold">Gael Force Robotics</span>
+                <span class="gfr-gradient font-semibold">Gael Force Robotics</span>
                 <br>
                 Since 2010
                 <br>
