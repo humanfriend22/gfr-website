@@ -2,7 +2,7 @@
     <Section>
         <div class="h-full md:justify-center items-center flex flex-col px-5">
             <div class="flex flex-col justify-center items-center gap-7 w-full h-full md:px-5 mt-10">
-                <div class="justify-start font-bold md:text-5xl text-2xl">
+                <div class="justify-start font-bold text-2xl md:text-5xl">
                     Check Out Our <span class="gfr-gradient">Events</span>
                 </div>
                 <div class="w-3/4 h-0 mx-auto relative">
