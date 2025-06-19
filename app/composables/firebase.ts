@@ -111,6 +111,7 @@ export const initializeFirebase = async () => {
 
     getRedirectResult(auth)
         .then((result) => {
+            console.log(result);
             if (result) {
                 // This gives you a Google Access Token. You can use it to access Google APIs.
                 const credential = GoogleAuthProvider.credentialFromResult(
@@ -133,6 +134,7 @@ export const initializeFirebase = async () => {
             // The AuthCredential type that was used.
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
+            console.log(error);
         });
 
     // Connect to emulators
@@ -155,5 +157,9 @@ export const loginWithRedirect = async () => {
         throw new Error("Firebase Auth not initialized");
     }
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    signInWithPopup(auth, provider);
+};
+
+export const logout = async () => {
+    await auth?.signOut();
 };
