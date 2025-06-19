@@ -32,7 +32,7 @@ const teams = [
                 </div>
                 <Divider />
                 <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-5">
-                    <div class="px-5 inline-flex gap-6 overflow-hidden" v-for="team in teams">
+                    <div class="px-5 inline-flex gap-6 overflow-hidden cursor-pointer" v-for="team in teams" @click="() => $router.push(`/teams/${team.name.toLowerCase()}`)" :key="team.name">
                         <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />
 
                         <div class="py-2.5 flex flex-col gap-2">
