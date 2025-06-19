@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         public: {
             firebase: {
                 // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
-                apiKey: "",
+                apiKey: "AIzaSyBn9nC-Tuavh3Rn_7bVaI4SWT66Qu1KpTs",
                 authDomain: "gael-force-robotics-hf.firebaseapp.com",
                 projectId: "gael-force-robotics-hf",
                 storageBucket: "gael-force-robotics-hf.firebasestorage.app",
