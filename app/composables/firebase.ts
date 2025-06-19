@@ -1,10 +1,14 @@
 import { type FirebaseApp, initializeApp } from "firebase/app";
 import {
     type Auth,
+    browserSessionPersistence,
     connectAuthEmulator,
     getAuth,
+    getRedirectResult,
     GoogleAuthProvider,
+    setPersistence,
     signInWithPopup,
+    signInWithRedirect,
     type User as FirebaseUser,
 } from "firebase/auth";
 import {
@@ -80,10 +84,9 @@ let firebase: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 
-const currentUser = ref<FirebaseUser | null>(null);
+export const currentUser = ref<FirebaseUser | null>(null);
 
 export const users = ref<User[]>([]);
-
 async function updateUsers() {
     const usersCollection = collection(firestore!, "users");
     const snapshot = await getDocs(usersCollection);
@@ -104,10 +107,39 @@ export const initializeFirebase = async () => {
         }),
     });
     auth = getAuth(firebase);
+    setPersistence(auth, browserSessionPersistence);
+
+    getRedirectResult(auth)
+        .then((result) => {
+            if (result) {
+                // This gives you a Google Access Token. You can use it to access Google APIs.
+                const credential = GoogleAuthProvider.credentialFromResult(
+                    result,
+                )!;
+                const token = credential.accessToken;
+
+                // The signed-in user info.
+                const user = result.user;
+                // IdP data available using getAdditionalUserInfo(result)
+                // ...
+                console.log(user);
+            }
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+        });
 
     // Connect to emulators
-    connectAuthEmulator(auth, "http://127.0.0.1:9099");
-    connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
+    if (import.meta.env.DEV) {
+        connectAuthEmulator(auth, "http://127.0.0.1:9099");
+        connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
+    }
 
     auth.onAuthStateChanged((user) => {
         currentUser.value = user;
@@ -115,4 +147,13 @@ export const initializeFirebase = async () => {
 
     // Theoretically, this should be called only if the admin panel is accessed.
     updateUsers();
+};
+
+// CLIENT COMPOSABLES
+export const loginWithRedirect = async () => {
+    if (!auth) {
+        throw new Error("Firebase Auth not initialized");
+    }
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider);
 };

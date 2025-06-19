@@ -6,7 +6,13 @@ const { isAdmin } = defineProps({
     }
 });
 
-const links = useRuntimeConfig().public.links;
+function handleLoginClick() {
+    loginWithRedirect();
+}
+
+onMounted(() => {
+    console.log(currentUser.value);
+})
 </script>
 
 <template>
@@ -20,10 +26,42 @@ const links = useRuntimeConfig().public.links;
 
         <!-- Desktop -->
         <div id="links" class="ml-auto items-center justify-end hidden lg:flex">
-            <NuxtLink v-if="!isAdmin" v-for="(link, name) in links" :key="name" :to="link" class="mx-4 text-lg font-[550] tracking-wide text-white hover:text-[var(--gfr-red)] duration-300">
-                {{ name }}
+            <NuxtLink to="/about">
+                <HeaderLink>About</HeaderLink>
             </NuxtLink>
-            <button class="btn" v-else>Logout</button>
+            <NuxtLink to="/teams">
+                <HeaderLink>Teams</HeaderLink>
+            </NuxtLink>
+            <NuxtLink to="/events">
+                <HeaderLink>Events</HeaderLink>
+            </NuxtLink>
+            <NuxtLink to="/blog">
+                <HeaderLink>Blog</HeaderLink>
+            </NuxtLink>
+            <NuxtLink to="/contact">
+                <HeaderLink>Contact</HeaderLink>
+            </NuxtLink>
+            <div>
+                <HeaderLink v-if="!currentUser" @click="handleLoginClick">Login</HeaderLink>
+                <div class="dropdown dropdown-end ml-2" v-else>
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full">
+                            <img alt="Tailwind CSS Navbar component" :src="currentUser!.photoURL!" />
+                        </div>
+                    </div>
+                    <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                        <li>
+                            <a class="justify-between">
+                                Profile
+                                <span class="badge">New</span>
+                            </a>
+                        </li>
+                        <li><a>Settings</a></li>
+                        <li><a>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
         <!-- Mobile -->
         <label id="drawer-button" for="my-drawer-3" aria-label="open sidebar" class="btn btn-square ml-auto lg:hidden">

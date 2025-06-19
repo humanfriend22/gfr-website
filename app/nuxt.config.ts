@@ -21,13 +21,6 @@ export default defineNuxtConfig({
                 messagingSenderId: "585677099356",
                 appId: "1:585677099356:web:f682381cb210a4abcff199",
             },
-            links: {
-                "About Us": "/about",
-                "Teams": "/teams",
-                "Events": "/events",
-                "Sponsors": "/sponsors",
-                "Contact": "/contact",
-            },
         },
     },
 });
