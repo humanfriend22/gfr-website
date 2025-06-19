@@ -45,6 +45,5 @@ const teams = [
                 </div>
             </div>
         </div>
-
     </Section>
 </template>
