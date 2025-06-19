@@ -53,7 +53,8 @@ export interface User {
     name: string;
     email: string;
     team: string;
-    role: "admin" | "captain" | "member" | "alumni" | ""; // 'admin', 'captain, 'member'
+    role: "admin" | "captain" | "member" | "alumni" | "";
+    officer: boolean;
     canBlog: boolean;
 }
 

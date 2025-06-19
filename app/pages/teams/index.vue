@@ -36,7 +36,7 @@ const teams = [
                         <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />
 
                         <div class="py-2.5 flex flex-col gap-2">
-                            <div class="text-white text-2xl md:text-4xl font-semibold leading-10">{{ team.name }}</div>
+                            <div class="text-white text-2xl md:text-4xl font-semibold leading-10">5327{{ team.name[0] }}</div>
                             <div class="text-gray-500 text-md md:text-2xl font-normal">{{ team.captains }}</div>
                         </div>
                     </div>
