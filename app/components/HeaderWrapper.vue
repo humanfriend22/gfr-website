@@ -16,9 +16,29 @@ function closeDrawer() {
         <div class="drawer-side drawer-end z-60">
             <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
-                <li v-for="(link, name) in links" @click="closeDrawer">
-                    <NuxtLink :key="name" :to="link" class="mx-4 text-lg font-[550] tracking-wide text-white hover:text-[var(--gfr-red)] duration-300">
-                        {{ name }}
+                <li>
+                    <NuxtLink to="/about">
+                        <HeaderLink>About</HeaderLink>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/teams">
+                        <HeaderLink>Teams</HeaderLink>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/events">
+                        <HeaderLink>Events</HeaderLink>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/blog">
+                        <HeaderLink>Blog</HeaderLink>
+                    </NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/contact">
+                        <HeaderLink>Contact</HeaderLink>
                     </NuxtLink>
                 </li>
             </ul>
