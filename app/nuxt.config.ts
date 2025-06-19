@@ -12,9 +12,9 @@ export default defineNuxtConfig({
     css: ["@/assets/app.css"],
     runtimeConfig: {
         public: {
+            // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
             firebase: {
-                // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
-                apiKey: "AIzaSyBn9nC-Tuavh3Rn_7bVaI4SWT66Qu1KpTs",
+                apiKey: "AIzaSyDFPQpKDLQt77aN4jtSDSGASQtLiqOl7Qk",
                 authDomain: "gael-force-robotics-hf.firebaseapp.com",
                 projectId: "gael-force-robotics-hf",
                 storageBucket: "gael-force-robotics-hf.firebasestorage.app",
