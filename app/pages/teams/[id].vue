@@ -33,10 +33,20 @@
             </div>
             <div class="w-full mx-2 h-1 bg-gray-500"></div>
             <div class="grid grid-cols-6 gap-5">
-                <div class="p-5 flex flex-col justify-center items-center gap-2 bg-gray-800 rounded-lg" v-for="i in Array(10)">
+                <div class="p-5 flex flex-col justify-center items-center gap-2 bg-gray-800 rounded-lg" v-for="i in Array(15)">
                     <NuxtImg src="pfp.png" class="rounded-full w-18" />
                     <h1 class="text-center">Saketh Chakravadhanula</h1>
                     <span class="text-gray-400">Captain</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-5">
+                <h1 class="font-bold text-5xl">Competitions</h1>
+                <div class="flex flex-col gap-5">
+                    <div v-for="i in Array(10)" class="p-4 bg-gray-800 rounded-lg flex flex-col gap-2">
+                        <div class="text-xl">2025 Califonria Region 2 VEX V5 High School Championship</div>
+                        <div class="text-gray-600">India Community Center @ Milpitas, California, United States</div>
+                        <div class="text-gray-400">February 23, 2025</div>
+                    </div>
                 </div>
             </div>
         </div>
