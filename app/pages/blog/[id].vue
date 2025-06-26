@@ -1,19 +1,19 @@
 <script setup lang="ts">
 
-const postId = useRoute().path.replace('/blog/', '');
-
-const { data: home } = await useAsyncData(() => queryCollection('content').path('/' + postId).first())
-
-useSeoMeta({
-    title: home.value?.title,
-    description: home.value?.description
-})
 </script>
 
 <template>
-    <div class="prose">
-        <ContentRenderer v-if="home" :value="home" />
-        <div v-else>Home not found</div>
-    </div>
-
+    <Section>
+        <div class="w-2/3 mx-auto h-full flex flex-col gap-4">
+            <h1 class="font-bold text-5xl">Summer 2024 Newsletter</h1>
+            <p class="text-gray-400">A comprehensive update on the Gael Force Robotics Club's summer activities, upcoming events, and goals for the upcoming season.</p>
+            <div class="flex flex-col gap-1 text-sm">
+                <span class="text-gray-100">Moon Liu (Jr. PRED)</span>
+                <span class="text-gray-400">May 25, 2025</span>
+            </div>
+            <div class="">
+                <NuxtImg src="gfr-summer-newsletter.png" class="h-fit" />
+            </div>
+        </div>
+    </Section>
 </template>
