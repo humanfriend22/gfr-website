@@ -31,8 +31,9 @@ const teams = [
                     Meet Our <span class="gfr-gradient">Competition</span> Teams
                 </div>
                 <Divider />
-                <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-5">
-                    <div class="px-5 inline-flex gap-6 overflow-hidden cursor-pointer" v-for="team in teams" @click="() => $router.push(`/teams/${team.name.toLowerCase()}`)" :key="team.name">
+                <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2">
+                    <div class="p-5  inline-flex gap-6 overflow-hidden cursor-pointer border-2 rounded-md border-[var(--primary-background-color)] duration-300 hover:border-gray-700"
+                        v-for="team in teams" @click="() => $router.push(`/teams/${team.name.toLowerCase()}`)" :key="team.name">
                         <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />
 
                         <div class="py-2.5 flex flex-col gap-2">
