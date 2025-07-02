@@ -9,6 +9,12 @@ const { team, seasonId } = defineProps<{
 }>();
 
 const saving = ref(false);
+const errorMessage = computed(() => {
+    if (team.name.length < 3 || team.name.length > 30) return 'Invalid team name (3-30 characters)';
+    if (team.captains.length < 1 || team.captains.length > 2) return '1-2 Captains required';
+    if (team.members.length < 1 || team.members.length > 10) return '1-20 Members required';
+    return '';
+});
 
 // Logo
 const logo = useTemplateRef('logo');
@@ -38,10 +44,10 @@ function addUser(user: User) {
 };
 
 function removeCaptain(uid: string) {
-    team.captains = team.captains.filter(c => c !== uid);
+    if (searchMode.value === 'captains') team.captains = team.captains.filter(c => c !== uid);
 };
 function removeMember(uid: string) {
-    team.members = team.members.filter(m => m !== uid);
+    if (searchMode.value === 'members') team.members = team.members.filter(m => m !== uid);
 };
 
 watch(searchTerm, term => {
@@ -59,6 +65,10 @@ watch(searchTerm, term => {
 
 const closeButton = useTemplateRef('close');
 async function save() {
+    if (errorMessage.value !== '') {
+        console.error('Cannot save team due to validation errors:', errorMessage.value);
+        return;
+    }
     saving.value = true;
     const teamDoc = doc(firestore.value!, 'seasons', seasonId, 'teams', team.letter);
     try {
@@ -69,6 +79,9 @@ async function save() {
             members: team.members,
             competitions: team.competitions
         });
+        const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
+        const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
+        seasons.value[seasonIndex].teams[teamIndex] = { ...team };
     } catch (error) {
         console.error(error);
     } finally {
@@ -133,26 +146,31 @@ async function save() {
                         </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Members</legend>
-                            <div class="grid grid-cols-3 gap-2">
+                            <div class="grid grid-cols-2 gap-2">
                                 <ModalsUserMiniCard v-for="uid of team.members" mode="remove" :disabled="searchMode !== 'members'" @click="removeMember(uid)">
                                     {{ userFromUID(uid)?.name }}
                                 </ModalsUserMiniCard>
                             </div>
                         </fieldset>
-
                     </div>
                 </div>
             </div>
 
-            <div class="modal-action">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn" ref="close">Close</button>
-                </form>
-                <button class="btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving">
-                    <span class="loading" v-if="saving"></span>
-                    {{ saving ? 'Saving...' : 'Save' }}
-                </button>
+            <div class="modal-action flex flex-row justify-between">
+                <div class="flex flex-col justify-center">
+                    <span class="text-base text-red-500">{{ errorMessage }}</span>
+                </div>
+                <div class="flex flex-row gap-2">
+                    <form method="dialog">
+                        <!-- if there is a button in form, it will close the modal -->
+                        <button class="btn" ref="close">Cancel</button>
+                    </form>
+                    <button class=" btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving || errorMessage !== ''">
+                        <span class="loading" v-if="saving"></span>
+                        {{ saving ? 'Saving...' : 'Save' }}
+                    </button>
+                </div>
+
             </div>
         </div>
     </dialog>

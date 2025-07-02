@@ -5,8 +5,8 @@ import { getStorage } from "firebase-admin/storage";
 import { mock } from "node:test";
 import { exit } from "node:process";
 
-// process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
-// process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
+process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
+process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
 const app = initializeApp({
     credential: cert("./firebase-admin.json"),
 });
@@ -15,8 +15,16 @@ const firestore = getFirestore(app);
 const storage = getStorage(app);
 
 // Users
-const existingUsers = await auth.listUsers(1000);
-await auth.deleteUsers(existingUsers.users.map((user) => user.uid));
+let existingUsers = (await auth.listUsers()).users;
+const googleUsers: string[] = existingUsers.filter((user) =>
+    user.providerData[0]?.providerId === "google.com"
+).map((user) => user.uid);
+await auth.deleteUsers(
+    existingUsers.map((user) => user.uid).filter((uid) =>
+        !googleUsers.includes(uid)
+    ),
+);
+const googleAdminUser = googleUsers[0];
 
 const names = [
     "Sahith",
@@ -101,9 +109,7 @@ const names = [
 
 // Create users
 let uids: any[] = [];
-if (
-    (await auth.listUsers()).users.length < 5
-) {
+if ((await auth.listUsers()).users.length < 5) {
     let userCreationPromises: Promise<UserRecord>[] = [];
 
     for (const displayName of names) {
@@ -116,7 +122,7 @@ if (
 }
 
 // Create site document
-const siteDocument = firestore.collection("site").doc("data");
+const siteDocument = firestore.collection("site").doc("site");
 if ((await siteDocument.get()).exists) {
     console.log("Site document already exists, skipping creation.");
 } else {
@@ -184,7 +190,7 @@ async function createSeason(id: string, teams: number) {
 
     const officersUIDs = getRandomElements(6, uids);
     const officers: SeasonOfficerMap = {
-        president: officersUIDs[0],
+        president: googleAdminUser || officersUIDs[0],
         vice_president: officersUIDs[1],
         secretary: officersUIDs[2],
         treasurer: officersUIDs[3],

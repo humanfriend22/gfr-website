@@ -161,15 +161,23 @@ export const updateFiles = async () => {
 export const users = ref<User[]>([]);
 export async function updateUsers() {
     if (users.value.length === 0) {
-        const snapshot = await getDocs(collection(firestore.value!, "users"));
-        users.value = snapshot.docs.map((doc) => ({
-            uid: doc.id,
-            ...doc.data() as Omit<User, "uid">,
-        })) as User[];
+        const usersCollection = collection(firestore.value!, "users");
+        const snapshot = await getDocs(usersCollection);
+        users.value = snapshot.docs.map((doc) => {
+            return {
+                uid: doc.id,
+                ...doc.data() as Omit<User, "uid">,
+            };
+        }) as User[];
     }
 }
+
 export function userFromUID(uid: string) {
-    return users.value.find((user) => user.uid === uid);
+    const user = users.value.find((user) => user.uid === uid);
+    if (!user) {
+        console.error(`WOAH, that user doesnt exist! (${uid})`);
+    }
+    return user;
 }
 
 // TODO: speed up this function with parallel requests

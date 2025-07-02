@@ -66,9 +66,12 @@ function showEditTeamModal(seasonId: string, team: Team) {
 
 
 
-onMounted(() => {
-    updateUsers();
-    updateSeasons();
+onMounted(async () => {
+    await Promise.all([
+        updateUsers(),
+        updateSeasons()
+    ]);
+    console.log(users.value, seasons.value)
 })
 </script>
 
@@ -109,14 +112,13 @@ onMounted(() => {
                         </div>
                         <div>
                             <h1 class="font-semibold">
-                                <span>{{team.captains.map(uid => users.find(user => user.uid === uid)?.name).join(' & ')}}</span>
+                                <span>{{team.captains.map(uid => userFromUID(uid)?.name).join(' & ')}}</span>
                             </h1>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </Section>
 </template>
 

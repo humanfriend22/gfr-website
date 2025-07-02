@@ -2,18 +2,33 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow write: if false;
-      allow read: if true;
+    // match /{document=**} {
+    //   allow write: if false;
+    //   allow read: if true;
+    // }
+
+    function isPresident(seasonId) {
+      return request.auth != null && (request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
     }
+
+    function isCaptain(seasonId, teamId) {
+        return request.auth != null && (request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
+    }
+
+    function getTeamDoc(seasonId, teamId) {
+        return get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data
+    }
+
     match /users/{documentId} {
-      allow read, update: if request.auth != null && request.auth.uid == documentId;
+      allow read: if true;
+      allow update: if request.auth != null && request.auth.uid == documentId;
     }
     match /seasons/{seasonId} {
         allow read: if true;
+        allow update: if isPresident(seasonId);
         match /teams/{teamId} {
             allow read: if true;
-            allow update: if 
+            allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
         }
     }
   }
