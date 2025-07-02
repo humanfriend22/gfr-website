@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import type { SeasonOfficerMap } from '~/plugins/firebase.client';
+
 import debounce from 'debounce';
 
 import { users } from '~/composables/firebase';

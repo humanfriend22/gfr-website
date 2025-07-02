@@ -26,8 +26,7 @@ export const createUserDocument = functions.auth.user().onCreate(
             name: user.displayName,
             email: user.email,
             team: "",
-            role: "",
-            canBlog: false, // default to false
+            graduatingYear: 2027,
         });
     },
 );

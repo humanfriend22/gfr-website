@@ -2,7 +2,7 @@
 import { updateProfile } from 'firebase/auth';
 
 function handleLoginClick() {
-    loginWithRedirect();
+    login();
 }
 
 const name = ref('');

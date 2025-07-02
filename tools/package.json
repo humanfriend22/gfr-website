@@ -1,18 +1,21 @@
 {
-  "dependencies": {
-    "firebase-admin": "^13.3.0"
-  },
-  "trustedDependencies": [
-    "@firebase/util",
-    "protobufjs"
-  ],
-  "devDependencies": {
-    "@types/node": "^22.15.17",
-    "@types/bun": "latest"
-  },
-  "name": "tools",
-  "private": true,
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+    "scripts": {
+        "emulators": "bun run src/initEmulators.ts"
+    },
+    "dependencies": {
+        "firebase-admin": "^13.3.0"
+    },
+    "trustedDependencies": [
+        "@firebase/util",
+        "protobufjs"
+    ],
+    "devDependencies": {
+        "@types/node": "^22.15.17",
+        "@types/bun": "latest"
+    },
+    "name": "tools",
+    "private": true,
+    "peerDependencies": {
+        "typescript": "^5"
+    }
 }

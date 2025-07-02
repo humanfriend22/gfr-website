@@ -35,7 +35,7 @@ const teams = [
                     <NuxtLink v-for="team in teams" :to="'/teams/' + team.name.toLowerCase()">
                         <div class=" p-5 inline-flex gap-6 overflow-hidden cursor-pointer border-2 rounded-md border-[var(--primary-background-color)] duration-300 hover:border-gray-700"
                             :key="team.name">
-                            <NuxtImg class="h-36 md:h-48 rounded-md bg-black" :src="team.logo" />
+                            <TeamLogoDisplay class="h-36 md:h-48" :src="team.logo" />
 
                             <div class="py-2.5 flex flex-col gap-2">
                                 <div class="text-white text-2xl md:text-4xl font-semibold leading-10">5327{{ team.name[0] }}</div>

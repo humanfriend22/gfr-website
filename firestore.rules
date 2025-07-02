@@ -6,5 +6,15 @@ service cloud.firestore {
       allow write: if false;
       allow read: if true;
     }
+    match /users/{documentId} {
+      allow read, update: if request.auth != null && request.auth.uid == documentId;
+    }
+    match /seasons/{seasonId} {
+        allow read: if true;
+        match /teams/{teamId} {
+            allow read: if true;
+            allow update: if 
+        }
+    }
   }
 }

@@ -11,10 +11,8 @@ function closeDrawer() {
     <div class="drawer drawer-end h-screen w-screen">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content">
-            <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg">
-                <p class="font-semibold">
-                    Checkout our BOTB <span>livestream</span> and <span>promo</span>!
-                </p>
+            <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="siteData.bannerHTML !== ''">
+                <p class="font-semibold banner-container" v-html="siteData.bannerHTML"></p>
             </div>
             <slot />
         </div>
@@ -50,3 +48,9 @@ function closeDrawer() {
         </div>
     </div>
 </template>
+
+<style>
+.banner-container a {
+    text-decoration: underline;
+}
+</style>

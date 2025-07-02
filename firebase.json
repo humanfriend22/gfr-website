@@ -15,6 +15,9 @@
         },
         "hosting": {
             "port": 5002
+        },
+        "storage": {
+            "port": 9199
         }
     },
     "firestore": {
@@ -44,5 +47,8 @@
             "**/.*",
             "**/node_modules/**"
         ]
+    },
+    "storage": {
+        "rules": "storage.rules"
     }
 }
