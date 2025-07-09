@@ -2,65 +2,25 @@
 import { updateProfile } from 'firebase/auth';
 
 function handleLoginClick() {
-    login();
-}
-
-const name = ref('');
-const imageSrc = ref('');
-
-watch(currentUser, () => {
-    if (name.value.length === 0 && currentUser.value?.displayName) {
-        name.value = currentUser.value?.displayName;
-    };
-});
-
-const saving = ref(false);
-async function handleSave() {
-    if (currentUser.value && name.value.length > 5 && name.value.length < 30 && name.value !== currentUser.value.displayName) {
-        saving.value = true;
-        try {
-            await updateProfile(currentUser.value, {
-                displayName: name.value
-            });
-        } catch (error) {
-            window.alert('Error updating profile: ' + error);
+    if (currentUser.value) {
+        if (currentUserData.value?.isAdmin) {
+            navigateTo('/admin');
+        } else {
+            const modal = document.getElementById('edit_user_modal') as HTMLDialogElement;
+            modal.showModal();
         }
-        saving.value = false;
-        await nextTick();
-        document.querySelector<HTMLButtonElement>('#edit_profile_modal #close')!.click();
-    };
+    } else login();
 };
 </script>
 
 <template>
     <HeaderWrapper>
-        <!-- Open the modal using ID.showModal() method -->
-        <dialog id="edit_profile_modal" class="modal">
-            <div class="modal-box">
-                <h3 class="text-lg font-bold">Account Settings</h3>
-                <div>
-                    <fieldset class="fieldset">
-                        <legend class="fieldset-legend">Name</legend>
-                        <input type="text" class="input" placeholder="John Doe" v-model="name" />
-                        <p class="label">This will be shown on team rosters.</p>
-                    </fieldset>
-                    <div class="flex flex-row gap-4 h-24">
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend">Profile</legend>
-                            <input type="file" class="file-input" />
-                        </fieldset>
-                        <img src="https://placehold.co/40x40" class="w-24 h-24 rounded-md" />
-                    </div>
-                </div>
-                <div class="modal-action">
-                    <button class="btn" id="close" :disabled="saving" onclick="edit_profile_modal.close()">Close</button>
-                    <button class="btn bg-[var(--gfr-blue)]" :disabled="saving" @click="handleSave">
-                        <div class="loading w-4" v-if="saving"></div>
-                        Save
-                    </button>
-                </div>
-            </div>
+        <dialog id="edit_user_modal" class="modal">
+            <ClientOnly>
+                <LazyModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData">Manage Account</LazyModalsEditUserContent>
+            </ClientOnly>
         </dialog>
+
         <div class="min-h-screen">
             <Header>
                 <HeaderLink to="/about">About</HeaderLink>
@@ -70,8 +30,8 @@ async function handleSave() {
                 <HeaderLink to="/contact">Contact</HeaderLink>
                 <div>
                     <ClientOnly>
-                        <HeaderLink v-if="!currentUser" @click="handleLoginClick">Login</HeaderLink>
-                        <div class="dropdown dropdown-end ml-2" v-else>
+                        <HeaderLink @click="handleLoginClick">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>
+                        <!-- <div class="dropdown dropdown-end ml-2" v-else>
                             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                                 <div class="w-10 rounded-full">
                                     <img alt="Tailwind CSS Navbar component" :src="currentUser!.photoURL!" />
@@ -105,7 +65,7 @@ async function handleSave() {
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </ClientOnly>
                 </div>
             </Header>

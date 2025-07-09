@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-    if (!to.path.startsWith("/admin")) return navigateTo(to.path);
+    if (import.meta.server || !to.path.startsWith("/admin")) return;
 
-    if (!currentUser.value) {
+    if (!currentUser.value && to.path.startsWith("/admin")) {
         const params = new URLSearchParams({
             error: "unauthenticated (please log in)",
         });

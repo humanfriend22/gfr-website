@@ -1,35 +1,84 @@
 rules_version = '2';
 
 service cloud.firestore {
-  match /databases/{database}/documents {
+    match /databases/{database}/documents {
     // match /{document=**} {
-    //   allow write: if false;
-    //   allow read: if true;
-    // }
+        //   allow write: if false;
+        //   allow read: if true;
+        // }
 
-    function isPresident(seasonId) {
-      return request.auth != null && (request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
-    }
+        // Simple Data Fetchers
+        function getCurrentSeason() {
+            return get(/databases/$(database)/documents/site/site).data.currentSeason
+        }
 
-    function isCaptain(seasonId, teamId) {
-        return request.auth != null && (request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
-    }
+        function getTeamDoc(seasonId, teamId) {
+            return get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data
+        }
 
-    function getTeamDoc(seasonId, teamId) {
-        return get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data
-    }
+        function getUserDoc(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data
+        }
 
-    match /users/{documentId} {
-      allow read: if true;
-      allow update: if request.auth != null && request.auth.uid == documentId;
-    }
-    match /seasons/{seasonId} {
-        allow read: if true;
-        allow update: if isPresident(seasonId);
-        match /teams/{teamId} {
+        // Real Checks for role
+        function isPresident(seasonId) {
+            return request.auth != null && (request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
+        }
+
+        function isCaptain(seasonId, teamId) {
+            return request.auth != null && (request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
+        }
+
+        function isCaptainOfTheirTeam(userId) {
+            return isCaptain(getCurrentSeason(), getUserDoc(userId).team)
+        }
+
+        // User Document Field comparisions
+        function adminFieldIsUnchanged(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == request.resource.data.isAdmin
+        }
+
+        function emailFieldIsUnchanged(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data.email == request.resource.data.email
+        }
+
+        function grFieldIsUnchanged(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data.graduatingYear == request.resource.data.graduatingYear
+        }
+
+        function originalTeamFieldIsEmpty(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data.team == ""
+        }
+
+        function teamFieldIsUnchangedOrEmpty(userId) {
+            return (get(/databases/$(database)/documents/users/$(userId)).data.team == request.resource.data.team) || originalTeamFieldIsEmpty(userId)
+        }
+
+        match /site/site {
             allow read: if true;
-            allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
+            allow write: if isPresident(getCurrentSeason());
+        }
+        match /users/{documentId} {
+            allow read: if true;
+            // president can update, user or their captain can update if admin field is unchanged and team field is unchanged/empty
+            allow update: if isPresident(getCurrentSeason()) || (adminFieldIsUnchanged(documentId) &&
+            // If the user itself wants to update
+            ( (request.auth.uid == documentId && teamFieldIsUnchangedOrEmpty(documentId)) 
+                ||
+            // If they are the captain of this user (can only remove), user's email field and graduatingYear field are unchanged
+            (isCaptainOfTheirTeam(documentId) && grFieldIsUnchanged(documentId) && emailFieldIsUnchanged(documentId))
+                ||
+            // If they are another captain, user's team field is EMPTY, user's email field and graduatingYear field are unchanged
+            (isCaptain(getCurrentSeason(), getUserDoc(request.auth.uid).team) && originalTeamFieldIsEmpty(documentId) && grFieldIsUnchanged(documentId) && emailFieldIsUnchanged(documentId))
+            ));
+        }
+        match /seasons/{seasonId} {
+            allow read: if true;
+            allow update: if isPresident(seasonId);
+            match /teams/{teamId} {
+                allow read: if true;
+                allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
+            }
         }
     }
-  }
 }

@@ -2,9 +2,9 @@ import { cert, initializeApp } from "firebase-admin/app";
 import { getAuth, UserRecord } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
-import { mock } from "node:test";
-import { exit } from "node:process";
+import { names } from "./names";
 
+// Initialize Firebase
 process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
 process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
 const app = initializeApp({
@@ -14,98 +14,29 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
 
-// Users
+// Delete all users except those with Google sign-in
 let existingUsers = (await auth.listUsers()).users;
 const googleUsers: string[] = existingUsers.filter((user) =>
     user.providerData[0]?.providerId === "google.com"
 ).map((user) => user.uid);
+
 await auth.deleteUsers(
     existingUsers.map((user) => user.uid).filter((uid) =>
         !googleUsers.includes(uid)
     ),
 );
-const googleAdminUser = googleUsers[0];
 
-const names = [
-    "Sahith",
-    "Arpit",
-    "Aiden Wa",
-    "Kaushik",
-    "Aarav K",
-    "Arjun C",
-    "Kimson",
-    "Shane",
-    "Kaito",
-    "Aditya S",
-    "Ishaan",
-    "Laksh",
-    "Austin",
-    "Amir",
-    "Ayush R",
-    "Arjun S",
-    "Shikhar",
-    "Arnav",
-    "Anirudha",
-    "Rohith",
-    "William",
-    "Chittresh",
-    "Amato",
-    "Sonia",
-    "Nathan",
-    "Kavya",
-    "Lukas",
-    "Jayden P",
-    "Sohail",
-    "Rithika",
-    "Stephanie",
-    "Prianka",
-    "David Loo",
-    "Rishi S",
-    "Eric",
-    "Haziq",
-    "Aarav G",
-    "Rucha",
-    "Jayden M",
-    "Saketh Chakravadhanula",
-    "Connor",
-    "Aadrika",
-    "Phoebe",
-    "Ansh",
-    "Easton",
-    "Abhiram",
-    "Sammy",
-    "Medha",
-    "Shrinidhi",
-    "Nirupa",
-    "Jay",
-    "Ruhaan",
-    "Nikash",
-    "Daxton",
-    "Jash",
-    "Aarav S",
-    "Sean",
-    "Anirudh Ram",
-    "Aiden Wo",
-    "Nayanika",
-    "Advaith",
-    "Krishay",
-    "Moon",
-    "Samarth",
-    "Rishi T",
-    "Aadit",
-    "Jack",
-    "Tanisha",
-    "Courtney",
-    "Nikhilesh",
-    "Sora",
-    "Hari",
-    "Aaditya P",
-    "Krishiv",
-    "David Lin",
-    "Anup",
-    "Kinson",
-    "Aiden Ng",
-];
+const [googlePresidentUser, googleCaptainUser] = googleUsers;
+if (googlePresidentUser) {
+    await auth.updateUser(googlePresidentUser, {
+        displayName: "Current Season President",
+    });
+    await firestore.collection("users").doc(googlePresidentUser).update({
+        isAdmin: true,
+    });
+}
+if (googleCaptainUser) {
+}
 
 // Create users
 let uids: any[] = [];
@@ -119,18 +50,6 @@ if ((await auth.listUsers()).users.length < 5) {
     }
 
     uids = (await Promise.all(userCreationPromises)).map((user) => user.uid);
-}
-
-// Create site document
-const siteDocument = firestore.collection("site").doc("site");
-if ((await siteDocument.get()).exists) {
-    console.log("Site document already exists, skipping creation.");
-} else {
-    await siteDocument.create({
-        homeImage: "",
-        bannerHTML: "<span>Welcome to the GFR Website</span>",
-        currentSeason: "push-back-2526",
-    });
 }
 
 // Create seasons & teams
@@ -190,7 +109,7 @@ async function createSeason(id: string, teams: number) {
 
     const officersUIDs = getRandomElements(6, uids);
     const officers: SeasonOfficerMap = {
-        president: googleAdminUser || officersUIDs[0],
+        president: googlePresidentUser || officersUIDs[0],
         vice_president: officersUIDs[1],
         secretary: officersUIDs[2],
         treasurer: officersUIDs[3],
@@ -207,12 +126,25 @@ async function createSeason(id: string, teams: number) {
     for (let i = 0; i < teams; i++) {
         const letter = letters[i];
 
+        let captains = getRandomElements(2, uids);
+        if (i === 0 && googleCaptainUser) {
+            // Ensure the first team has the Google captain
+            captains = [googleCaptainUser, captains[1]];
+            await auth.updateUser(googleCaptainUser, {
+                displayName: "Current Season Captain",
+            });
+            await firestore.collection("users").doc(googleCaptainUser).update({
+                isAdmin: true,
+                team: letter,
+            });
+        }
+
         teamPromises.push(
             seasonDocument.collection("teams").doc(letter).create({
                 name: "5327" + letter,
                 logo: "5327" + letter + ".png",
                 reId: "",
-                captains: getRandomElements(2, uids),
+                captains,
                 members: getRandomElements(10, uids),
                 competitions: {},
             }),
@@ -222,5 +154,19 @@ async function createSeason(id: string, teams: number) {
     await Promise.all(teamPromises);
 }
 
-await createSeason("push-back-2526", 4);
-await createSeason("high-stakes-2425", 5);
+await Promise.all([
+    // createSeason("push-back-2526", 4),
+    createSeason("high-stakes-2425", 5),
+]);
+
+// Create site document
+const siteDocument = firestore.collection("site").doc("site");
+if ((await siteDocument.get()).exists) {
+    console.log("Site document already exists, skipping creation.");
+} else {
+    await siteDocument.create({
+        homeImage: "",
+        bannerHTML: "<span>Welcome to the GFR Website</span>",
+        currentSeason: "high-stakes-2425",
+    });
+}

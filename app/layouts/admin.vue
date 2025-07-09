@@ -25,9 +25,9 @@
             <!-- Content -->
             <div class="bg-[var(--primary-background-color)] w-full mx-auto min-h-screen overflow-y-scroll overflow-x-hidden sm:px-0 -mt-24 text-white">
                 <div class="lg:hidden">Woah, the admin panel is a dangerous place. Let's do this on a computer.</div>
-                <ClientOnly>
-                    <slot class="hidden lg:block" />
-                </ClientOnly>
+
+                <slot class="hidden lg:block" />
+
             </div>
             <Footer />
         </div>

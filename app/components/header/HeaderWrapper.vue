@@ -11,9 +11,11 @@ function closeDrawer() {
     <div class="drawer drawer-end h-screen w-screen">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content">
-            <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="siteData.bannerHTML !== ''">
-                <p class="font-semibold banner-container" v-html="siteData.bannerHTML"></p>
-            </div>
+            <ClientOnly>
+                <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerHTML !== ''">
+                    <p class="font-semibold banner-container" v-html="site.bannerHTML"></p>
+                </div>
+            </ClientOnly>
             <slot />
         </div>
         <div class="drawer-side drawer-end z-60">

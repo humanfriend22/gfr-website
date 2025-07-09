@@ -4,7 +4,7 @@ const { mode, disabled } = defineProps<{
     disabled?: boolean
 }>();
 
-const extraClasses = disabled ? 'text-gray-400 hover:cursor-not-allowed' : (mode === 'remove' ? 'hover:bg-[var(--gfr-red)]' : 'hover:bg-[var(--gfr-blue)]');
+const extraClasses = computed(() => disabled ? 'text-gray-400 hover:cursor-not-allowed' : (mode === 'remove' ? 'hover:bg-[var(--gfr-red)]' : 'hover:bg-[var(--gfr-blue)]'));
 </script>
 
 <template>

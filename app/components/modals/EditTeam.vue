@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ModalsUserMiniCard } from '#components';
-import { doc, updateDoc } from 'firebase/firestore';
+import { templateRef } from '@vueuse/core';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { capitalize } from 'vue';
 
-const { team, seasonId } = defineProps<{
+const { team, seasonId, creating, allowedLetters } = defineProps<{
     team: Team,
-    seasonId: string
+    seasonId: string,
+    creating: boolean,
+    allowedLetters: string[]
 }>();
 
 const saving = ref(false);
 const errorMessage = computed(() => {
-    if (team.name.length < 3 || team.name.length > 30) return 'Invalid team name (3-30 characters)';
+    if (team.name.length > 20) return 'Invalid team name (max 20 characters)';
     if (team.captains.length < 1 || team.captains.length > 2) return '1-2 Captains required';
-    if (team.members.length < 1 || team.members.length > 10) return '1-20 Members required';
+    if (team.members.length < 1 || team.members.length > 20) return '1-20 Members required';
     return '';
 });
 
@@ -27,7 +30,7 @@ function updateLogoPreview() {
 };
 
 // Captains & Members
-const searchMode = ref<'captains' | 'members'>('captains');
+const searchMode = ref<'captains' | 'members'>('members');
 const searchTerm = ref('');
 const searchResults = ref<User[]>([]);
 
@@ -57,8 +60,8 @@ watch(searchTerm, term => {
     }
     const results = users.value.filter(user => {
         return user.name.toLowerCase().includes(term.toLowerCase()) &&
-            !team.captains.includes(user.name) &&
-            !team.members.includes(user.name);
+            !team.captains.includes(user.uid) &&
+            !team.members.includes(user.uid);
     });
     searchResults.value = results.slice(0, 3); // Limit to 5 results
 });
@@ -72,16 +75,38 @@ async function save() {
     saving.value = true;
     const teamDoc = doc(firestore.value!, 'seasons', seasonId, 'teams', team.letter);
     try {
-        await updateDoc(teamDoc, {
-            name: team.name,
-            logo: team.logo,
-            captains: team.captains,
-            members: team.members,
-            competitions: team.competitions
-        });
         const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
-        const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
-        seasons.value[seasonIndex].teams[teamIndex] = { ...team };
+        if (creating) {
+            await setDoc(teamDoc, {
+                name: team.name === '' ? `5327${team.letter}` : team.name,
+                letter: team.letter,
+                logo: logoPreviewSrc.value,
+                reId: '',
+                captains: team.captains,
+                members: team.members,
+                competitions: {}
+            });
+
+            seasons.value[seasonIndex].teams.push({
+                name: team.name === '' ? `5327${team.letter}` : team.name,
+                letter: team.letter,
+                logo: logoPreviewSrc.value,
+                reId: '',
+                captains: team.captains,
+                members: team.members,
+                competitions: {}
+            });
+        } else {
+            await updateDoc(teamDoc, {
+                name: team.name === '' ? `5327${team.letter}` : team.name,
+                captains: team.captains,
+                members: team.members
+            });
+
+            const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
+            seasons.value[seasonIndex].teams[teamIndex] = { ...team };
+        };
+
     } catch (error) {
         console.error(error);
     } finally {
@@ -94,14 +119,21 @@ async function save() {
 <template>
     <dialog id="edit_team_modal" class="modal">
         <div class="modal-box w-11/12 max-w-[var(--container-3xl)] h-[var(--container-3xl)] flex flex-col">
-            <h3 class="text-lg font-bold">Edit Team</h3>
+            <h3 class="text-lg font-bold">{{ creating ? 'Create' : 'Edit' }} Team</h3>
             <div class="flex-1">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
+                        <fieldset class="fieldset" v-if="creating">
+                            <legend class="fieldset-legend">Letter</legend>
+                            <select class="select" v-model="team.letter">
+                                <option disabled selected>Pick a team letter</option>
+                                <option v-for="letter of allowedLetters" :value="letter.toUpperCase()">{{ letter.toUpperCase() }}</option>
+                            </select>
+                        </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Name</legend>
                             <input type="text" class="input" placeholder="Type here" v-model="team.name" />
-                            <p class="label">Leave blank to use 5327{{ team.letter }}</p>
+                            <p class="label">Leave blank to use 5327{{ team.letter.toUpperCase() }}</p>
                         </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Logo</legend>
@@ -112,11 +144,11 @@ async function save() {
 
                     </div>
                     <div class="flex flex-col gap-2">
-                        <div role="tablist" class="tabs tabs-box flex flex-row mt-7">
+                        <div role="tablist" class="tabs tabs-box flex flex-row mt-7 mb-4" v-if="isCurrentPresident">
                             <a role="tab" @click="searchMode = 'captains'" :class="'tab flex-1 ' + (searchMode === 'captains' ? 'tab-active' : '')">Captains</a>
                             <a role="tab" @click="searchMode = 'members'" :class="'tab flex-1 ' + (searchMode === 'members' ? 'tab-active' : '')">Members</a>
                         </div>
-                        <fieldset class="fieldset mt-4">
+                        <fieldset class="fieldset">
                             <legend class="fieldset-legend">Search For {{ capitalize(searchMode) }}</legend>
                             <label class="input">
                                 <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

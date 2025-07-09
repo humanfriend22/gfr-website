@@ -1,50 +1,10 @@
 <script setup lang="ts">
-import { doc, updateDoc } from 'firebase/firestore';
-
 definePageMeta({
     layout: 'admin'
 });
 
-// const nuxtApp = useNuxtApp();
-
-// // Team Form
-// const teamName = ref('');
-// const teamLogo = useTemplateRef('team-logo');
-// const teamLogoPreview = ref('');
-// const captainSearchTerm = ref('');
-// const captainsSearchResults = computed((): string[] => {
-//     return users.value
-//         .map(user => user.name)
-//         .filter(name => (name.toLowerCase().includes(captainSearchTerm.value.toLowerCase()) && !captains.value.includes(name) && name !== ''))
-//         .slice(0, 3);
-// });
-// const captainSearchLabel = computed((): string => {
-//     if (captainsSearchResults.value.length === 0) return "Can't find that member...";
-//     else if (captainsSearchResults.value.length > 0 && captainSearchTerm.value !== '') return "Add your captain!";
-//     else if (captains.value.length === 2) return "Woah no more!";
-//     return 'Start typing...';;
-// });
-// const captains = ref<string[]>([]);
-
-// function addCaptain(name: string) {
-//     if (captains.value.length < 2 && !captains.value.includes(name)) {
-//         captains.value.push(name);
-//         captainSearchTerm.value = '';
-//     };
-// };
-
-// function removeCaptain(name: string) {
-//     captains.value = captains.value.filter((captain) => captain !== name);
-//     captainSearchTerm.value = '';
-// };
-
-// function updateTeamLogo() {
-//     const files = teamLogo.value?.files;
-//     if (files) {
-//         teamLogoPreview.value = URL.createObjectURL(files[0]);
-//     }
-// };
-
+const creatingTeam = ref(false);
+const allowedLetters = ref(['']);
 const currentEditingTeam = ref<Team>({
     letter: '',
     name: '',
@@ -56,46 +16,89 @@ const currentEditingTeam = ref<Team>({
 });
 
 const editingSeasonId = ref('');
-function showEditTeamModal(seasonId: string, team: Team) {
-    currentEditingTeam.value = { ...team };
-    editingSeasonId.value = seasonId;
+function showEditTeamModal(season: Season, team: Team) {
+    if (!(season.officers.president === currentUser.value?.uid) && !(team.captains.includes(currentUser.value?.uid || ''))) return;
 
-    const editTeamModal = document.getElementById('edit_team_modal') as HTMLDialogElement;
-    editTeamModal.showModal();
+    currentEditingTeam.value = { ...team };
+    editingSeasonId.value = season.id;
+
+    creatingTeam.value = false;
+    const modal = document.getElementById('edit_team_modal') as HTMLDialogElement;
+    modal.showModal();
 };
 
+function showCreateTeamModal() {
+    if (!isCurrentPresident.value) return;
 
+    allowedLetters.value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(letter => !currentSeason.value?.teams.some(team => team.letter === letter));
+    currentEditingTeam.value = {
+        letter: allowedLetters.value[0],
+        name: '',
+        logo: '',
+        reId: '',
+        captains: [],
+        members: [],
+        competitions: {}
+    };
+    editingSeasonId.value = currentSeason.value?.id || '';
 
+    creatingTeam.value = true;
+    const modal = document.getElementById('edit_team_modal') as HTMLDialogElement;
+    modal.showModal();
+};
+
+function showCreateSeasonModal() {
+    if (!isCurrentPresident.value) return;
+
+    creatingTeam.value = false;
+    const modal = document.getElementById('create_season_modal') as HTMLDialogElement;
+    modal.showModal();
+};
+
+const viewableSeasons = computed(() => seasons.value.filter(season => (season.id === currentSeason.value?.id || isCurrentPresident.value)));
+
+const latestSeasonId = ref('');
 onMounted(async () => {
     await Promise.all([
         updateUsers(),
         updateSeasons()
     ]);
-    console.log(users.value, seasons.value)
-})
+    await nextTick();
+    if (isCurrentPresident.value) {
+        const id = await fetchLatestSeasonId();
+        latestSeasonId.value = id;
+    }
+});
 </script>
 
 <template>
-    <Section class="px-5 flex flex-col gap-2">
-        <div v-if="false">
-            <button class="btn mr-2" onclick="create_team_modal.showModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                New Team
-            </button>
-        </div>
+    <Section class="px-5 flex flex-col gap-3">
+        <ModalsCreateSeason :season-id="latestSeasonId" v-if="isCurrentPresident && currentSeason.id !== latestSeasonId" />
+        <ModalsEditTeam :team="currentEditingTeam" :seasonId="editingSeasonId" :creating="creatingTeam" :allowed-letters="allowedLetters" />
 
-        <ModalsEditTeam :team="currentEditingTeam" :seasonId="editingSeasonId" />
+        <!-- <h1 class="text-2xl font-bold">Teams</h1>
+        <p class="text-gray-400">Edit your competition team(s).</p> -->
 
-        <h1 class="text-2xl font-bold">Teams</h1>
-        <p class="text-gray-400">Edit your competition team(s).</p>
+        <button class="btn w-fit" @click="showCreateSeasonModal" v-if="isCurrentPresident && currentSeason.id !== latestSeasonId">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Create Season
+        </button>
 
-        <div class="p-5 rounded-box border border-base-content/7" v-for="season of seasons">
-            <h2 class="text-xl font-semibold text-gray-100 mb-3">Push Back 25-26</h2>
+        <div class="p-5 rounded-box border border-base-content/7" v-for="season of viewableSeasons.sort((a, b) => b.id.split('-')[2].localeCompare(a.id.split('-')[2]))">
+            <div class="flex flex-row justify-between mb-5 ml-1">
+                <h2 class="text-xl font-semibold text-gray-100 my-auto">{{ formatSeasonId(season.id) }}</h2>
+                <button class="btn" @click="showCreateTeamModal" v-if="isCurrentPresident">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Create Team
+                </button>
+            </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div v-for="team of season.teams" class="flex gap-3 p-4 bg-base-200 hover:bg-base-300 cursor-pointer duration-300 rounded-lg" @click="showEditTeamModal(season.id, team)">
+                <div v-for="team of season.teams" class="flex gap-3 p-4 bg-base-200 hover:bg-base-300 cursor-pointer duration-300 rounded-lg" @click="showEditTeamModal(season, team)">
                     <div>
                         <TeamLogoDisplay src="RLogo.png" :width="100" :height="100" />
                         <!-- <NuxtImg src="RLogo.png" width="100" height="100" class="rounded-md select-none" /> -->
