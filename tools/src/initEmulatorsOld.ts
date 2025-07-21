@@ -1,3 +1,7 @@
+// @ts-nocheck
+console.log("This script is for legacy only");
+process.exit(0);
+
 import { cert, initializeApp } from "firebase-admin/app";
 import { getAuth, UserRecord } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
@@ -31,8 +35,9 @@ if (googlePresidentUser) {
     await auth.updateUser(googlePresidentUser, {
         displayName: "Current Season President",
     });
-    await firestore.collection("users").doc(googlePresidentUser).update({
+    await firestore.collection("users").doc(googlePresidentUser).create({
         isAdmin: true,
+        name: "Current Season President",
     });
 }
 if (googleCaptainUser) {
@@ -50,46 +55,6 @@ if ((await auth.listUsers()).users.length < 5) {
     }
 
     uids = (await Promise.all(userCreationPromises)).map((user) => user.uid);
-}
-
-// Create seasons & teams
-interface Team {
-    letter: string;
-    // Full name (not shorthand)
-    name: string;
-    // Logo filename in Firebase Storage
-    logo: string;
-    // RobotEvents Team ID
-    reId: string;
-    // Captains' UIDs
-    captains: string[];
-    // Team members' UIDs
-    members: string[];
-    // Competitions (propagated by Firebase Functions when reId changes)
-    competitions: {
-        [competitionId: string]: {
-            name: string;
-            date: string;
-            location: string;
-            awards: string[];
-        };
-    };
-}
-
-// UIDs
-interface SeasonOfficerMap {
-    president: string;
-    vice_president: string;
-    secretary: string;
-    treasurer: string;
-    junior_pred: string;
-    senior_pred: string;
-}
-
-// Name + years is the document ID (e.g high-stakes-2425)
-interface Season {
-    officers: SeasonOfficerMap;
-    teams: Team[];
 }
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -133,8 +98,9 @@ async function createSeason(id: string, teams: number) {
             await auth.updateUser(googleCaptainUser, {
                 displayName: "Current Season Captain",
             });
-            await firestore.collection("users").doc(googleCaptainUser).update({
+            await firestore.collection("users").doc(googleCaptainUser).create({
                 isAdmin: true,
+                name: "Current Season Captain",
                 team: letter,
             });
         }

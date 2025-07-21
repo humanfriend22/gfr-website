@@ -74,9 +74,10 @@ service cloud.firestore {
         }
         match /seasons/{seasonId} {
             allow read: if true;
-            allow update: if isPresident(seasonId);
+            allow create, update: if isPresident(getCurrentSeason());
             match /teams/{teamId} {
                 allow read: if true;
+                allow create: if isPresident(seasonId);
                 allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
             }
         }

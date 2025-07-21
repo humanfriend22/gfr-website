@@ -2,6 +2,7 @@
 import { ModalsUserMiniCard } from '#components';
 import { templateRef } from '@vueuse/core';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage';
 import { capitalize } from 'vue';
 
 const { team, seasonId, creating, allowedLetters } = defineProps<{
@@ -21,7 +22,7 @@ const errorMessage = computed(() => {
 
 // Logo
 const logo = useTemplateRef('logo');
-const logoPreviewSrc = ref('https://placehold.co/400x400');
+const logoPreviewSrc = ref(team.logo || 'https://placehold.co/400x400');
 function updateLogoPreview() {
     const files = logo.value?.files;
     if (files && files.length > 0) {
@@ -75,33 +76,35 @@ async function save() {
     saving.value = true;
     const teamDoc = doc(firestore.value!, 'seasons', seasonId, 'teams', team.letter);
     try {
-        const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
-        if (creating) {
-            await setDoc(teamDoc, {
-                name: team.name === '' ? `5327${team.letter}` : team.name,
-                letter: team.letter,
-                logo: logoPreviewSrc.value,
-                reId: '',
-                captains: team.captains,
-                members: team.members,
-                competitions: {}
-            });
+        const reference = storageRef(storage.value!, `teams/${currentSeason.value.id}_${team.letter}.png`);
+        let logoUrl = '';
+        if (logoPreviewSrc.value !== 'https://placehold.co/400x400') {
+            if (logo.value?.files) {
+                const file = logo.value.files[0];
+                await uploadBytes(reference, file);
+                logoUrl = await getDownloadURL(reference);
+            };
+        };
 
-            seasons.value[seasonIndex].teams.push({
-                name: team.name === '' ? `5327${team.letter}` : team.name,
-                letter: team.letter,
-                logo: logoPreviewSrc.value,
-                reId: '',
-                captains: team.captains,
-                members: team.members,
-                competitions: {}
-            });
+        const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
+        let newTeam = {
+            name: team.name === '' ? `5327${team.letter}` : team.name,
+            letter: team.letter,
+            logo: logoUrl,
+            reId: team.reId || 0,
+            captains: team.captains,
+            members: team.members,
+            competitions: {},
+            discord: team.discord || '',
+            instagram: team.instagram || ''
+        };
+        if (creating) {
+            await setDoc(teamDoc, newTeam);
+            seasons.value[seasonIndex].teams.push(newTeam);
         } else {
-            await updateDoc(teamDoc, {
-                name: team.name === '' ? `5327${team.letter}` : team.name,
-                captains: team.captains,
-                members: team.members
-            });
+            // @ts-ignore
+            if (logoUrl === '') delete newTeam['logo'];
+            await updateDoc(teamDoc, newTeam);
 
             const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
             seasons.value[seasonIndex].teams[teamIndex] = { ...team };
@@ -112,7 +115,33 @@ async function save() {
     } finally {
         saving.value = false;
         closeButton.value?.click();
+        logoPreviewSrc.value = 'https://placehold.co/400x400';
     }
+};
+
+async function updateREId() {
+    const url = `https://www.robotevents.com/api/v2/teams?registered=false&number%5B%5D=5327${team.letter}`;
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${useRuntimeConfig().public.robotevents}`
+        }
+    });
+    if (!response.ok) {
+        console.error('Failed to fetch RobotEvents team ID');
+        return;
+    };
+    const json = await response.json();
+    if (json.data.length === 0) {
+        window.alert(`No registered team found on RobotEvents.\n\nRequest URL: ${url}`);
+        return;
+    };
+    const reId = json.data[0].id;
+    if (!Number.isSafeInteger(reId)) {
+        window.alert(`Invalid RobotEvents team ID: ${reId}`);
+        return;
+    };
+    console.log(`Updating team RE ID to ${reId}`);
+    team.reId = reId;
 };
 </script>
 
@@ -137,11 +166,21 @@ async function save() {
                         </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Logo</legend>
-                            <input type="file" class="file-input" ref="logo" @change="updateLogoPreview" />
+                            <input type="file" accept=".png" class="file-input" ref="logo" @change="updateLogoPreview" />
                             <p class="label">Preview will update below.</p>
                         </fieldset>
                         <TeamLogoDisplay :src="logoPreviewSrc" class="w-48 h-48 my-2 rounded-box"></TeamLogoDisplay>
-
+                        <button class="btn" @click="updateREId">Update RobotEvents Team ID</button>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Discord Invite Link</legend>
+                            <input type="url" class="input" placeholder="Type here" v-model="team.discord" />
+                            <p class="label">Leave blank to disable.</p>
+                        </fieldset>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Instagram Username</legend>
+                            <input type="text" class="input" placeholder="Type here" v-model="team.instagram" />
+                            <p class="label">Leave blank to disable.</p>
+                        </fieldset>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div role="tablist" class="tabs tabs-box flex flex-row mt-7 mb-4" v-if="isCurrentPresident">

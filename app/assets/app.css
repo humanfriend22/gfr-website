@@ -41,5 +41,5 @@ body {
 }
 
 div > section:first-of-type {
-    @apply pt-24 min-h-screen;
+    @apply pt-24 pb-2 min-h-screen h-auto;
 }

@@ -3,7 +3,8 @@ import { ModalsUserMiniCard } from '#components';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { capitalize } from 'vue';
 
-const { seasonId } = defineProps<{
+const { seasonId, creating } = defineProps<{
+    creating: boolean;
     seasonId: string
 }>();
 
@@ -13,14 +14,14 @@ const errorMessage = computed(() => {
     return '';
 });
 
-const officers = ref<Season['officers']>({
+const officers = ref<Season['officers']>(creating ? {
     president: '',
     vice_president: '',
     secretary: '',
     treasurer: '',
     junior_pred: '',
     senior_pred: ''
-});
+} : currentSeason.value.officers);
 
 const currentOfficer = ref<keyof Season['officers']>('president');
 const officerTitleMap = {
@@ -69,19 +70,32 @@ async function save() {
     if (errorMessage.value !== '') return;
 
     saving.value = true;
+
     const seasonDoc = doc(firestore.value!, 'seasons', seasonId);
-    await setDoc(seasonDoc, {
-        officers: officers.value
-    });
+    if (creating) {
+        await setDoc(seasonDoc, {
+            reId: latestSeason.value.reId,
+            officers: officers.value
+        });
+        await updateDoc(doc(firestore.value!, 'site', 'site'), {
+            currentSeason: seasonId
+        });
+        window.location.reload();
+    } else {
+        await updateDoc(seasonDoc, {
+            officers: officers.value
+        });
+    }
+
     saving.value = false;
-    document.querySelector<HTMLButtonElement>('#create_season_modal #close')!.click();
+    document.querySelector<HTMLButtonElement>('dialog #close')!.click();
 }
 </script>
 
 <template>
-    <dialog id="create_season_modal" class="modal">
-        <div class="modal-box w-11/12 max-w-[var(--container-3xl)] h-[var(--container-3xl)] flex flex-col">
-            <h3 class="text-lg font-bold">Create Season</h3>
+    <dialog :id="creating ? 'create_season_modal' : 'edit_season_modal'" class="modal">
+        <div class="modal-box w-11/12 max-w-[var(--container-4xl)] h-[var(--container-3xl)] flex flex-col">
+            <h3 class="text-lg font-bold">{{ creating ? 'Create' : 'Edit' }} Season</h3>
             <div class="flex-1">
                 <div>
                     <fieldset class="fieldset">
@@ -97,8 +111,9 @@ async function save() {
                                     {{ officerTitleMap[key as keyof typeof officerTitleMap] }}
                                 </a>
                             </div>
-                            <div class="w-40 h-40">
-                                <ModalsUserMiniCard class="mb-2" v-for="uid of Object.values(officers)" mode="remove" @click="removeOfficer(uid)">{{ uid === '' ? 'n/a' : userFromUID(uid)?.name }}
+                            <div class="w-fit h-40">
+                                <ModalsUserMiniCard class="mb-2" v-for="uid of Object.values(officers)" mode="remove" @click="removeOfficer(uid)">
+                                    {{ uid === '' ? 'n/a' : userFromUID(uid)?.name }}
                                 </ModalsUserMiniCard>
                             </div>
                             <div>

@@ -1,11 +1,3 @@
-<script setup lang="ts">
-const appConfig = useAppConfig();
-
-onMounted(() => {
-
-});
-</script>
-
 <template>
     <div>
         <Section class="flex flex-col justify-center items-center h-full min-h-screen">
@@ -20,7 +12,7 @@ onMounted(() => {
                         Our community is diverse, inclusive, and welcoming to all students interested in STEM, exploring who they are, or just looking to have fun.
                     </template>
                     <Tilt :repel-at-mouse="false" :horizontal-tilt-angle="30" :vertical-tilt-angle="30">
-                        <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="appConfig.images.home" alt="" priority />
+                        <NuxtImg class="rounded-lg ring-4 ring-gray-700" src="/gfr-worlds-2023.jpg" alt="" priority />
                     </Tilt>
                 </Hero>
             </div>

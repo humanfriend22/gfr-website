@@ -1,26 +1,5 @@
 <script setup lang="ts">
-const teams = [
-    {
-        name: 'Resurgence',
-        captains: 'Rishi Shirol & Saketh Chakravadhanula',
-        logo: 'RLogo.png',
-    },
-    {
-        name: 'Velocity',
-        captains: 'Sammy Sadheesh & Connor Wong-Woo',
-        logo: 'VLogo.png',
-    },
-    {
-        name: 'Ascension',
-        captains: 'Rishi Thota',
-        logo: 'ALogo.jpg',
-    },
-    {
-        name: 'Kreamers',
-        captains: 'Jack Wu & Eric Tao',
-        logo: 'KLogo.png',
-    },
-];
+
 </script>
 
 <template>
@@ -32,14 +11,14 @@ const teams = [
                 </div>
                 <Divider />
                 <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2">
-                    <NuxtLink v-for="team in teams" :to="'/teams/' + team.name.toLowerCase()">
-                        <div class=" p-5 inline-flex gap-6 overflow-hidden cursor-pointer border-2 rounded-md border-[var(--primary-background-color)] duration-300 hover:border-gray-700"
+                    <NuxtLink v-for="team of currentSeason.teams" :to="'/teams/' + currentSeason.id + '/' + team.letter">
+                        <div class="w-full p-5 inline-flex gap-6 overflow-hidden cursor-pointer border-2 rounded-md border-[var(--primary-background-color)] duration-300 hover:border-gray-700"
                             :key="team.name">
                             <TeamLogoDisplay class="h-36 md:h-48" :src="team.logo" />
 
                             <div class="py-2.5 flex flex-col gap-2">
-                                <div class="text-white text-2xl md:text-4xl font-semibold leading-10">5327{{ team.name[0] }}</div>
-                                <div class="text-gray-500 text-md md:text-2xl font-normal">{{ team.captains }}</div>
+                                <div class="text-white text-2xl md:text-4xl font-semibold leading-10">{{ team.name }}</div>
+                                <div class="text-gray-500 text-md md:text-2xl font-normal">{{team.captains.map(uid => userFromUID(uid)?.name).join(' & ')}}</div>
                             </div>
                         </div>
                     </NuxtLink>

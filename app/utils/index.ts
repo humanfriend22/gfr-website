@@ -42,3 +42,8 @@ export function randomLetter(exclude: string[] = []): string {
     const index = Math.floor(Math.random() * filtered.length);
     return filtered[index];
 }
+
+export function resolveTeamLogoPath(seasonId: string, letter: string) {
+    // e.g. "high-stakes-2425" + "A" -> "/teams/high-stakes-2425_A.png"
+    return `/teams/${seasonId}_${letter}.png`;
+}

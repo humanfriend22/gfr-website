@@ -1,9 +1,11 @@
 {
     "scripts": {
-        "emulators": "bun run src/initEmulators.ts"
+        "init-emulators": "bun run src/emulators/init.ts",
+        "resolve-assets": "bun run src/assets/resolve.ts"
     },
     "dependencies": {
-        "firebase-admin": "^13.3.0"
+        "firebase-admin": "^13.3.0",
+        "yesno": "^0.4.0"
     },
     "trustedDependencies": [
         "@firebase/util",

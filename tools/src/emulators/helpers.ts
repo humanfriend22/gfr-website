@@ -1,4 +1,5 @@
-export const names = [
+export const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+export const NAMES = [
     "Sahith",
     "Arpit",
     "Aiden Wa",
@@ -78,3 +79,19 @@ export const names = [
     "Kinson",
     "Aiden Ng",
 ];
+
+export function getRandomElementsFromArray(n: number, array: any[]): any[] {
+    return Array.from({ length: array.length }, (_, i) => i)
+        .sort(
+            () => Math.random() - 0.5,
+        ).slice(0, n).map((index) => array[index]);
+}
+
+export async function lenientCreateDocument(
+    document: FirebaseFirestore.DocumentReference,
+    data: any,
+) {
+    return document[((await document.get()).exists) ? "update" : "create"](
+        data,
+    );
+}

@@ -4,10 +4,22 @@ rules_version = '2';
 // allow write: if firestore.get(
 //    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow write: if true;
-      allow read: if true;
+    match /b/{bucket}/o {
+        function getCurrentSeason() {
+            return firestore.get(/databases/(default)/documents/site/site).data.currentSeason;
+        }
+
+        function isPresident(seasonId) {
+            return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.president)
+        }
+
+        function isCaptain(seasonId, teamId) {
+            return request.auth != null && (request.auth.uid in firestore.get(/databases/(default)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
+        }
+
+        match /teams/{file} {
+            allow read: if true;
+            allow create, update: if isPresident(getCurrentSeason()) || isCaptain(file.split('_')[0], file.split('_')[1][0]);
+        }
     }
-  }
 }

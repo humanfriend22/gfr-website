@@ -15,6 +15,7 @@ const userIsACaptain = computed(() => {
 
 const saving = ref(false);
 const errorMessage = computed(() => {
+    if (!user) return 'User not found';
     if (user.name.length < 2 || user.name.length > 30) return 'Invalid name (2-30 characters)';
     if (!user.name.includes(' ')) return 'Invalid name (must include first and last name)';
     const min = (new Date()).getFullYear();
@@ -38,8 +39,15 @@ async function save() {
             team: user.team,
             graduatingYear: user.graduatingYear,
             isAdmin: willRevokeCaptain.value ? false : (user.isAdmin || false),
-        }),
+        })
     ];
+    if (user.team !== currentUser.value?.displayName) {
+        promises.push(
+            updateProfile(currentUser.value!, {
+                displayName: user.name
+            })
+        );
+    }
     if (willRevokeCaptain.value) {
         console.warn('Revoking captaincy for ', user.name);
         const seasonRef = doc(firestore.value!, 'seasons', currentSeason.value.id);
@@ -71,7 +79,8 @@ onMounted(() => {
         <h3 class="text-lg font-bold">
             <slot />
         </h3>
-        <div class="m-3 ml-2">
+        <p class="text-sm text-gray-500 mt-2">UID: {{ user.uid }}</p>
+        <div class="ml-1">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Name</legend>
                 <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
@@ -100,7 +109,7 @@ onMounted(() => {
 
         <div class="modal-action flex flex-row justify-between">
             <div class="flex flex-col w-full gap-4">
-                <span class="text-sm pl-2 text-red-500 w-64" v-if="forOwner && !insideModal && errorMessage !== ''">{{ errorMessage }}</span>
+                <span class="text-sm pl-2 text-red-500 w-64" v-if="forOwner && insideModal && errorMessage !== ''">{{ errorMessage }}</span>
 
                 <div class="flex flex-row justify-between gap-2 w-full">
                     <div>

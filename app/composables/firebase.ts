@@ -13,18 +13,25 @@ import {
 } from "firebase/auth";
 import {
     collection,
+    CollectionReference,
     connectFirestoreEmulator,
     doc,
+    type DocumentData,
+    DocumentReference,
+    DocumentSnapshot,
     Firestore,
-    getDoc,
+    getDoc as originalGetDoc,
     getDocs,
     getFirestore,
     initializeFirestore,
     persistentLocalCache,
     persistentMultipleTabManager,
+    Query,
+    QuerySnapshot,
 } from "firebase/firestore";
 import { useLocalStorage } from "@vueuse/core";
 import {
+    connectStorageEmulator,
     type FirebaseStorage,
     getDownloadURL,
     getMetadata,
@@ -62,12 +69,11 @@ export interface Team {
     letter: string;
     // Full name (not shorthand)
     name: string;
-    // Logo filename in Firebase Storage
-    logo: string;
     // RobotEvents Team ID
-    reId: string;
+    reId: number;
     // Captains' UIDs
     captains: string[];
+    logo: string;
     // Team members' UIDs
     members: string[];
     // Competitions (propagated by Firebase Functions when reId changes)
@@ -79,6 +85,8 @@ export interface Team {
             awards: string[];
         };
     };
+    discord: string;
+    instagram: string;
 }
 
 // UIDs
@@ -94,6 +102,7 @@ export interface SeasonOfficerMap {
 // Name + years is the document ID (e.g high-stakes-2425)
 export interface Season {
     id: string; // Document ID
+    reId: number;
     officers: SeasonOfficerMap;
     teams: Team[];
 }
@@ -102,6 +111,19 @@ interface Database {
     site: [Site];
     users: User[];
     seasons: Season[];
+}
+
+// LOG EVERY SINGLE FIRESTORE REQUEST
+function getDoc<AppModelType, DbModelType extends DocumentData>(
+    reference: DocumentReference<AppModelType, DbModelType>,
+): Promise<DocumentSnapshot<AppModelType, DbModelType>> {
+    console.info(`FIRESTORE DOCUMENT REQUEST: ${reference.path}`);
+    return originalGetDoc(reference);
+}
+
+function getCollectionDocs(reference: CollectionReference) {
+    console.info(`FIRESTORE COLLECTION REQUEST: ${reference.path}`);
+    return getDocs(reference);
 }
 
 // All data holders are created here so the app can prerender even without any actual data. (empty arrays, default strings, etc.)
@@ -136,13 +158,9 @@ export const logout = async () => {
         console.error("Error logging out:", error);
     });
 };
-watch(currentUser, (user) => {
-    if (user) {
-    }
-});
 
-// TODO Use pagination
-export const files = ref<{
+// TODO: Use pagination
+export const teamImages = ref<{
     [name: string]: {
         path: string;
         uploaded: Date;
@@ -151,66 +169,72 @@ export const files = ref<{
 }>({});
 export const updateFiles = async (page: number = 1) => {
     if (!storage.value) throw new Error("Firebase Storage not initialized");
-    const listRef = storageRef(storage.value!, "teams");
-    const result = await listAll(listRef);
+    if (Object.keys(teamImages.value).length > 0) {
+        return console.warn("Files already loaded, skipping update.");
+    }
+    const result = await listAll(storageRef(storage.value!, "teams"));
     await Promise.all(
         result.items.map((item) => {
-            return new Promise(async (resolve) => {
-                files.value[item.name] = {
+            return new Promise<void>(async (resolve) => {
+                teamImages.value[item.name] = {
                     path: item.fullPath,
                     uploaded: new Date((await getMetadata(item)).updated),
                     url: await getDownloadURL(item),
                 };
+                resolve();
             });
         }),
     );
 };
 
-export const users = ref<User[]>([]);
-export async function updateUsers() {
-    if (users.value.length === 0) {
-        const usersCollection = collection(firestore.value!, "users");
-        const snapshot = await getDocs(usersCollection);
-        users.value = snapshot.docs.map((doc) => {
-            return {
-                uid: doc.id,
-                ...doc.data() as Omit<User, "uid">,
-            };
-        }) as User[];
-        console.log("Users loaded:", users.value);
-        return;
+export const users = useLocalStorage<User[]>("users", []);
+/**
+ * Doesn't make sense to ship with the site but is pretty crucial and so it is fetched on app startup but cached.
+ * @param force Fetch all users from Firebase no matter what
+ * @returns Updates the `users` ref with all users from Firestore
+ */
+export async function updateUsers(force = false) {
+    if (users.value.length > 0 && !force) {
+        return console.warn("Users already loaded, skipping update.");
     }
-    console.warn("Users already loaded, skipping update.");
+    const usersCollection = collection(firestore.value!, "users");
+    const snapshot = await getCollectionDocs(usersCollection);
+    users.value = snapshot.docs.map((doc) => {
+        return {
+            uid: doc.id,
+            ...doc.data() as Omit<User, "uid">,
+        };
+    }) as User[];
 }
 
 export function userFromUID(uid: string) {
     if (uid === "") return null;
     const user = users.value.find((user) => user.uid === uid);
-    if (!user) throw new Error(`WOAH, that user doesnt exist! (${uid})`);
+    if (!user) return console.warn(`Woah, that user doesnt exist! (${uid})`);
     return user;
 }
 
 // TODO: speed up this function with parallel requests
 export const seasons = ref<Season[]>([]);
 export const currentSeason = computed(() => {
-    console.log(
-        "Current season:",
-        seasons.value.find((season) =>
-            season.id === site.value.currentSeason
-        ) as Season,
-    );
     return seasons.value.find((season) =>
         season.id === site.value.currentSeason
     ) as Season;
 });
 
-async function updateSeason(id: string) {
+export async function updateSeason(id: string) {
+    if (id === "") {
+        return console.warn("No season ID provided, skipping update.");
+    } else if (Object.keys(seasons.value).includes(id)) {
+        return console.warn(`Season (${id}) already loaded, skipping update.`);
+    }
+
     // Fetch the season document and its team documents parallely
     const seasonReference = doc(firestore.value!, "seasons", id);
     const teamsReference = collection(seasonReference, "teams");
     const [seasonSnapshot, teamsDocs] = await Promise.all([
         getDoc(seasonReference),
-        getDocs(teamsReference),
+        getCollectionDocs(teamsReference),
     ]);
 
     // get and combine the data
@@ -243,21 +267,25 @@ async function updateSeason(id: string) {
 }
 
 export async function updateSeasons() {
-    if (seasons.value.length === 0) {
-        const snapshot = await getDocs(collection(firestore.value!, "seasons"));
-        for (const doc of snapshot.docs) {
-            const season = {
-                id: doc.id,
-                teams: [] as Team[],
-                ...doc.data(),
-            };
-            const teamDocs = await getDocs(collection(doc.ref, "teams"));
-            season.teams = teamDocs.docs.map((teamDoc) => ({
-                letter: teamDoc.id,
-                ...teamDoc.data(),
-            })) as Team[];
-            seasons.value.push(season as Season);
-        }
+    if (seasons.value.length > 0) {
+        return console.warn("Seasons already loaded, skipping update.");
+    }
+
+    const snapshot = await getCollectionDocs(
+        collection(firestore.value!, "seasons"),
+    );
+    for (const doc of snapshot.docs) {
+        const season = {
+            id: doc.id,
+            teams: [] as Team[],
+            ...doc.data(),
+        };
+        const teamDocs = await getCollectionDocs(collection(doc.ref, "teams"));
+        season.teams = teamDocs.docs.map((teamDoc) => ({
+            letter: teamDoc.id,
+            ...teamDoc.data(),
+        })) as Team[];
+        seasons.value.push(season as Season);
     }
 }
 
@@ -305,6 +333,7 @@ export const initializeFirebase = async () => {
     if (import.meta.env.DEV) {
         connectAuthEmulator(auth.value, "http://127.0.0.1:9099");
         connectFirestoreEmulator(firestore.value, "127.0.0.1", 8080);
+        connectStorageEmulator(storage.value, "127.0.0.1", 9199);
     }
 
     // Listen for auth
@@ -322,7 +351,9 @@ export const initializeFirebase = async () => {
         }
     });
 
-    // Fetch site data
+    /// Ensure site has adequate data
+
+    // Fetch site data. TODO: cache
     const siteSnapshot = await getDoc(
         doc(collection(firestore.value, "site"), "site"),
     );
@@ -330,5 +361,9 @@ export const initializeFirebase = async () => {
         console.warn("Site document not found, using default values.");
     } else {
         site.value = siteSnapshot.data() as Site;
+        console.log("Site data loaded:", site.value);
     }
+
+    await updateUsers();
+    await updateSeason(site.value.currentSeason);
 };

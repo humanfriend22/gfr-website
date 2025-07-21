@@ -7,11 +7,6 @@ definePageMeta({
 
 const previewUrl = ref('');
 const previewName = ref('');
-const images = ref<{
-    name: string;
-    path: string;
-    dateUploaded: string;
-}[]>([]);
 
 async function fetchPreviewImage(path: string) {
     previewName.value = path.split('/').pop() || 'Unknown';
@@ -19,16 +14,7 @@ async function fetchPreviewImage(path: string) {
 };
 
 onMounted(async () => {
-
-    const listRef = storageRef(storage.value!, 'teams');
-    const result = await listAll(listRef);
-    result.items.map(async (item) => {
-        images.value.push({
-            name: item.name,
-            path: item.fullPath,
-            dateUploaded: (await getMetadata(item)).updated
-        });
-    });
+    await Promise.all([updateSeasons(), updateFiles()]);
 });
 </script>
 
@@ -50,7 +36,7 @@ onMounted(async () => {
         <h1 class="text-2xl font-bold">Files</h1>
         <p class="text-gray-400">Here is every file uploaded to this website.</p>
         <div class="max-w-[40rem] min-h-24 max-h-[70vh] rounded-box border border-base-content/5 flex flex-col justify-center">
-            <div class="p-5" v-if="images.length === 0">
+            <div class="p-5" v-if="Object.keys(teamImages).length === 0">
                 <div class="flex flex-row gap-2 justify-center">
                     <div class="loading"></div>Fetching file data...
                 </div>
@@ -60,15 +46,15 @@ onMounted(async () => {
                 <thead class="bg-[var(--primary-background-color)]">
                     <tr>
                         <th class="bg-neutral-950">Name</th>
-                        <th class="bg-neutral-950">Usage</th>
+                        <th class="bg-neutral-950">Path</th>
                         <th class="bg-neutral-950">Date Uploaded</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="image of images" :key="image.name" @click="fetchPreviewImage(image.path)">
-                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ image.name }}</td>
+                    <tr v-for="[name, image] of Object.entries(teamImages)" :key="name" @click="fetchPreviewImage(image.path)">
+                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ name }}</td>
                         <td>{{ image.path }}</td>
-                        <td>{{ image.dateUploaded }}</td>
+                        <td>{{ image.uploaded }}</td>
                     </tr>
                 </tbody>
             </table>
