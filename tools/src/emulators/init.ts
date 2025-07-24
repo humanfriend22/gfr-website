@@ -97,9 +97,40 @@ async function createSeason(id: string, teams: number, reId: number) {
     await Promise.all(teamPromises);
 }
 
+async function createEvents(n: number) {
+    const eventsCollection = firestore.collection("events");
+    const existingEvents = await eventsCollection.get();
+    if (!existingEvents.empty) {
+        console.log("Events already exist, skipping creation.");
+        return;
+    }
+
+    let eventPromises = [];
+    for (let i = 0; i < n; i++) {
+        const eventId = `event-${i + 1}`;
+        const eventData = {
+            title: `Event ${i + 1}`,
+            description: `Description for Event ${i + 1}`,
+            info: "SUPER LOGN INFO",
+            start: new Date(Date.now() + i * 86400000), // 1 day apart
+            end: new Date(Date.now() + (i + 1) * 86400000), // 1 day duration
+            location: `Location ${i + 1}`,
+            image: "/gfr-summer-newsletter.png",
+            signup_link: "",
+            volunteer_link: "",
+        };
+        eventPromises.push(
+            eventsCollection.doc(eventId).set(eventData),
+        );
+    }
+
+    await Promise.all(eventPromises);
+}
+
 await Promise.all([
     // createSeason("push-back-2526", 4),
     createSeason("high-stakes-2425", 5, 190),
+    createEvents(2),
 ]);
 
 // 4. Change their names (captain is done when their team is known)
@@ -124,7 +155,8 @@ if ((await siteDocument.get()).exists) {
 } else {
     await siteDocument.create({
         homeImage: "",
-        bannerHTML: "<span>Welcome to the GFR Website</span>",
+        bannerMarkdown: "Welcome to the GFR Website",
         currentSeason: "high-stakes-2425",
+        admins: [googlePresidentUser, googleCaptainUser],
     });
 }

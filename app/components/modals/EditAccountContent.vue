@@ -28,14 +28,14 @@ async function handleSave() {
 };
 async function handleLogout() {
     await logout();
-    if (currentUserData.value?.isAdmin) {
+    if (isAdmin.value) {
         navigateTo('/');
     } else document.querySelector<HTMLButtonElement>('#edit_profile_modal #close')!.click();
 };
 </script>
 
 <template>
-    <div :class="currentUserData?.isAdmin ? '' : 'modal-box'">
+    <div :class="isAdmin ? '' : 'modal-box'">
         <h3 class="text-lg font-bold">Account Settings</h3>
         <div>
             <fieldset class="fieldset">
@@ -56,7 +56,7 @@ async function handleLogout() {
                 <button class="btn bg-[var(--gfr-red)]" @click="handleLogout">Logout</button>
             </div>
             <div>
-                <button class="btn mr-2" id="close" :disabled="saving" onclick="edit_profile_modal.close()" v-if="!currentUserData?.isAdmin">Close</button>
+                <button class="btn mr-2" id="close" :disabled="saving" onclick="edit_profile_modal.close()" v-if="!isAdmin">Close</button>
                 <button class="btn bg-[var(--gfr-blue)]" :disabled="saving" @click="handleSave">
                     <div class="loading w-4" v-if="saving"></div>
                     Save

@@ -28,6 +28,7 @@ import {
     persistentMultipleTabManager,
     Query,
     QuerySnapshot,
+    Timestamp,
 } from "firebase/firestore";
 import { useLocalStorage } from "@vueuse/core";
 import {
@@ -51,14 +52,13 @@ export interface User {
     email: string;
     team: string;
     graduatingYear: number;
-    isAdmin: boolean;
 }
 
 interface Site {
     // Main image in Hero on homepage
     homeImage: string;
-    // HTML for the banner on the homepage, empty to disable
-    bannerHTML: string;
+    // Markdown for the banner on the homepage, empty to disable
+    bannerMarkdown: string;
     // document ID (e.g. high-stakes-2425)
     currentSeason: string;
     // all uids that can access the admin panel
@@ -107,21 +107,35 @@ export interface Season {
     teams: Team[];
 }
 
+export interface WebsiteEvent {
+    id: string; // Document ID
+    title: string;
+    description: string;
+    info: string;
+    image: string;
+    start: Date;
+    end: Date;
+    location: string;
+    signup_link: string;
+    volunteer_link: string;
+}
+
 interface Database {
     site: [Site];
     users: User[];
     seasons: Season[];
+    events: WebsiteEvent[];
 }
 
 // LOG EVERY SINGLE FIRESTORE REQUEST
-function getDoc<AppModelType, DbModelType extends DocumentData>(
+export function getDoc<AppModelType, DbModelType extends DocumentData>(
     reference: DocumentReference<AppModelType, DbModelType>,
 ): Promise<DocumentSnapshot<AppModelType, DbModelType>> {
     console.info(`FIRESTORE DOCUMENT REQUEST: ${reference.path}`);
     return originalGetDoc(reference);
 }
 
-function getCollectionDocs(reference: CollectionReference) {
+export function getCollectionDocs(reference: CollectionReference) {
     console.info(`FIRESTORE COLLECTION REQUEST: ${reference.path}`);
     return getDocs(reference);
 }
@@ -140,9 +154,13 @@ export const wasLoggedInLastTime = useLocalStorage<boolean>(
 export const currentUserData = ref<User | null>(
     null,
 );
+export const isAdmin = computed(() => {
+    return !!currentUserData.value &&
+        site.value.admins.includes(currentUserData.value.uid);
+});
 export const site = ref<Site>({
     homeImage: "",
-    bannerHTML: "",
+    bannerMarkdown: "",
     currentSeason: "",
     admins: [],
 });
@@ -314,6 +332,27 @@ export const canAccessAdmin = computed(() => {
                 currentUser.value.uid,
             ));
 });
+
+// Events
+export const events = ref<WebsiteEvent[]>([]);
+export async function updateEvents(force: boolean = false) {
+    if (!force && events.value.length > 0) {
+        return console.warn("Events already loaded, skipping update.");
+    }
+
+    const snapshot = await getCollectionDocs(
+        collection(firestore.value!, "events"),
+    );
+    events.value = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data,
+            start: data.start.toDate(),
+            end: data.end.toDate(),
+        } as WebsiteEvent;
+    });
+}
 
 // CLIENT SIDE PLUGIN ONLY FUNCTION (ensures is only called once upon Nuxt app startup)
 export const initializeFirebase = async () => {

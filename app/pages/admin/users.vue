@@ -8,8 +8,7 @@ const editingUser = ref<User>({
     name: '',
     email: '',
     team: '',
-    graduatingYear: 2027,
-    isAdmin: false
+    graduatingYear: 2027
 });
 
 function showEditUserModal(user: User) {
@@ -17,6 +16,12 @@ function showEditUserModal(user: User) {
     const modal = document.getElementById('edit_user_modal') as HTMLDialogElement;
     modal.showModal();
 };
+
+const usersSortMode = ref<'all' | 'member' | 'admin'>('all');
+const sortedUsers = computed(() => {
+    if (usersSortMode.value === 'all') return users.value;
+    if (usersSortMode.value === 'admin') return users.value.filter(user => site.value.admins.includes(user.uid));
+});
 
 onMounted(async () => {
     await Promise.all([
@@ -30,14 +35,19 @@ onMounted(async () => {
     <Section class="flex flex-col gap-4 px-5">
         <dialog id="edit_user_modal" class="modal">
             <ClientOnly>
-                <LazyModalsEditUserContent :for-owner="true" :user="editingUser">Manage Account</LazyModalsEditUserContent>
+                <LazyModalsEditUserContent :for-owner="false" :user="editingUser">Manage Account</LazyModalsEditUserContent>
             </ClientOnly>
         </dialog>
 
         <h1 class="text-2xl font-bold">Users</h1>
+        <div role="tablist" class="tabs tabs-box flex flex-row mt-7 mb-4 w-1/2" v-if="isCurrentPresident">
+            <a role="tab" @click="usersSortMode = 'all'" :class="'tab flex-1 ' + (usersSortMode === 'all' ? 'tab-active' : '')">All</a>
+            <!-- <a role="tab" @click="usersSortMode = 'member'" :class="'tab flex-1 ' + (usersSortMode === 'member' ? 'tab-active' : '')">Members</a> -->
+            <a role="tab" @click="usersSortMode = 'admin'" :class="'tab flex-1 ' + (usersSortMode === 'admin' ? 'tab-active' : '')">Admin</a>
+        </div>
 
         <div class="w-fit h-[70vh] min-h-24 overflow-y-auto overflow-x-none rounded-box border border-base-content/5">
-            <table class="table table-md table-pin-rows w-[40rem] h-[70vh]">
+            <table class="table table-md table-pin-rows w-[40rem] max-h-[70vh]">
                 <!-- head -->
                 <thead class="bg-[var(--primary-background-color)]">
                     <tr>
@@ -48,12 +58,12 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user of users">
+                    <tr v-for="user of sortedUsers">
                         <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" @click="showEditUserModal(user)">{{ user.name }}</td>
                         <td>{{ user.uid }}</td>
                         <td>{{ user.email }}</td>
                         <td class="flex flex-row">
-                            <span class="badge bg-[var(--gfr-red)] mr-1" v-if="user.isAdmin">Admin</span>
+                            <span class="badge bg-[var(--gfr-red)] mr-1" v-if="site.admins.includes(user.uid)">Admin</span>
                             <span class="badge bg-[var(--gfr-red)] mr-1" v-if="currentSeason.teams.find(team => team.letter === user.team)?.captains.includes(user.uid)">Captain</span>
                         </td>
                     </tr>

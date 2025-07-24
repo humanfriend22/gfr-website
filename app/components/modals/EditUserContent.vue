@@ -16,6 +16,7 @@ const userIsACaptain = computed(() => {
 const saving = ref(false);
 const errorMessage = computed(() => {
     if (!user) return 'User not found';
+    if (!user.name) return 'Please try again, your account is being created...';
     if (user.name.length < 2 || user.name.length > 30) return 'Invalid name (2-30 characters)';
     if (!user.name.includes(' ')) return 'Invalid name (must include first and last name)';
     const min = (new Date()).getFullYear();
@@ -38,7 +39,7 @@ async function save() {
             name: user.name,
             team: user.team,
             graduatingYear: user.graduatingYear,
-            isAdmin: willRevokeCaptain.value ? false : (user.isAdmin || false),
+            isAdmin: willRevokeCaptain.value ? false : (isAdmin.value || false),
         })
     ];
     if (user.team !== currentUser.value?.displayName) {
@@ -64,7 +65,7 @@ async function save() {
 
 async function handleLogout() {
     await logout();
-    if (currentUserData.value?.isAdmin) {
+    if (isAdmin.value) {
         navigateTo('/');
     } else document.querySelector<HTMLButtonElement>('dialog #close')?.click();
 };
@@ -75,11 +76,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <div :class="insideModal ? 'modal-box' : 'w-100 border-2 p-4 rounded-box border-base-200/90'">
+    <div :class="insideModal ? 'modal-box' : 'box w-100'">
         <h3 class="text-lg font-bold">
             <slot />
         </h3>
         <p class="text-sm text-gray-500 mt-2">UID: {{ user.uid }}</p>
+        <p class="text-sm text-gray-500 mt-2">Email: {{ user.email }}</p>
         <div class="ml-1">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Name</legend>
@@ -89,14 +91,14 @@ onMounted(() => {
             <button class="btn btn-error" v-if="user.uid === currentUser?.uid && user.team !== '' && captainOfTeam === ''" @click="user.team = ''">Leave {{ user.team }} Team</button>
             <button class="btn btn-error" v-else-if="!forOwner && user.team && captainOfTeam === user.team" @click="user.team = ''">Remove from {{ user.team }} Team</button>
             <button class="btn btn-info" v-else-if="user.team === '' && !!captainOfTeam" @click="user.team = captainOfTeam">Add to {{ captainOfTeam }} Team</button>
-            <fieldset class="fieldset" v-else-if="isCurrentPresident">
+            <!-- <fieldset class="fieldset" v-else-if="isCurrentPresident">
                 <legend class="fieldset-legend">Team</legend>
                 <select class="select" v-model="user.team">
                     <option value="">No Team</option>
                     <option v-for="team of currentSeason?.teams" :value="team.letter">({{ team.letter }}) {{ team.name }}</option>
                 </select>
                 <p class="label">Captains can edit those not already on a team.</p>
-            </fieldset>
+            </fieldset> -->
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Graduating Year</legend>
                 <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />

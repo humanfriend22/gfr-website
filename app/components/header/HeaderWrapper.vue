@@ -12,8 +12,8 @@ function closeDrawer() {
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content">
             <ClientOnly>
-                <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerHTML !== ''">
-                    <p class="font-semibold banner-container" v-html="site.bannerHTML"></p>
+                <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerMarkdown !== ''">
+                    <p class="font-semibold banner-container" v-html="renderBannerMarkdown(site.bannerMarkdown)"></p>
                 </div>
             </ClientOnly>
             <slot />

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineProps<{
+    rootClass?: string;
     class?: string;
     message?: string;
 }>();
 </script>
 
 <template>
-    <section class="max-w-screen-xl w-full min-h-full h-auto mx-auto z-20 pt-96 md:pt-0">
+    <section :class="'max-w-screen-xl w-full min-h-full h-auto mx-auto z-20 pt-96 md:pt-0 ' + (rootClass ? rootClass : '')">
         <div class="w-full h-full flex justify-center items-center" v-if="message">
             <p>{{ message }}</p>
         </div>

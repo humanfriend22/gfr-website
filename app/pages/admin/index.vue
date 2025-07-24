@@ -1,21 +1,50 @@
 <script setup lang="ts">
-import EditAccountContent from '~/components/modals/EditAccountContent.vue';
+import { doc, updateDoc } from 'firebase/firestore';
 
 definePageMeta({
     layout: 'admin'
 });
 
+const savingSite = ref(false);
+async function saveSite() {
+    savingSite.value = true;
+    await updateDoc(doc(firestore.value!, 'site', 'site'), {
+        bannerMarkdown: site.value.bannerMarkdown,
+    });
+    savingSite.value = false;
+}
+
+function launchHomeImageModal() {
+    const modal = document.getElementById('home_image_modal') as HTMLDialogElement;
+    modal.showModal();
+};
 </script>
 
 <template>
     <Section class="px-5 flex flex-col gap-5">
+        <ModalsHomeImage :src="site.homeImage" />
+
         <h1 class="text-4xl font-bold">Welcome!</h1>
-        <div class="w-96 border-b-base-300/20 b-1 rounded-box">
+        <div class="flex flex-row gap-4">
             <ClientOnly>
                 <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData">
                     Manage Account
                 </ModalsEditUserContent>
             </ClientOnly>
+            <div class="w-100 box flex flex-col justify-between" v-if="isCurrentPresident">
+                <div>
+                    <h1 class="font-bold">Site Settings</h1>
+                    <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">Banner Markdown</legend>
+                        <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                    </fieldset>
+                    <button class="btn" @click="launchHomeImageModal">Edit Home Image</button>
+                </div>
+                <div>
+                    <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>
+                </div>
+            </div>
         </div>
     </Section>
 </template>

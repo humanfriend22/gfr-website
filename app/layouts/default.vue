@@ -3,7 +3,7 @@ import { updateProfile } from 'firebase/auth';
 
 function handleLoginClick() {
     if (currentUser.value) {
-        if (currentUserData.value?.isAdmin) {
+        if (site.value.admins.includes(currentUser.value.uid)) {
             navigateTo('/admin');
         } else {
             const modal = document.getElementById('edit_user_modal') as HTMLDialogElement;
@@ -17,7 +17,7 @@ function handleLoginClick() {
     <HeaderWrapper>
         <dialog id="edit_user_modal" class="modal">
             <ClientOnly>
-                <LazyModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData">Manage Account</LazyModalsEditUserContent>
+                <ModalsEditUserContent :for-owner="true" v-if="!!currentUserData" :user="currentUserData">Manage Account</ModalsEditUserContent>
             </ClientOnly>
         </dialog>
 

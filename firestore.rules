@@ -25,6 +25,14 @@ service cloud.firestore {
             return request.auth != null && (request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
         }
 
+        function isJuniorPRED(seasonId) {
+            return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.junior_pred)
+        }
+
+        function isSeniorPRED(seasonId) {
+            return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.senior_pred)
+        }
+
         function isCaptain(seasonId, teamId) {
             return request.auth != null && (request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
         }
@@ -80,6 +88,10 @@ service cloud.firestore {
                 allow create: if isPresident(seasonId);
                 allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
             }
+        }
+        match /events/{eventId} {
+            allow read: if true;
+            allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
         }
     }
 }
