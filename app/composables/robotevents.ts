@@ -25,7 +25,10 @@ export async function updateLatestSeason() {
     }
     const season = (await response.json()).data[0];
     // 'VEX V5 Robotics Competition 2025-2026: Push Back' -> 'push-back-2526'
-    const seasonName: string = season.name;
+    const seasonName: string = season?.name;
+    if (!seasonName) {
+        throw new Error("Season name not found in API response");
+    }
     const parts = seasonName.replace(":", "").split(" ");
     const yearParts = parts.find((part) => !!parseInt(part[0]))?.split("-")!;
 

@@ -40,7 +40,7 @@ function updateImagePreview() {
 };
 
 function updateID() {
-    if (event.title) {
+    if (event.title && typeof event.title === 'string') {
         event.id = event.title.toLowerCase().replaceAll(' ', '-') + '-' + (new Date()).getFullYear();
     } else {
         event.id = '';
