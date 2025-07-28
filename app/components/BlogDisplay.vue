@@ -12,7 +12,7 @@ defineProps<{
         <p class="text-gray-400">{{ blog?.description }}</p>
         <div class="flex flex-col gap-1 text-sm">
             <span class="text-gray-100">{{ blog?.author }}</span>
-            <span class="text-gray-400">{{ blog?.date }}</span>
+            <span class="text-gray-400">{{ formatDate(blog?.date) }}</span>
         </div>
         <div>
             <NuxtImg :src="blog?.image" class="h-fit rounded-box" />

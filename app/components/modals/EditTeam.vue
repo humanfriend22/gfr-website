@@ -161,11 +161,21 @@ async function updateREId() {
                         </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Logo</legend>
-                            <input type="file" accept=".png" class="file-input" ref="logo" @change="updateLogoPreview" />
+                            <input type="file" accept=".png,.jpg,.jpeg" class="file-input" ref="logo" @change="updateLogoPreview" />
                             <p class="label">Preview will update below.</p>
                         </fieldset>
                         <TeamLogoDisplay :src="logoPreviewSrc" class="w-48 h-48 my-2 rounded-box"></TeamLogoDisplay>
-                        <button class="btn" @click="updateREId">Update RobotEvents Team ID</button>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">RobotEvents ID</legend>
+                            <div class="grid grid-cols-2 gap-1">
+                                <input type="url" class="input" placeholder="Type here" v-model="team.reId" />
+
+                                <button class="btn" @click="updateREId">Auto Update ID</button>
+                            </div>
+                            <p class="label text-wrap">This is used to propagate competition info.</p>
+                        </fieldset>
+
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Discord Invite Link</legend>
                             <input type="url" class="input" placeholder="Type here" v-model="team.discord" />

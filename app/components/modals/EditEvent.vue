@@ -40,6 +40,7 @@ function updateImagePreview() {
 };
 
 function updateID() {
+    if (!creating) return;
     if (event.title && typeof event.title === 'string') {
         event.id = event.title.toLowerCase().replaceAll(' ', '-') + '-' + (new Date()).getFullYear();
     } else {
@@ -96,7 +97,7 @@ async function save() {
                         </fieldset>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Image</legend>
-                            <input type="file" accept=".png" class="file-input w-full" ref="image" @change="updateImagePreview" />
+                            <input type="file" accept=".png,.jpg,.jpeg" class="file-input w-full" ref="image" @change="updateImagePreview" />
                             <p class="label">Preview will update below.</p>
                         </fieldset>
                         <div class="flex flex-row gap-5">

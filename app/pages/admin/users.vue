@@ -32,7 +32,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Section class="flex flex-col gap-4 px-5">
+    <Section class="flex flex-col px-5">
         <dialog id="edit_user_modal" class="modal">
             <ClientOnly>
                 <LazyModalsEditUserContent :for-owner="false" :user="editingUser">Manage Account</LazyModalsEditUserContent>

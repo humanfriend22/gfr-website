@@ -145,7 +145,7 @@ async function createBlogs(n: number) {
     );
     for (let i = 0; i < n; i++) {
         const blogId = `blog-${i + 1}`;
-        const file = bucket.file(`blogs/blog${i + 1}.md`);
+        const file = bucket.file(`blogs/${blogId}/content.md`);
 
         const [_, [url]] = await Promise.all([
             file.save(summerNewsletterContent),

@@ -7,7 +7,7 @@ defineProps<{
 
 <template>
     <div class="relative">
-        <div class="card bg-base-100 image-full shadow-sm w-full cursor-pointer transition-all duration-300 hover:brightness-140" @click="clickHandler(event)">
+        <div class="card bg-base-100 image-full shadow-sm w-full h-full cursor-pointer transition-all duration-300 hover:brightness-140" @click="clickHandler(event)">
             <figure :class="event.image ? '' : 'bg-gray-950'">
                 <NuxtImg :src="event.image" />
             </figure>
@@ -27,7 +27,8 @@ defineProps<{
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
-                        {{ new Date(event.start).toLocaleDateString() }}
+                        {{ formatDate(event.start, true) }}
+                        <span v-if="isValidDate(event.end)"> - {{ formatDate(event.end, true) }}</span>
                     </span>
                 </div>
                 <!-- <div class="card-actions justify-end flex-wrap">
@@ -42,5 +43,4 @@ defineProps<{
             <NuxtLink class="btn bg-[var(--gfr-blue)] flex-shrink-0" v-if="event.signup_link !== ''" :to="event.signup_link" target="_blank">Sign Up</Nuxtlink>
         </div>
     </div>
-
 </template>

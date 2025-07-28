@@ -75,7 +75,7 @@ async function save() {
     if (creating) {
         await setDoc(seasonDoc, {
             reId: latestSeason.value.reId,
-            officers: officers.value
+            officers: officers.value,
         });
         await updateDoc(doc(firestore.value!, 'site', 'site'), {
             currentSeason: seasonId

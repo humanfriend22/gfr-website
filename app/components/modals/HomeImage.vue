@@ -30,10 +30,10 @@ async function save() {
     // }
 
     if (input.value?.files) {
-        const file = input.value.files[0];
-        const reference = storageRef(storage.value!, `site/home.` + file.name.split('.').pop());
-        await uploadBytes(reference, file);
-        previewSrc.value = await getDownloadURL(reference);
+        // const file = input.value.files[0];
+        // const reference = storageRef(storage.value!, `site/home.` + file.name.split('.').pop());
+        // await uploadBytes(reference, file);
+        previewSrc.value = await uploadImage(input, `site/home`);
         await updateDoc(doc(firestore.value!, 'site', 'site'), {
             homeImage: previewSrc.value,
         });

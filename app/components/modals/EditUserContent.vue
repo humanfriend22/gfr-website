@@ -88,9 +88,6 @@ onMounted(() => {
                 <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
                 <p class="label">Users and their captains can edit this.</p>
             </fieldset>
-            <button class="btn btn-error" v-if="user.uid === currentUser?.uid && user.team !== '' && captainOfTeam === ''" @click="user.team = ''">Leave {{ user.team }} Team</button>
-            <button class="btn btn-error" v-else-if="!forOwner && user.team && captainOfTeam === user.team" @click="user.team = ''">Remove from {{ user.team }} Team</button>
-            <button class="btn btn-info" v-else-if="user.team === '' && !!captainOfTeam" @click="user.team = captainOfTeam">Add to {{ captainOfTeam }} Team</button>
             <!-- <fieldset class="fieldset" v-else-if="isCurrentPresident">
                 <legend class="fieldset-legend">Team</legend>
                 <select class="select" v-model="user.team">

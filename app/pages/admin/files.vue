@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getDownloadURL, getMetadata, listAll, ref as storageRef } from 'firebase/storage'
+import prettyBytes from 'pretty-bytes';
 
 definePageMeta({
     layout: 'admin'
@@ -36,7 +37,7 @@ onMounted(async () => {
         <h1 class="text-2xl font-bold">Files</h1>
         <p class="text-gray-400">Here is every file uploaded to this website.</p>
         <div class="max-w-[40rem] min-h-24 max-h-[70vh] rounded-box border border-base-content/5 flex flex-col justify-center">
-            <div class="p-5" v-if="Object.keys(teamImages).length === 0">
+            <div class="p-5" v-if="files.length === 0">
                 <div class="flex flex-row gap-2 justify-center">
                     <div class="loading"></div>Fetching file data...
                 </div>
@@ -46,15 +47,15 @@ onMounted(async () => {
                 <thead class="bg-[var(--primary-background-color)]">
                     <tr>
                         <th class="bg-neutral-950">Name</th>
-                        <th class="bg-neutral-950">Path</th>
+                        <th class="bg-neutral-950">Size</th>
                         <th class="bg-neutral-950">Date Uploaded</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="[name, image] of Object.entries(teamImages)" :key="name" @click="fetchPreviewImage(image.path)">
-                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ name }}</td>
-                        <td>{{ image.path }}</td>
-                        <td>{{ image.uploaded }}</td>
+                    <tr v-for="file of files" :key="file.path" @click="fetchPreviewImage(file.path)">
+                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ file.path }}</td>
+                        <td>{{ prettyBytes(file.size) }}</td>
+                        <td>{{ file.dateUploaded }}</td>
                     </tr>
                 </tbody>
             </table>

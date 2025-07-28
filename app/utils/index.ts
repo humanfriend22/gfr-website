@@ -43,7 +43,20 @@ export function randomLetter(exclude: string[] = []): string {
     return filtered[index];
 }
 
-export function resolveTeamLogoPath(seasonId: string, letter: string) {
-    // e.g. "high-stakes-2425" + "A" -> "/teams/high-stakes-2425_A.png"
-    return `/teams/${seasonId}_${letter}.png`;
+export function formatDate(date: Date, includeTime: boolean = false) {
+    const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    };
+    if (includeTime) {
+        options.hour = "2-digit";
+        options.minute = "2-digit";
+    }
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+}
+
+export function isValidDate(date: Date) {
+    const t = date.getTime();
+    return t !== t;
 }

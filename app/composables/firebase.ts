@@ -172,10 +172,10 @@ export const isAdmin = computed(() => {
     return !!currentUserData.value &&
         site.value.admins.includes(currentUserData.value.uid);
 });
-export const site = ref<Site>({
+export const site = useLocalStorage<Site>("site/site", {
     homeImage: "/gfr-worlds-2023.jpg",
     bannerMarkdown: "",
-    currentSeason: "",
+    currentSeason: "pushback-2526",
     admins: [],
 });
 
@@ -191,33 +191,43 @@ export const logout = async () => {
     });
 };
 
-// TODO: Use pagination
-export const teamImages = ref<{
-    [name: string]: {
-        path: string;
-        uploaded: Date;
-        url: string;
-    };
-}>({});
-export const updateFiles = async (page: number = 1) => {
+export const files = ref<{
+    path: string;
+    size: number;
+    dateUploaded: Date;
+}[]>([]);
+export async function updateFiles(force: boolean = false) {
     if (!storage.value) throw new Error("Firebase Storage not initialized");
-    if (Object.keys(teamImages.value).length > 0) {
+    if (files.value.length > 0 && !force) {
         return console.warn("Files already loaded, skipping update.");
     }
-    const result = await listAll(storageRef(storage.value!, "teams"));
-    await Promise.all(
-        result.items.map((item) => {
-            return new Promise<void>(async (resolve) => {
-                teamImages.value[item.name] = {
-                    path: item.fullPath,
-                    uploaded: new Date((await getMetadata(item)).updated),
-                    url: await getDownloadURL(item),
-                };
-                resolve();
-            });
-        }),
-    );
-};
+
+    // We need the blogs!
+    await updateBlogs();
+
+    const items = async (directory: string) =>
+        await Promise.all(
+            (await listAll(storageRef(storage.value!, directory))).items.map(
+                async (item) => {
+                    const metadata = await getMetadata(item);
+                    return {
+                        path: item.fullPath,
+                        size: metadata.size,
+                        dateUploaded: new Date(metadata.updated),
+                    };
+                },
+            ),
+        );
+
+    const promises = await Promise.all([
+        items("teams"),
+        ...blogs.value.map((blog) => items(`blogs/${blog.id}`)),
+        items("events"),
+        items("site"),
+    ]);
+
+    files.value = promises.flat();
+}
 
 export const users = useLocalStorage<User[]>("users", []);
 /**

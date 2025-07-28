@@ -17,7 +17,7 @@ const appConfig = useAppConfig();
                 <br>
                 Developed by Saketh
             </p>
-            <NuxtLink to="/admin" class="btn btn-sm text-gray-400 hover:text-gray-300">Admin Panel</NuxtLink>
+            <button class="btn btn-sm text-gray-400 hover:text-gray-300" @click="updateUsers(true)">Force Update Users</button>
         </aside>
         <nav>
             <h6 class="footer-title">Explore</h6>
