@@ -5,7 +5,7 @@ const { seasonId, teamId } = useRoute().params;
 const team = computed(() => {
     return seasons.value.find(
         (s) => s.id === seasonId
-    )?.teams.find((t) => t.letter === teamId);
+    )?.teams.find((t) => t.letter === teamId)! as Team;
 });
 
 function formatCompetitionDate(date: string): string {
@@ -35,7 +35,7 @@ onMounted(async () => {
                         <NuxtImg :src="team?.logo" class="w-48 h-48 rounded-md bg-black" />
                         <div class="h-fit">
                             <div class="font-bold text-7xl">{{ team?.name }}</div>
-                            <h3 class="text-gray-500 text-2xl">{{team?.captains.map(u => userFromUID(u)?.name).join(' & ')}}</h3>
+                            <h3 class="text-gray-500 text-2xl">{{team.captains.map((u: string) => userFromUID(u)?.name).join(' & ')}}</h3>
                         </div>
                     </div>
                     <div class="flex flex-col justify-start">

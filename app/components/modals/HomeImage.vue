@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { doc, updateDoc } from 'firebase/firestore';
 import {
     getDownloadURL,
     uploadBytes,
@@ -33,6 +34,10 @@ async function save() {
         const reference = storageRef(storage.value!, `site/home.` + file.name.split('.').pop());
         await uploadBytes(reference, file);
         previewSrc.value = await getDownloadURL(reference);
+        await updateDoc(doc(firestore.value!, 'site', 'site'), {
+            homeImage: previewSrc.value,
+        });
+        site.value.homeImage = previewSrc.value;
     };
 
     saving.value = false;

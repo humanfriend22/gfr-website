@@ -1,11 +1,14 @@
-import { auth, firestore, storage } from "../firebase";
+import { auth, bucket, firestore } from "../firebase";
 import { type UserRecord } from "firebase-admin/auth";
+import { getDownloadURL } from "firebase-admin/storage";
 import {
     getRandomElementsFromArray,
     lenientCreateDocument,
     LETTERS,
     NAMES,
 } from "./helpers";
+import { readFile } from "fs/promises";
+import { create } from "domain";
 
 // 1. Extract president and captain users & delete all other users
 let existingUsers = (await auth.listUsers()).users;
@@ -127,10 +130,53 @@ async function createEvents(n: number) {
     await Promise.all(eventPromises);
 }
 
+async function createBlogs(n: number) {
+    const blogsCollection = firestore.collection("blogs");
+    const existingBlogs = await blogsCollection.get();
+    if (!existingBlogs.empty) {
+        console.log("Blogs already exist, skipping creation.");
+        return;
+    }
+
+    let blogPromises = [];
+    const summerNewsletterContent = await readFile(
+        "./SummerNewsletter2024.mdx",
+        "utf-8",
+    );
+    for (let i = 0; i < n; i++) {
+        const blogId = `blog-${i + 1}`;
+        const file = bucket.file(`blogs/blog${i + 1}.md`);
+
+        const [_, [url]] = await Promise.all([
+            file.save(summerNewsletterContent),
+            file.getSignedUrl({
+                action: "read",
+                expires: Date.now() + (1000 * 60 * 60 * 24 * 3), // or a timestamp like Date.now() + 1000 * 60 * 60
+            }),
+        ]);
+
+        const blogData = {
+            title: `Blog Post ${i + 1}`,
+            author: "Moon Liu",
+            description:
+                `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempor non felis ac imperdiet. Aliquam consequat, augue nec finibus lacinia, nibh est porta urna, sed suscipit turpis leo ut nunc libero.`,
+            image: "/gfr-summer-newsletter.png",
+            date: new Date(Date.now() + i * 86400000), // 1 day apart
+            content: url,
+        };
+        blogPromises.push(
+            blogsCollection.doc(blogId).set(blogData),
+        );
+    }
+
+    await Promise.all(blogPromises);
+}
+
 await Promise.all([
     // createSeason("push-back-2526", 4),
     createSeason("high-stakes-2425", 5, 190),
     createEvents(2),
+    createBlogs(2),
 ]);
 
 // 4. Change their names (captain is done when their team is known)

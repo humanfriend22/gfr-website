@@ -51,12 +51,7 @@ async function save() {
     saving.value = true;
 
     if (event.image !== '') {
-        const file = image.value?.files?.[0];
-        if (file) {
-            const reference = storageRef(storage.value!, `events/${event.id}.${file.name.split('.').pop()}`);
-            await uploadBytes(reference, file);
-            event.image = await getDownloadURL(reference);
-        }
+        event.image = await uploadImage(image, `events/${event.id}`);
     }
 
     const newEvent = {

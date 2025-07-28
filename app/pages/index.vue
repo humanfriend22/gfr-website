@@ -13,15 +13,15 @@
                     </template>
                     <ClientOnly>
                         <Tilt :repel-at-mouse="false" :horizontal-tilt-angle="30" :vertical-tilt-angle="30">
-                            <NuxtImg class="rounded-lg ring-4 ring-gray-700" src="/gfr-worlds-2023.jpg" alt="" priority />
+                            <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="site.homeImage" alt="" priority />
                         </Tilt>
                     </ClientOnly>
                 </Hero>
             </div>
         </Section>
         <Section class="flex flex-col justify-center items-center w-full">
-            <h1 class="text-5xl font-bold mb-15">GFR <span class="gfr-gradient">By The Numbers</span></h1>
-            <div class="stats shadow w-full mb-30">
+            <h1 class="text-5xl text-center font-bold mb-15">GFR <span class="gfr-gradient">By The Numbers</span></h1>
+            <div class="stats stats-vertical lg:stats-horizontal shadow lg:w-full mb-30">
                 <div class="stat text-center">
                     <div class="stat-title">Years</div>
                     <div class="stat-value">14</div>

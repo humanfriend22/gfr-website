@@ -40,7 +40,9 @@ import {
     listAll,
     ref as storageRef,
     type StorageReference,
+    uploadBytes,
 } from "firebase/storage";
+import type { ShallowRef } from "vue";
 
 // Every user has write access to their own document -> Permissions and roles are stored in primary site document.
 // Profile picture is stored in Firebase Storage in users/{uid}.jpg, fallback is Google profile picture.
@@ -120,11 +122,23 @@ export interface WebsiteEvent {
     volunteer_link: string;
 }
 
+export interface Blog {
+    id: string; // Document IDs
+    title: string;
+    author: string;
+    description: string;
+    content: string;
+    image: string;
+    images: string[];
+    date: Date;
+}
+
 interface Database {
     site: [Site];
     users: User[];
     seasons: Season[];
     events: WebsiteEvent[];
+    blogs: Blog[];
 }
 
 // LOG EVERY SINGLE FIRESTORE REQUEST
@@ -159,7 +173,7 @@ export const isAdmin = computed(() => {
         site.value.admins.includes(currentUserData.value.uid);
 });
 export const site = ref<Site>({
-    homeImage: "",
+    homeImage: "/gfr-worlds-2023.jpg",
     bannerMarkdown: "",
     currentSeason: "",
     admins: [],
@@ -354,6 +368,53 @@ export async function updateEvents(force: boolean = false) {
     });
 }
 
+// Blogs
+export const blogs = ref<Blog[]>([]);
+
+export async function updateBlogs(force: boolean = false) {
+    if (!force && blogs.value.length > 0) {
+        return console.warn("Blogs already loaded, skipping update.");
+    }
+    const snapshot = await getCollectionDocs(
+        collection(firestore.value!, "blogs"),
+    );
+    blogs.value = [];
+    for (const doc of snapshot.docs) {
+        const data = doc.data();
+        blogs.value.push({
+            id: doc.id,
+            title: data.title,
+            author: data.author,
+            description: data.description,
+            content: data.content,
+            image: data.image,
+            images: data.images,
+            date: data.date.toDate(),
+        });
+    }
+}
+
+/**
+ * Uploads an image to Firebase Storage and returns the download URL.
+ * @param image The image input element to upload (useTemplateRef on a file input)
+ * @param path the full path to the image excluding the file extension, e.g. `blogs/${blog.id}/cover`
+ */
+export async function uploadImage(
+    image: Readonly<ShallowRef<HTMLInputElement | null>>,
+    path: string,
+) {
+    const file = image.value?.files?.[0];
+    if (file) {
+        const reference = storageRef(
+            storage.value!,
+            path + "." + file.name.split(".").pop(),
+        );
+        await uploadBytes(reference, file);
+        return await getDownloadURL(reference);
+    }
+    return "";
+}
+
 // CLIENT SIDE PLUGIN ONLY FUNCTION (ensures is only called once upon Nuxt app startup)
 export const initializeFirebase = async () => {
     const config = useRuntimeConfig();
@@ -371,7 +432,7 @@ export const initializeFirebase = async () => {
     // Connect to emulators
     if (import.meta.env.DEV) {
         connectAuthEmulator(auth.value, "http://127.0.0.1:9099");
-        connectFirestoreEmulator(firestore.value, "127.0.0.1", 8080);
+        connectFirestoreEmulator(firestore.value, "127.0.0.1", 8090);
         connectStorageEmulator(storage.value, "127.0.0.1", 9199);
     }
 
@@ -406,3 +467,40 @@ export const initializeFirebase = async () => {
     await updateUsers();
     await updateSeason(site.value.currentSeason);
 };
+
+export function isValidBlogEventId(id: string): string {
+    // Must be valid UTF-8 characters (JavaScript strings are UTF-16, but this covers UTF-8)
+    if (!id) {
+        return "ID cannot be empty";
+    }
+
+    // Must be no longer than 1,500 bytes, but we want max 20
+    // const encoder = new TextEncoder();
+    // const bytes = encoder.encode(id);
+    // if (bytes.length > 1500) {
+    //     return 'ID must be no longer than 1,500 bytes';
+    // }
+    if (id.length > 20) {
+        return "ID must be no longer than 20 characters";
+    }
+
+    // Cannot contain a forward slash (/)
+    if (id.includes("/")) {
+        return "ID cannot contain a forward slash (/)";
+    }
+
+    // Cannot solely consist of a single period (.) or double periods (..)
+    if (id === "." || id === "..") {
+        return 'ID cannot be just "." or ".."';
+    }
+
+    // Cannot match the regular expression __.*__
+    if (/^__.*__$/.test(id)) {
+        return "ID cannot start and end with double underscores";
+    }
+
+    // If importing Datastore entities, numeric entity IDs are exposed as __id[0-9]+__
+    // This is handled by the previous regex check
+
+    return ""; // Empty string means valid
+}

@@ -4,7 +4,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
 process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
-process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
+process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8090";
 process.env["FIREBASE_STORAGE_EMULATOR_HOST"] = "127.0.0.1:9199";
 
 const app = initializeApp({
@@ -12,4 +12,6 @@ const app = initializeApp({
 });
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
-export const storage = getStorage(app);
+export const bucket = getStorage(app).bucket(
+    "gs://gael-force-robotics-hf.firebasestorage.app",
+);

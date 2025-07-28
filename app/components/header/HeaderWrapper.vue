@@ -1,12 +1,3 @@
-<script setup lang="ts">
-const links = useRuntimeConfig().public.links;
-
-function closeDrawer() {
-    const drawerButton = document.getElementById('drawer-button') as HTMLLabelElement;
-    drawerButton.click();
-};
-</script>
-
 <template>
     <div class="drawer drawer-end h-screen w-screen">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />

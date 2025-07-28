@@ -17,7 +17,7 @@
                 <HeaderLink to="/admin/events">
                     Events
                 </HeaderLink>
-                <HeaderLink to="/admin" disabled>
+                <HeaderLink to="/admin/blog">
                     Blog
                 </HeaderLink>
             </Header>

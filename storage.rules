@@ -39,5 +39,10 @@ service firebase.storage {
             allow read: if true;
             allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
         }
+
+        match /blogs/{blogId}/{file} {
+            allow read: if true;
+            allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
+        }
     }
 }

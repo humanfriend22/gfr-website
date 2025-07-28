@@ -76,14 +76,9 @@ async function save() {
     saving.value = true;
     const teamDoc = doc(firestore.value!, 'seasons', seasonId, 'teams', team.letter);
     try {
-        const reference = storageRef(storage.value!, `teams/${currentSeason.value.id}_${team.letter}.png`);
         let logoUrl = '';
         if (logoPreviewSrc.value !== 'https://placehold.co/400x400') {
-            if (logo.value?.files) {
-                const file = logo.value.files[0];
-                await uploadBytes(reference, file);
-                logoUrl = await getDownloadURL(reference);
-            };
+            logoUrl = await uploadImage(logo, `teams/${currentSeason.value.id}_${team.letter}`);
         };
 
         const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
