@@ -8,6 +8,7 @@ const { seasonId, creating } = defineProps<{
     seasonId: string
 }>();
 
+const closeButton = useTemplateRef('close');
 const saving = ref(false);
 const errorMessage = computed(() => {
     if (Object.values(officers.value).includes('')) return 'All officer positions must be filled';
@@ -72,23 +73,33 @@ async function save() {
     saving.value = true;
 
     const seasonDoc = doc(firestore.value!, 'seasons', seasonId);
+    const siteDoc = doc(firestore.value!, 'site', 'site');
+
+    // Only the officers could be changed so we can assume captains are the same.
+    currentSeason.value.officers = officers.value;
+
     if (creating) {
         await setDoc(seasonDoc, {
             reId: latestSeason.value.reId,
             officers: officers.value,
         });
-        await updateDoc(doc(firestore.value!, 'site', 'site'), {
-            currentSeason: seasonId
+        await updateDoc(siteDoc, {
+            currentSeason: seasonId,
+            admins: resolveAdmins()
         });
         window.location.reload();
     } else {
         await updateDoc(seasonDoc, {
             officers: officers.value
         });
+        await updateDoc(siteDoc, {
+            currentSeason: seasonId,
+            admins: resolveAdmins()
+        });
     }
 
     saving.value = false;
-    document.querySelector<HTMLButtonElement>('dialog #close')!.click();
+    closeButton.value?.click();
 }
 </script>
 
@@ -148,7 +159,7 @@ async function save() {
                 <div class="flex flex-row gap-2">
                     <form method="dialog">
                         <!-- if there is a button in form, it will close the modal -->
-                        <button class="btn" id="close">Cancel</button>
+                        <button class="btn" ref="close">Cancel</button>
                     </form>
                     <button class="btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving || errorMessage !== ''">
                         <span class="loading" v-if="saving"></span>

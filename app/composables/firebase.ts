@@ -43,103 +43,7 @@ import {
     uploadBytes,
 } from "firebase/storage";
 import type { ShallowRef } from "vue";
-
-// Every user has write access to their own document -> Permissions and roles are stored in primary site document.
-// Profile picture is stored in Firebase Storage in users/{uid}.jpg, fallback is Google profile picture.
-export interface User {
-    // Document ID
-    uid: string;
-    name: string;
-    // In case they use a different email than their Google account
-    email: string;
-    team: string;
-    graduatingYear: number;
-}
-
-interface Site {
-    // Main image in Hero on homepage
-    homeImage: string;
-    // Markdown for the banner on the homepage, empty to disable
-    bannerMarkdown: string;
-    // document ID (e.g. high-stakes-2425)
-    currentSeason: string;
-    // all uids that can access the admin panel
-    admins: string[];
-}
-
-export interface Team {
-    letter: string;
-    // Full name (not shorthand)
-    name: string;
-    // RobotEvents Team ID
-    reId: number;
-    // Captains' UIDs
-    captains: string[];
-    logo: string;
-    // Team members' UIDs
-    members: string[];
-    // Competitions (propagated by Firebase Functions when reId changes)
-    competitions: {
-        [competitionId: string]: {
-            name: string;
-            date: string;
-            location: string;
-            awards: string[];
-        };
-    };
-    discord: string;
-    instagram: string;
-}
-
-// UIDs
-export interface SeasonOfficerMap {
-    president: string;
-    vice_president: string;
-    secretary: string;
-    treasurer: string;
-    junior_pred: string;
-    senior_pred: string;
-}
-
-// Name + years is the document ID (e.g high-stakes-2425)
-export interface Season {
-    id: string; // Document ID
-    reId: number;
-    officers: SeasonOfficerMap;
-    teams: Team[];
-}
-
-export interface WebsiteEvent {
-    id: string; // Document ID
-    title: string;
-    description: string;
-    info: string;
-    image: string;
-    start: Date;
-    end: Date;
-    location: string;
-    signup_link: string;
-    volunteer_link: string;
-}
-
-export interface Blog {
-    id: string; // Document IDs
-    title: string;
-    author: string;
-    description: string;
-    content: string;
-    image: string;
-    images: string[];
-    date: Date;
-}
-
-interface Database {
-    site: [Site];
-    users: User[];
-    seasons: Season[];
-    events: WebsiteEvent[];
-    blogs: Blog[];
-}
+import type { Season, Site, Team, User } from "./types";
 
 // LOG EVERY SINGLE FIRESTORE REQUEST
 export function getDoc<AppModelType, DbModelType extends DocumentData>(
@@ -159,25 +63,20 @@ export const firebase = ref<FirebaseApp | null>(null);
 export const auth = ref<Auth | null>(null);
 export const firestore = ref<Firestore | null>(null);
 export const storage = ref<FirebaseStorage | null>(null);
-
-export const currentUser = ref<FirebaseUser | null>(null);
-export const wasLoggedInLastTime = useLocalStorage<boolean>(
-    "was-logged-in-at-some-point",
-    false,
-);
-export const currentUserData = ref<User | null>(
-    null,
-);
-export const isAdmin = computed(() => {
-    return !!currentUserData.value &&
-        site.value.admins.includes(currentUserData.value.uid);
-});
 export const site = useLocalStorage<Site>("site/site", {
     homeImage: "/gfr-worlds-2023.jpg",
     bannerMarkdown: "",
     currentSeason: "pushback-2526",
     admins: [],
 });
+
+// Authentication is organized into: data, direct functions, and computed helpers
+export const currentUser = ref<FirebaseUser | null>(null);
+export const wasLoggedInLastTime = useLocalStorage<boolean>(
+    "was-logged-in-at-some-point",
+    false,
+);
+export const currentUserData = ref<User | null>(null);
 
 export const login = async () => {
     if (!auth) throw new Error("Firebase Auth not initialized");
@@ -191,6 +90,9 @@ export const logout = async () => {
     });
 };
 
+// PAST THIS POINT, DATA AND FUNCTIONS ARE GROUPED BY TOPIC (e.g. auth based helpers are right after its respective data updater)
+
+// FILES DATA
 export const files = ref<{
     path: string;
     size: number;
@@ -229,6 +131,7 @@ export async function updateFiles(force: boolean = false) {
     files.value = promises.flat();
 }
 
+// USERS DATA
 export const users = useLocalStorage<User[]>("users", []);
 /**
  * Doesn't make sense to ship with the site but is pretty crucial and so it is fetched on app startup but cached.
@@ -249,21 +152,24 @@ export async function updateUsers(force = false) {
     }) as User[];
 }
 
+/**
+ * Finds a user by their UID.
+ * @param uid the user's uid
+ * @returns User?
+ */
 export function userFromUID(uid: string) {
     if (uid === "") return null;
     const user = users.value.find((user) => user.uid === uid);
-    if (!user) return console.warn(`Woah, that user doesnt exist! (${uid})`);
+    if (!user) {
+        console.warn(`Woah, that user doesnt exist! (${uid})`);
+        return null;
+    }
     return user;
 }
 
+// SEASONS DATA
 // TODO: speed up this function with parallel requests
 export const seasons = ref<Season[]>([]);
-export const currentSeason = computed(() => {
-    return seasons.value.find((season) =>
-        season.id === site.value.currentSeason
-    ) as Season;
-});
-
 export async function updateSeason(id: string) {
     if (id === "") {
         return console.warn("No season ID provided, skipping update.");
@@ -331,7 +237,36 @@ export async function updateSeasons() {
     }
 }
 
-// If the current user is the captain of a team in the current season, this contains that team letter. null otherwise.
+// REACTIVE COMPUTED PROPERTIES - these are used to simplify checking for certain conditions in various parts of the admin panel
+// - should be bascially mirrored in the Firebase security rules
+
+/**
+ * Checks if the current user is an admin. If true, admin panel is accessible.
+ */
+export const isAdmin = computed(() => {
+    if (!currentUser.value) return false;
+    return site.value.admins.includes(currentUser.value.uid);
+});
+
+/**
+ * The current season document, based on the site.currentSeason.
+ */
+export const currentSeason = computed(() => {
+    return seasons.value.find((season) =>
+        season.id === site.value.currentSeason
+    ) as Season;
+});
+
+/**
+ * List of uids for current season captains.
+ */
+export const currentCaptains = computed(() => {
+    return currentSeason.value?.teams.flatMap((team) => team.captains) || [];
+});
+
+/**
+ * Bascially isCurrentCaptain but also contains the team letter. `null` if the user is not a captain.
+ */
 export const captainOfTeam = computed<string | null>(() => {
     if (!currentUser.value) return null;
 
@@ -344,20 +279,36 @@ export const captainOfTeam = computed<string | null>(() => {
     return team?.letter || null;
 });
 
-export const isCurrentPresident = computed(() => {
-    return (!!currentUser.value && !!currentSeason.value?.officers.president) &&
-        currentUser.value.uid === currentSeason.value.officers.president;
+// Officer position check
+export const isCurrentPresident = computed<boolean>(() => {
+    if (!currentUser.value) return false;
+    if (!!currentSeason.value?.officers.president) return false;
+
+    // Little backdoor
+    return currentUser.value.uid === currentSeason.value.officers.president;
 });
 
-export const canAccessAdmin = computed(() => {
-    return !!currentUser.value && !!currentSeason.value &&
-        (isCurrentPresident.value || captainOfTeam.value !== null ||
-            Object.values(currentSeason.value.officers).includes(
-                currentUser.value.uid,
-            ));
-});
+/**
+ * Contains every user that can access the admin panel. All officers, captains have access by default.
+ * To create more admin positions, add fields to the officers field in season documents. Function is isolated
+ * to ensure it is safe and not in some random component.
+ * @returns An array of UIDs of users that can access the admin panel.
+ */
+export function resolveAdmins() {
+    if (!isCurrentPresident.value) {
+        throw new Error("Only the current president needs to resolve admins.");
+    }
 
-// Events
+    return Array.from(
+        new Set([
+            ...currentCaptains.value,
+            ...(Object.values(currentSeason.value.officers)
+                .filter((uid) => uid.length > 0)),
+        ]),
+    );
+}
+
+// EVENTS DATA
 export const events = ref<WebsiteEvent[]>([]);
 export async function updateEvents(force: boolean = false) {
     if (!force && events.value.length > 0) {
@@ -378,7 +329,7 @@ export async function updateEvents(force: boolean = false) {
     });
 }
 
-// Blogs
+// BLOGS DATA
 export const blogs = ref<Blog[]>([]);
 
 export async function updateBlogs(force: boolean = false) {
@@ -404,33 +355,12 @@ export async function updateBlogs(force: boolean = false) {
     }
 }
 
-/**
- * Uploads an image to Firebase Storage and returns the download URL.
- * @param image The image input element to upload (useTemplateRef on a file input)
- * @param path the full path to the image excluding the file extension, e.g. `blogs/${blog.id}/cover`
- */
-export async function uploadImage(
-    image: Readonly<ShallowRef<HTMLInputElement | null>>,
-    path: string,
-) {
-    const file = image.value?.files?.[0];
-    if (file) {
-        const reference = storageRef(
-            storage.value!,
-            path + "." + file.name.split(".").pop(),
-        );
-        await uploadBytes(reference, file);
-        return await getDownloadURL(reference);
-    }
-    return "";
-}
-
 // CLIENT SIDE PLUGIN ONLY FUNCTION (ensures is only called once upon Nuxt app startup)
 export const initializeFirebase = async () => {
     const config = useRuntimeConfig();
     try {
         firebase.value = initializeApp(config.public.firebase);
-        firestore.value = getFirestore(firebase.value); // Ensure Firestore is initialized
+        firestore.value = getFirestore(firebase.value);
         storage.value = getStorage(firebase.value);
         auth.value = getAuth(firebase.value);
         setPersistence(auth.value, browserSessionPersistence);
@@ -441,9 +371,16 @@ export const initializeFirebase = async () => {
 
     // Connect to emulators
     if (import.meta.env.DEV) {
-        connectAuthEmulator(auth.value, "http://127.0.0.1:9099");
-        connectFirestoreEmulator(firestore.value, "127.0.0.1", 8090);
-        connectStorageEmulator(storage.value, "127.0.0.1", 9199);
+        connectAuthEmulator(
+            auth.value,
+            `http://${window.location.hostname}:9099`,
+        );
+        connectFirestoreEmulator(
+            firestore.value,
+            window.location.hostname,
+            8090,
+        );
+        connectStorageEmulator(storage.value, window.location.hostname, 9199);
     }
 
     // Listen for auth
@@ -461,21 +398,23 @@ export const initializeFirebase = async () => {
         }
     });
 
-    /// Ensure site has adequate data
+    /// Ensure site has adequate data - but don't die if it doesn't
+    try {
+        const siteSnapshot = await getDoc(
+            doc(collection(firestore.value, "site"), "site"),
+        );
+        if (!siteSnapshot.exists()) {
+            console.warn("Site document not found, using default values.");
+        } else {
+            site.value = siteSnapshot.data() as Site;
+            console.log("Site data loaded:", site.value);
+        }
 
-    // Fetch site data. TODO: cache
-    const siteSnapshot = await getDoc(
-        doc(collection(firestore.value, "site"), "site"),
-    );
-    if (!siteSnapshot.exists()) {
-        console.warn("Site document not found, using default values.");
-    } else {
-        site.value = siteSnapshot.data() as Site;
-        console.log("Site data loaded:", site.value);
+        await updateUsers();
+        await updateSeason(site.value.currentSeason);
+    } catch (error) {
+        console.error("Error fetching site data:", error);
     }
-
-    await updateUsers();
-    await updateSeason(site.value.currentSeason);
 };
 
 export function isValidBlogEventId(id: string): string {

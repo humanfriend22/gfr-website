@@ -10,33 +10,30 @@ const { event, creating } = defineProps<{
 const rawStart = ref(''), rawEnd = ref('');
 const saving = ref(false);
 const errorMessage = computed(() => {
-    event.start = new Date(rawStart.value);
-    event.end = new Date(rawEnd.value);
+    const start = new Date(rawStart.value);
+    const end = new Date(rawEnd.value);
 
     if (!event.title) return 'Please enter a title for the event.';
     if (event.title.length < 2 || event.title.length > 30) return 'Invalid title (2-25 characters)';
 
     if (event.location.length < 5 || event.location.length > 50) return 'Invalid location (5-50 characters)';
 
-    if (rawStart.value === '' || !event.start) return 'Please enter a start date for the event.';
-    if (rawEnd.value !== '' && event.end < event.start) return 'End date cannot be before start date.';
+    if (rawStart.value === '' || !start) return 'Please enter a start date for the event.';
+    if (rawEnd.value !== '' && end < start) return 'End date cannot be before start date.';
 
     if (event.description.length < 10 || event.description.length > 100) return 'Invalid description (10-100 characters)';
 
     if (event.signup_link && !/^https?:\/\//.test(event.signup_link)) return 'Invalid signup link (must start with http:// or https://)';
     if (event.volunteer_link && !/^https?:\/\//.test(event.volunteer_link)) return 'Invalid volunteer link (must start with http:// or https://)';
 
-    if (event.image === '' && !creating) return 'Please upload an image for the event.';
+    if (event.image === '' && creating) return 'Please upload an image for the event.';
     if (event.id.length < 2 || event.id.length > 35) return 'Invalid ID (2-30 characters)';
     return '';
 });
 
 const image = useTemplateRef('image');
 function updateImagePreview() {
-    const files = image.value?.files;
-    if (files && files.length > 0) {
-        event.image = URL.createObjectURL(files[0]);
-    };
+    event.image = readObjectURLFromImage(image);
 };
 
 function updateID() {
@@ -51,7 +48,7 @@ function updateID() {
 async function save() {
     saving.value = true;
 
-    if (event.image !== '') {
+    if (readObjectURLFromImage(image) === event.image) {
         event.image = await uploadImage(image, `events/${event.id}`);
     }
 
@@ -63,8 +60,8 @@ async function save() {
         image: event.image,
         signup_link: event.signup_link,
         volunteer_link: event.volunteer_link,
-        start: Timestamp.fromDate(event.start),
-        end: rawEnd.value === '' ? Timestamp.fromMillis(0) : Timestamp.fromDate(event.end),
+        start: Timestamp.fromDate(new Date(event.start)),
+        end: rawEnd.value === '' ? Timestamp.fromDate(new Date(event.start)) : Timestamp.fromDate(new Date(event.end)),
     };
 
     const documentRef = doc(firestore.value!, 'events', event.id);
@@ -82,6 +79,15 @@ async function save() {
     // @ts-ignore
     document.getElementById('edit_event_modal')?.close();
 };
+
+const lastId = ref('');
+onBeforeUpdate(() => {
+    if (event.id !== lastId.value) {
+        rawStart.value = event.start.toISOString().slice(0, 16);
+        rawEnd.value = event.start.getTime() !== event.end.getTime() ? event.end.toISOString().slice(0, 16) : '';
+        lastId.value = event.id;
+    }
+});
 </script>
 
 <template>
@@ -117,7 +123,9 @@ async function save() {
                             <input type="text" class="input w-full" placeholder="Type here" v-model="event.location" />
                         </fieldset>
                         <div class="mt-2">
-                            <EventCard :event="event" class="w-full" :click-handler="() => { }" />
+                            <ClientOnly>
+                                <EventCard :event="event" class="w-full" :click-handler="() => { }" />
+                            </ClientOnly>
                         </div>
                     </div>
                     <div>

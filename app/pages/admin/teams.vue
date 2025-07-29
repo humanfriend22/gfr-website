@@ -10,7 +10,6 @@ import {
     updateSeasons,
     userFromUID
 } from '~/composables/firebase';
-import type { Season, Team } from '~/composables/firebase';
 
 definePageMeta({
     layout: 'admin'

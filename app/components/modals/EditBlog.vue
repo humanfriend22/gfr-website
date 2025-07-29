@@ -44,13 +44,7 @@ watch(rawDate, (newValue) => {
 });
 
 
-function readObjectURLFromImage(image: Readonly<ShallowRef<HTMLInputElement | null>>) {
-    const files = image.value?.files;
-    if (files && files.length > 0) {
-        return URL.createObjectURL(files[0]);
-    }
-    return '';
-}
+
 
 const image1 = useTemplateRef('image1'),
     image2 = useTemplateRef('image2'),

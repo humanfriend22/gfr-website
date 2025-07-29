@@ -24,39 +24,41 @@ const errorMessage = computed(() => {
     return '';
 });
 
-const willRevokeCaptain = ref(false);
-async function revokeCaptain() {
-    if (!userIsACaptain.value) return;
-    willRevokeCaptain.value = true;
-};
+const shouldRevokeAdminAccess = ref(false);
 
 async function save() {
     saving.value = true;
-    console.log(user.uid)
-    const userRef = doc(firestore.value!, 'users', user.uid);
+
+    const userDoc = doc(firestore.value!, 'users', user.uid);
     let promises = [
-        updateDoc(userRef, {
+        // The user's data
+        updateDoc(userDoc, {
             name: user.name,
-            team: user.team,
             graduatingYear: user.graduatingYear,
-            isAdmin: willRevokeCaptain.value ? false : (isAdmin.value || false),
+        }),
+        updateProfile(currentUser.value!, {
+            displayName: user.name
         })
     ];
-    if (user.team !== currentUser.value?.displayName) {
+    if (shouldRevokeAdminAccess.value && isCurrentPresident.value) {
+        const siteDoc = doc(firestore.value!, 'site', 'site');
+
+        // Remove global access (this MUST remove complete edit access from the database and bucket)
         promises.push(
-            updateProfile(currentUser.value!, {
-                displayName: user.name
+            updateDoc(siteDoc, {
+                admins: site.value.admins.filter(uid => uid !== user.uid)
             })
         );
-    }
-    if (willRevokeCaptain.value) {
-        console.warn('Revoking captaincy for ', user.name);
-        const seasonRef = doc(firestore.value!, 'seasons', currentSeason.value.id);
-        promises.push(
-            updateDoc(doc(collection(seasonRef, 'teams'), userIsACaptain.value?.letter), {
-                captains: currentSeason.value.teams.find(team => team.letter === userIsACaptain.value?.letter)?.captains.filter(captain => captain !== user.uid) || []
-            })
-        );
+        // Remove from captain list
+        if (userIsACaptain.value) {
+            const seasonDoc = doc(firestore.value!, 'seasons', currentSeason.value.id);
+            const teamDoc = doc(collection(seasonDoc, 'teams'), userIsACaptain.value?.letter);
+            promises.push(
+                updateDoc(teamDoc, {
+                    captains: currentSeason.value.teams.find(team => team.letter === userIsACaptain.value?.letter)?.captains.map(uid => uid !== user.uid)
+                })
+            );
+        }
     }
     await Promise.all(promises);
     saving.value = false;
@@ -102,7 +104,7 @@ onMounted(() => {
                 <p class="label">Users and their captains can edit this.</p>
             </fieldset>
             <div>
-                <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="revokeCaptain">REVOKE CAPTAIN</button>
+                <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="shouldRevokeAdminAccess = true">REVOKE ADMIN ACCESS</button>
             </div>
         </div>
 

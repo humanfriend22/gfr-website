@@ -1,3 +1,10 @@
+import type { ShallowRef } from "vue";
+import {
+    getDownloadURL,
+    ref as storageRef,
+    uploadBytes,
+} from "firebase/storage";
+
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -44,19 +51,55 @@ export function randomLetter(exclude: string[] = []): string {
 }
 
 export function formatDate(date: Date, includeTime: boolean = false) {
-    const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    };
-    if (includeTime) {
-        options.hour = "2-digit";
-        options.minute = "2-digit";
+    try {
+        const options: Intl.DateTimeFormatOptions = {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        };
+        if (includeTime) {
+            options.hour = "2-digit";
+            options.minute = "2-digit";
+        }
+        return new Intl.DateTimeFormat("en-US", options).format(date);
+    } catch (err) {
+        console.error("Error formatting date:", err);
+        return "";
     }
-    return new Intl.DateTimeFormat("en-US", options).format(date);
 }
 
-export function isValidDate(date: Date) {
-    const t = date.getTime();
-    return t !== t;
+/**
+ * Uploads an image to Firebase Storage and returns the download URL.
+ * @param image The image input element to upload (useTemplateRef on a file input)
+ * @param path the full path to the image excluding the file extension, e.g. `blogs/${blog.id}/cover`
+ */
+export async function uploadImage(
+    image: Readonly<ShallowRef<HTMLInputElement | null>>,
+    path: string,
+) {
+    const file = image.value?.files?.[0];
+    if (file) {
+        const reference = storageRef(
+            storage.value!,
+            path + "." + file.name.split(".").pop(),
+        );
+        await uploadBytes(reference, file);
+        return await getDownloadURL(reference);
+    }
+    return "";
+}
+
+/**
+ * Reads an object URL from an image input element.
+ * @param image The image input element to read the object URL from (useTemplateRef on a file input)
+ * @returns URL.createObjectURL
+ */
+export function readObjectURLFromImage(
+    image: Readonly<ShallowRef<HTMLInputElement | null>>,
+) {
+    const files = image.value?.files;
+    if (files && files.length > 0) {
+        return URL.createObjectURL(files[0]);
+    }
+    return "";
 }

@@ -1,6 +1,5 @@
-import { auth, bucket, firestore } from "../firebase";
+import { initializeFirebase } from "../firebase";
 import { type UserRecord } from "firebase-admin/auth";
-import { getDownloadURL } from "firebase-admin/storage";
 import {
     getRandomElementsFromArray,
     lenientCreateDocument,
@@ -8,7 +7,8 @@ import {
     NAMES,
 } from "./helpers";
 import { readFile } from "fs/promises";
-import { create } from "domain";
+
+const { auth, firestore, bucket } = initializeFirebase();
 
 // 1. Extract president and captain users & delete all other users
 let existingUsers = (await auth.listUsers()).users;

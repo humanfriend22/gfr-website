@@ -7,7 +7,6 @@ const editingUser = ref<User>({
     uid: '',
     name: '',
     email: '',
-    team: '',
     graduatingYear: 2027
 });
 
@@ -64,7 +63,7 @@ onMounted(async () => {
                         <td>{{ user.email }}</td>
                         <td class="flex flex-row">
                             <span class="badge bg-[var(--gfr-red)] mr-1" v-if="site.admins.includes(user.uid)">Admin</span>
-                            <span class="badge bg-[var(--gfr-red)] mr-1" v-if="currentSeason.teams.find(team => team.letter === user.team)?.captains.includes(user.uid)">Captain</span>
+                            <span class="badge bg-[var(--gfr-blue)] mr-1" v-if="currentCaptains.includes(user.uid)">Captain</span>
                         </td>
                     </tr>
                 </tbody>

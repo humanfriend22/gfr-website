@@ -82,7 +82,7 @@ async function save() {
         };
 
         const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
-        let newTeam = {
+        const newTeam = {
             name: team.name === '' ? `5327${team.letter}` : team.name,
             letter: team.letter,
             logo: logoUrl,
@@ -104,6 +104,12 @@ async function save() {
             const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
             seasons.value[seasonIndex].teams[teamIndex] = { ...team };
         };
+
+        if (isCurrentPresident.value) {
+            await updateDoc(doc(firestore.value!, 'site', 'site'), {
+                admins: resolveAdmins()
+            });
+        }
 
     } catch (error) {
         console.error(error);

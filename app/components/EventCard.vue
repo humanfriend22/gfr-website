@@ -1,8 +1,12 @@
 <script setup lang="ts">
-defineProps<{
+const { event } = defineProps<{
     event: WebsiteEvent;
     clickHandler: (event: WebsiteEvent) => void;
 }>();
+
+onBeforeUpdate(() => {
+    console.log(event.start, event.end);
+})
 </script>
 
 <template>
@@ -28,7 +32,7 @@ defineProps<{
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         {{ formatDate(event.start, true) }}
-                        <span v-if="isValidDate(event.end)"> - {{ formatDate(event.end, true) }}</span>
+                        <span v-if="event.start.getTime() !== event.end.getTime()"> - {{ formatDate(event.end, true) }}</span>
                     </span>
                 </div>
                 <!-- <div class="card-actions justify-end flex-wrap">
