@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const season = currentSeason.value;
+const season = computed(() => currentSeason.value);
 </script>
 
 <template>
@@ -7,11 +7,13 @@ const season = currentSeason.value;
         <div class="h-full md:justify-center items-center flex flex-col px-5">
             <div class="flex flex-col justify-center items-center gap-7 w-full h-full md:mx-0 mt-10">
                 <div class="justify-start font-bold md:text-5xl text-2xl">
-                    <span class="gfr-gradient">{{ formatSeasonId(season.id, false) }}</span> Overview
+
+                    <span class="gfr-gradient" v-if="season">{{ formatSeasonId(season.id, false) }}</span> Overview
                 </div>
                 <Divider class="w-2/3" />
-                <div class="grid grid-cols-3 w-full">
-                    <OfficerCard :user="userFromUID(uid)" v-for="uid of Object.values(season.officers)" />
+
+                <div class="grid grid-cols-3 w-2/3">
+                    <OfficerCard :user="userFromUID(uid)!" v-for="uid of Object.values(season.officers || [])" v-if="season" />
                 </div>
             </div>
         </div>

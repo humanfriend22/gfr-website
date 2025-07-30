@@ -254,7 +254,7 @@ export const isAdmin = computed(() => {
 export const currentSeason = computed(() => {
     return seasons.value.find((season) =>
         season.id === site.value.currentSeason
-    ) as Season;
+    );
 });
 
 /**

@@ -69,16 +69,7 @@ service cloud.firestore {
         match /users/{documentId} {
             allow read: if true;
             // president can update, user or their captain can update if admin field is unchanged and team field is unchanged/empty
-            allow update: if isPresident(getCurrentSeason()) || (adminFieldIsUnchanged(documentId) &&
-            // If the user itself wants to update
-            ( (request.auth.uid == documentId && teamFieldIsUnchangedOrEmpty(documentId)) 
-                ||
-            // If they are the captain of this user (can only remove), user's email field and graduatingYear field are unchanged
-            (isCaptainOfTheirTeam(documentId) && grFieldIsUnchanged(documentId) && emailFieldIsUnchanged(documentId))
-                ||
-            // If they are another captain, user's team field is EMPTY, user's email field and graduatingYear field are unchanged
-            (isCaptain(getCurrentSeason(), getUserDoc(request.auth.uid).team) && originalTeamFieldIsEmpty(documentId) && grFieldIsUnchanged(documentId) && emailFieldIsUnchanged(documentId))
-            ));
+            allow update: if isPresident(getCurrentSeason()) || request.auth.uid == documentId;
         }
         match /seasons/{seasonId} {
             allow read: if true;

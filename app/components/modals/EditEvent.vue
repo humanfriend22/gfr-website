@@ -32,8 +32,9 @@ const errorMessage = computed(() => {
 });
 
 const image = useTemplateRef('image');
+const previewSrc = ref('')
 function updateImagePreview() {
-    event.image = readObjectURLFromImage(image);
+    previewSrc.value = readObjectURLFromImage(image);
 };
 
 function updateID() {
@@ -48,7 +49,7 @@ function updateID() {
 async function save() {
     saving.value = true;
 
-    if (readObjectURLFromImage(image) === event.image) {
+    if (previewSrc.value !== '') {
         event.image = await uploadImage(image, `events/${event.id}`);
     }
 
@@ -124,7 +125,7 @@ onBeforeUpdate(() => {
                         </fieldset>
                         <div class="mt-2">
                             <ClientOnly>
-                                <EventCard :event="event" class="w-full" :click-handler="() => { }" />
+                                <EventCard :event="event" :image-override="previewSrc" class="w-full" :click-handler="() => { }" />
                             </ClientOnly>
                         </div>
                     </div>

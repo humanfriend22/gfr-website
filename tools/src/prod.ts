@@ -14,3 +14,10 @@ await siteDoc.set({
     bannerImage: "/gfr-worlds-2023.jpg",
     admins: [],
 });
+
+// Create seasons
+const seasons = [
+    { id: "high-stakes-2425", reId: 2425 },
+    { id: "high-stakes-2324", reId: 2324 },
+    { id: "high-stakes-2223", reId: 2223 },
+];

@@ -1,8 +1,11 @@
 <script setup lang="ts">
-const { event } = defineProps<{
+const { event, imageOverride } = defineProps<{
     event: WebsiteEvent;
+    imageOverride?: string;
     clickHandler: (event: WebsiteEvent) => void;
 }>();
+
+const image = computed(() => imageOverride || event.image || 'https://placehold.co/400');
 
 onBeforeUpdate(() => {
     console.log(event.start, event.end);
@@ -12,8 +15,8 @@ onBeforeUpdate(() => {
 <template>
     <div class="relative">
         <div class="card bg-base-100 image-full shadow-sm w-full h-full cursor-pointer transition-all duration-300 hover:brightness-140" @click="clickHandler(event)">
-            <figure :class="event.image ? '' : 'bg-gray-950'">
-                <NuxtImg :src="event.image" />
+            <figure :class="image ? '' : 'bg-gray-950'">
+                <NuxtImg :src="image" />
             </figure>
             <div class="card-body min-w-0 z-10">
                 <h2 class="card-title break-words text-xl">{{ event.title }}</h2>

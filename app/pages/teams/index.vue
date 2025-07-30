@@ -10,7 +10,7 @@
                     Meet Our <span class="gfr-gradient">Competition</span> Teams
                 </div>
                 <Divider />
-                <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2 max-h-[60vh]">
+                <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2 max-h-[60vh]" v-if="currentSeason">
                     <TeamCard v-for="team of currentSeason.teams" :team="team" :seasonId="currentSeason.id" />
                 </div>
             </div>

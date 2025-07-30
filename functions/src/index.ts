@@ -25,11 +25,7 @@ export const createUserDocument = functions.auth.user().onCreate(
         await userRef.create({
             name: user.displayName,
             email: user.email,
-            team: "",
             graduatingYear: 2027,
-            isAdmin: false,
         });
     },
 );
-
-export const updateSiteAdmins = functions.firestore.document;
