@@ -11,9 +11,7 @@ const season = currentSeason.value;
                 </div>
                 <Divider class="w-2/3" />
                 <div class="grid grid-cols-3 w-full">
-                    <div class="flex flex-col gap-2">
-                        <TeamCard v-for="team of season.teams" :team="team" :seasonId="season.id" />
-                    </div>
+                    <OfficerCard :user="userFromUID(uid)" v-for="uid of Object.values(season.officers)" />
                 </div>
             </div>
         </div>

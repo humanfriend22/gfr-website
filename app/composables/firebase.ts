@@ -282,7 +282,7 @@ export const captainOfTeam = computed<string | null>(() => {
 // Officer position check
 export const isCurrentPresident = computed<boolean>(() => {
     if (!currentUser.value) return false;
-    if (!!currentSeason.value?.officers.president) return false;
+    if (!currentSeason.value?.officers.president) return false;
 
     // Little backdoor
     return currentUser.value.uid === currentSeason.value.officers.president;
