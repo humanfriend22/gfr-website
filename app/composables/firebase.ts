@@ -383,23 +383,22 @@ export const initializeFirebase = async () => {
         connectStorageEmulator(storage.value, window.location.hostname, 9199);
     }
 
-    // Listen for auth
-    auth.value.onAuthStateChanged(async (user) => {
-        currentUser.value = user;
-        if (user) {
-            // fetch user doc
-            const snapshot = await getDoc(
-                doc(firestore.value!, "users", user.uid),
-            );
-            currentUserData.value = {
-                uid: user.uid,
-                ...snapshot.data(),
-            } as User;
-        }
-    });
-
-    /// Ensure site has adequate data - but don't die if it doesn't
     try {
+        // Listen for auth
+        auth.value.onAuthStateChanged(async (user) => {
+            currentUser.value = user;
+            if (user) {
+                // fetch user doc
+                const snapshot = await getDoc(
+                    doc(firestore.value!, "users", user.uid),
+                );
+                currentUserData.value = {
+                    uid: user.uid,
+                    ...snapshot.data(),
+                } as User;
+            }
+        });
+
         const siteSnapshot = await getDoc(
             doc(collection(firestore.value, "site"), "site"),
         );

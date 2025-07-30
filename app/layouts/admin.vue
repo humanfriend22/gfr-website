@@ -24,7 +24,7 @@
 
             <!-- Content -->
             <div class="bg-[var(--primary-background-color)] w-full mx-auto min-h-screen overflow-y-scroll overflow-x-hidden sm:px-0 -mt-24 text-white">
-                <Section root-class="lg:hidden" class=" mx-10 mt-2">
+                <Section root-class="lg:hidden" class="mx-10 mt-2">
                     <div>Woah, the admin panel can be dangerous. Let's do this on a computer.</div>
                 </Section>
                 <div class="hidden lg:block">
