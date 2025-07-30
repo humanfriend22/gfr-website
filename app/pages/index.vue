@@ -25,14 +25,8 @@
             <div class="stats stats-vertical lg:stats-horizontal shadow lg:w-full mb-30">
                 <div class="stat text-center">
                     <div class="stat-title">Years</div>
-                    <div class="stat-value">14</div>
-                    <div class="stat-desc">Jan 1st - Feb 1st</div>
-                </div>
-
-                <div class="stat text-center">
-                    <div class="stat-title">Members</div>
-                    <div class="stat-value">31K</div>
-                    <div class="stat-desc">Jan 1st - Feb 1st</div>
+                    <div class="stat-value">{{ new Date().getFullYear() - 2010 }}</div>
+                    <div class="stat-desc">2010 - present</div>
                 </div>
 
                 <div class="stat text-center">
@@ -40,8 +34,14 @@
                     <div class="stat-value">31K</div>
                     <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>
+
                 <div class="stat text-center">
-                    <div class="stat-title">Another Metric</div>
+                    <div class="stat-title">Worlds Quals</div>
+                    <div class="stat-value">31K</div>
+                    <div class="stat-desc">Jan 1st - Feb 1st</div>
+                </div>
+                <div class="stat text-center">
+                    <div class="stat-title">Events Hosted</div>
                     <div class="stat-value">31K</div>
                     <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>

@@ -28,12 +28,12 @@ export async function isRealWord(word: string) {
     }
 }
 
-export function formatSeasonId(id: string) {
+export function formatSeasonId(id: string, includeDate: boolean = true) {
     // e.g. "high-stakes-2425" -> "High Stakes 24-25"
     const parts = id.split("-");
-    return `${(capitalize(parts[0]))} ${capitalize(parts[1])} ${
-        parts[2].slice(0, 2)
-    }-${parts[2].slice(2)}`;
+    let s = `${(capitalize(parts[0]))} ${capitalize(parts[1])}`;
+    if (includeDate) s += ` ${parts[2].slice(0, 2)}-${parts[2].slice(2)}`;
+    return s;
 }
 
 export function randomLetter(exclude: string[] = []): string {

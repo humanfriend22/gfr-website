@@ -62,7 +62,11 @@ export async function fetchTeamCompetitions(seasonId: number, teamId: number) {
         },
     );
     if (!response.ok) {
-        throw new Error("Failed to fetch team competitions.");
+        console.error(
+            "Failed to fetch team competitions.",
+            response.statusText,
+        );
+        return [];
     }
     const competitions = (await response.json()).data;
     console.info(
