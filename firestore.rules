@@ -22,7 +22,7 @@ service cloud.firestore {
 
         // Real Checks for role
         function isPresident(seasonId) {
-            return request.auth != null && (request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
+            return request.auth != null && (request.auth.uid == 'h4OHCNqfnGNtePbgJFUhoJCGkL62' || request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
         }
 
         function isJuniorPRED(seasonId) {

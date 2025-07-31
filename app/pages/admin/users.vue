@@ -7,7 +7,8 @@ const editingUser = ref<User>({
     uid: '',
     name: '',
     email: '',
-    graduatingYear: 2027
+    graduatingYear: 2027,
+    bio: ''
 });
 
 function showEditUserModal(user: User) {

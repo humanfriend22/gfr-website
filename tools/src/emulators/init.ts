@@ -76,9 +76,9 @@ async function createSeason(id: string, teams: number, reId: number) {
                     googleCaptainUser,
                 ),
                 {
-                    isAdmin: true,
                     name: "Current Season Captain",
-                    team: letter,
+                    graduatingYear: 2027,
+                    bio: "",
                 },
             );
         }
@@ -188,8 +188,9 @@ if (googlePresidentUser) {
     await lenientCreateDocument(
         firestore.collection("users").doc(googlePresidentUser),
         {
-            isAdmin: true,
             name: "Current Season President",
+            graduatingYear: 2027,
+            bio: "",
         },
     );
 }

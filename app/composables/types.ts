@@ -7,6 +7,7 @@ export interface User {
     // In case they use a different email than their Google account
     email: string;
     graduatingYear: number;
+    bio: string;
 }
 
 export interface Site {

@@ -21,6 +21,7 @@ const errorMessage = computed(() => {
     if (!user.name.includes(' ')) return 'Invalid name (must include first and last name)';
     const min = (new Date()).getFullYear();
     if (user.graduatingYear < min || user.graduatingYear > min + 5) return `Invalid graduating year (${min}-${min + 5})`;
+    if (user.bio.length > 500) return 'Invalid bio (max 100 characters)';
     return '';
 });
 
@@ -35,6 +36,7 @@ async function save() {
         updateDoc(userDoc, {
             name: user.name,
             graduatingYear: user.graduatingYear,
+            bio: user.bio,
         }),
         updateProfile(currentUser.value!, {
             displayName: user.name
@@ -90,14 +92,11 @@ onMounted(() => {
                 <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
                 <p class="label">Users and their captains can edit this.</p>
             </fieldset>
-            <!-- <fieldset class="fieldset" v-else-if="isCurrentPresident">
-                <legend class="fieldset-legend">Team</legend>
-                <select class="select" v-model="user.team">
-                    <option value="">No Team</option>
-                    <option v-for="team of currentSeason?.teams" :value="team.letter">({{ team.letter }}) {{ team.name }}</option>
-                </select>
-                <p class="label">Captains can edit those not already on a team.</p>
-            </fieldset> -->
+            <fieldset class="fieldset" v-if="Object.values(currentSeason.officers).includes(user.uid) && (forOwner || isCurrentPresident)">
+                <legend class="fieldset-legend">Officer Bio</legend>
+                <textarea class="textarea h-35 w-full" placeholder="Shown on blog preview" v-model="user.bio" />
+                <div class="label">This will be shown on the officers page.</div>
+            </fieldset>
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Graduating Year</legend>
                 <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />

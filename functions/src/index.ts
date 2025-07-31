@@ -26,6 +26,7 @@ export const createUserDocument = functions.auth.user().onCreate(
             name: user.displayName,
             email: user.email,
             graduatingYear: 2027,
+            bio: "",
         });
     },
 );
