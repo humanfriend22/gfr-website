@@ -5,9 +5,7 @@ const TOKEN =
 
 const TEAM_ID = "93449";
 
-async function main() {
-    const url =
-        `https://www.robotevents.com/api/v2/teams/${TEAM_ID}/events?per_page=250`;
+async function fetchRE(url: string) {
     const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -16,12 +14,27 @@ async function main() {
         },
     });
 
-    const { data } = await response.json();
-    console.log(
-        data
-            .filter((obj) => obj.season.name.includes("High"))
-            .map((obj) => obj.location.venue),
-    );
+    if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+    }
+
+    return await response.json();
+}
+
+async function main() {
+    let events = [];
+    for (let i = 1; i <= 7; i++) {
+        const { data, meta } = await fetchRE(
+            `https://www.robotevents.com/api/v2/seasons/190/events?per_page=250&page=${i}&level%5B%5D=State`,
+        );
+        events.push(
+            ...data.filter((e) =>
+                e.name.toLowerCase().includes("california region 2")
+            ),
+        );
+    }
+    const gfrStatesId = events[0].id;
+    console.log(gfrStatesId);
 }
 
 main();

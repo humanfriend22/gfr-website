@@ -1,18 +1,6 @@
-const applyProxy = (url: string) => {
-    if (import.meta.env.DEV) {
-        return `https://cors-proxy-humanfriend22.onrender.com?url=${
-            encodeURIComponent(url)
-        }`;
-    } else return url;
-};
-
-export const latestSeason = ref({
-    id: "",
-    reId: "",
-});
-export async function updateLatestSeason() {
+async function fetchRE(url: string) {
     const response = await fetch(
-        "https://www.robotevents.com/api/v2/seasons?program%5B%5D=1&active=true",
+        url,
         {
             headers: {
                 "Authorization":
@@ -23,7 +11,17 @@ export async function updateLatestSeason() {
     if (!response.ok) {
         throw new Error("Failed to fetch the latest season data.");
     }
-    const season = (await response.json()).data[0];
+    return (await response.json()).data;
+}
+
+export const latestSeason = ref({
+    id: "",
+    reId: "",
+});
+export async function updateLatestSeason() {
+    const season = (await fetchRE(
+        "https://www.robotevents.com/api/v2/seasons?program%5B%5D=1&active=true",
+    ))[0];
     // 'VEX V5 Robotics Competition 2025-2026: Push Back' -> 'push-back-2526'
     const seasonName: string = season?.name;
     if (!seasonName) {
@@ -49,31 +47,24 @@ export type Competition = {
     level: "World" | "National" | "State" | "Signature" | "Regional" | "Other";
     location: string;
     date: string;
+    awards: string[];
 };
 
-export async function fetchTeamCompetitions(seasonId: number, teamId: number) {
-    const response = await fetch(
+export async function fetchTeamCompetitions(
+    seasonId: number,
+    teamId: number,
+) {
+    const competitions = await fetchRE(
         `https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=${seasonId}`,
-        {
-            headers: {
-                "Authorization":
-                    `Bearer ${useRuntimeConfig().public.robotevents}`,
-            },
-        },
     );
-    if (!response.ok) {
-        console.error(
-            "Failed to fetch team competitions.",
-            response.statusText,
-        );
-        return [];
-    }
-    const competitions = (await response.json()).data;
     console.info(
         `Fetched competitions for team ${teamId} in season ${seasonId}:`,
         competitions,
     );
-    return competitions.map((competition: any) => {
+
+    "https://www.robotevents.com/api/v2/teams/93449/awards?event%5B%5D=0&season%5B%5D=190";
+
+    return await Promise.all(competitions.map(async (competition: any) => {
         const { venue, city, region, country } = competition.location;
         return {
             id: competition.id,
@@ -81,6 +72,14 @@ export async function fetchTeamCompetitions(seasonId: number, teamId: number) {
             level: competition.level,
             location: `${venue} @ ${city}, ${region}, ${country}`,
             date: competition.start,
+            awards: (await fetchRE(
+                `https://www.robotevents.com/api/v2/teams/${teamId}/awards?event%5B%5D=${competition.id}&season%5B%5D=${seasonId}`,
+            )).map((award: any) =>
+                award.title.slice(
+                    0,
+                    award.title.indexOf(" ("),
+                ).replace(" - High School", "")
+            ),
         };
-    }) as Competition[];
+    })) as Competition[];
 }

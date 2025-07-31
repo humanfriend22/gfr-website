@@ -5,6 +5,7 @@
     },
     "dependencies": {
         "firebase-admin": "^13.3.0",
+        "robotevents": "^6.0.4",
         "yesno": "^0.4.0"
     },
     "trustedDependencies": [
@@ -12,8 +13,8 @@
         "protobufjs"
     ],
     "devDependencies": {
-        "@types/node": "^22.15.17",
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "@types/node": "^22.15.17"
     },
     "name": "tools",
     "private": true,

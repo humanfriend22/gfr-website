@@ -1,11 +1,13 @@
 <script setup lang="ts">
 const { seasonId, teamId } = useRoute().params;
 
-
 const team = computed(() => {
     return seasons.value.find(
         (s) => s.id === seasonId
     )?.teams.find((t) => t.letter === teamId)! as Team;
+});
+const season = computed(() => {
+    return seasons.value.find(season => season.id === seasonId)! as Season;
 });
 
 function formatCompetitionDate(date: string): string {
@@ -20,9 +22,9 @@ function formatCompetitionDate(date: string): string {
 const competitions = ref<Competition[]>([]);
 onMounted(async () => {
     await updateSeason(seasonId as string);
-    competitions.value =
-        (await fetchTeamCompetitions(seasons.value.find(season => season.id === seasonId)?.reId as number, team.value!.reId as number))
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const seasonReId = season.value!.reId;
+    competitions.value = (await fetchTeamCompetitions(seasonReId, team.value!.reId as number))
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 });
 </script>
 
@@ -72,12 +74,16 @@ onMounted(async () => {
                                 <div class="flex justify-between">
                                     <div class="text-gray-400">{{ formatCompetitionDate(competition.date) }}</div>
                                     <div>
-                                        <span class="badge badge-accent" v-if="competition.level === 'Signature'">Signature Event</span>
-                                        <span class="badge" v-if="competition.level === 'Regional'">State Championship</span>
-                                        <span class="badge" v-if="competition.level === 'World'">World Championship</span>
+                                        <div>
+                                            <span class="badge m-1 float-end bg-[var(--gfr-red)]" v-for="award of competition.awards">{{ award }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Signature'">Signature Event</span>
+                                            <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Regional'">State Championship</span>
+                                            <span class="badge m-1 float-end bg-yellow-500" v-if="competition.level === 'World'">World Championship</span>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
