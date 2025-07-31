@@ -11,7 +11,7 @@ const { user } = defineProps<{
 
             <div class="py-2.5 flex flex-col gap-2">
                 <div class="text-white text-xl font-semibold text-wrap text-center">{{ user.name }}</div>
-                <div class="text-gray-500 text-sm font-normal text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium quasi dicta consequatur ut</div>
+                <div class="text-gray-500 text-sm font-normal text-center">{{ user.bio }}</div>
             </div>
         </div>
     </div>
