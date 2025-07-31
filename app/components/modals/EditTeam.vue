@@ -22,7 +22,7 @@ const errorMessage = computed(() => {
 
 // Logo
 const logo = useTemplateRef('logo');
-const logoPreviewSrc = ref(team.logo || 'https://placehold.co/400x400');
+const logoPreviewSrc = ref(team.logo || '');
 function updateLogoPreview() {
     const files = logo.value?.files;
     if (files && files.length > 0) {
@@ -77,7 +77,7 @@ async function save() {
     const teamDoc = doc(firestore.value!, 'seasons', seasonId, 'teams', team.letter);
     try {
         let logoUrl = '';
-        if (logoPreviewSrc.value !== 'https://placehold.co/400x400') {
+        if (logoPreviewSrc.value !== '') {
             logoUrl = await uploadImage(logo, `teams/${currentSeason.value.id}_${team.letter}`);
         };
 
@@ -116,7 +116,7 @@ async function save() {
     } finally {
         saving.value = false;
         closeButton.value?.click();
-        logoPreviewSrc.value = 'https://placehold.co/400x400';
+        logoPreviewSrc.value = '';
     }
 };
 

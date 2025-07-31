@@ -14,9 +14,20 @@ async function fetchRE(url: string) {
     return (await response.json()).data;
 }
 
+export async function fetchSeasonREId(seasonId: string) {
+    const seasons = await fetchRE(
+        `https://www.robotevents.com/api/v2/seasons?program%5B%5D=1`,
+    );
+    return seasons.find((season: any) =>
+        season.name.toLowerCase().includes(
+            seasonId.split("-").slice(0, 2).join(" "),
+        )
+    ).id;
+}
+
 export const latestSeason = ref({
     id: "",
-    reId: "",
+    reId: 0,
 });
 export async function updateLatestSeason() {
     const season = (await fetchRE(
@@ -37,7 +48,7 @@ export async function updateLatestSeason() {
         id: `${word1}-${word2}-${
             yearParts.map((year) => year.slice(-2)).join("")
         }`,
-        reId: season.id,
+        reId: parseInt(season.id),
     };
 }
 

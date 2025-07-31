@@ -11,7 +11,9 @@
                 </div>
                 <Divider />
                 <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2 max-h-[60vh]" v-if="currentSeason">
-                    <TeamCard v-for="team of currentSeason.teams" :team="team" :seasonId="currentSeason.id" />
+                    <NuxtLink v-for="team of currentSeason.teams" :to="'/teams/' + currentSeason.id + '/' + team.letter">
+                        <TeamCard :team="team" />
+                    </NuxtLink>
                 </div>
             </div>
         </div>

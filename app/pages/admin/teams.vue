@@ -15,6 +15,21 @@ definePageMeta({
     layout: 'admin'
 });
 
+const creatingSeason = ref(false);
+const editingSeason = ref<Season>({
+    id: '',
+    reId: 0,
+    officers: {
+        president: '',
+        vice_president: '',
+        secretary: '',
+        treasurer: '',
+        junior_pred: '',
+        senior_pred: ''
+    },
+    teams: []
+});
+
 const creatingTeam = ref(false);
 const allowedLetters = ref(['']);
 const currentEditingTeam = ref<Team>({
@@ -66,8 +81,29 @@ function showCreateTeamModal() {
 function showSeasonModal(mode: 'create' | 'edit') {
     if (!isCurrentPresident.value) return;
 
+    if (mode === 'edit') {
+        editingSeason.value.id = currentSeason.value?.id || '';
+        editingSeason.value.reId = currentSeason.value?.reId || 0;
+        editingSeason.value.officers = { ...currentSeason.value?.officers };
+    } else {
+        editingSeason.value = {
+            id: latestSeason.value.id,
+            reId: latestSeason.value.reId,
+            officers: {
+                president: '',
+                vice_president: '',
+                secretary: '',
+                treasurer: '',
+                junior_pred: '',
+                senior_pred: ''
+            },
+            teams: []
+        };
+    };
+
     creatingTeam.value = false;
-    const modal = document.getElementById(mode === 'create' ? 'create_season_modal' : 'edit_season_modal') as HTMLDialogElement;
+    creatingSeason.value = mode === 'create';
+    const modal = document.getElementById('edit_season_modal') as HTMLDialogElement;
     modal.showModal();
 };
 
@@ -90,8 +126,7 @@ onMounted(async () => {
 <template>
     <Section class="px-5 flex flex-col gap-3">
         <ClientOnly>
-            <ModalsCreateSeason :season-id="currentSeason.id" :creating="false" v-if="isCurrentPresident" />
-            <ModalsCreateSeason :season-id="latestSeason.id" :creating="true" v-if="isCurrentPresident && currentSeason.id !== latestSeason.id" />
+            <ModalsEditSeason :season="editingSeason" :creating="creatingSeason" v-if="isCurrentPresident" />
             <ModalsEditTeam :team="currentEditingTeam" :seasonId="editingSeasonId" :creating="creatingTeam" :allowed-letters="allowedLetters" />
         </ClientOnly>
         <!-- <h1 class="text-2xl font-bold">Teams</h1>
@@ -122,6 +157,7 @@ onMounted(async () => {
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
+                    <TeamCard v-for="team of season.teams" :team="team" @click="showEditTeamModal(season, team)" />
                     <div v-for="team of season.teams" class="flex gap-3 p-4 bg-base-200 hover:bg-base-300 cursor-pointer duration-300 rounded-lg" @click="showEditTeamModal(season, team)">
                         <div>
                             <TeamLogoDisplay :src="team.logo" :width="100" :height="100" />

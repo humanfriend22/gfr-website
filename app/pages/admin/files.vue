@@ -36,7 +36,7 @@ onMounted(async () => {
 
         <h1 class="text-2xl font-bold">Files</h1>
         <p class="text-gray-400">Here is every file uploaded to this website.</p>
-        <div class="max-w-[40rem] min-h-24 max-h-[70vh] rounded-box border border-base-content/5 flex flex-col justify-center">
+        <div class="max-w-[40rem] min-h-24 max-h-[70vh] rounded-box border border-base-content/5 flex flex-col justify-center overflow-scroll">
             <div class="p-5" v-if="files.length === 0">
                 <div class="flex flex-row gap-2 justify-center">
                     <div class="loading"></div>Fetching file data...
@@ -52,7 +52,7 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="file of files" :key="file.path" @click="fetchPreviewImage(file.path)">
+                    <tr v-for="file of [...files, ...files, ...files]" :key="file.path" @click="fetchPreviewImage(file.path)">
                         <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ file.path }}</td>
                         <td>{{ prettyBytes(file.size) }}</td>
                         <td>{{ file.dateUploaded }}</td>

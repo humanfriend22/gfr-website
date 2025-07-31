@@ -68,23 +68,26 @@ onMounted(async () => {
                     <div class="col-span-6">
                         <h2 class="font-bold text-4xl mb-2">Competitions</h2>
                         <div class="flex flex-col gap-5">
-                            <div v-for="competition of competitions" class="p-4 bg-zinc-900 rounded-lg flex flex-col gap-2">
-                                <div class="text-xl">{{ competition.name }}</div>
-                                <div class="text-gray-600">{{ competition.location }}</div>
-                                <div class="flex justify-between">
-                                    <div class="text-gray-400">{{ formatCompetitionDate(competition.date) }}</div>
-                                    <div>
+                            <Transition v-for="competition of competitions" appear>
+                                <div class="p-4 bg-zinc-900 rounded-lg flex flex-col gap-2" :style="`transition: opacity ${0.75 * (competitions.indexOf(competition) + 1)}s ease-in`">
+                                    <div class="text-xl">{{ competition.name }}</div>
+                                    <div class="text-gray-600">{{ competition.location }}</div>
+                                    <div class="flex justify-between">
+                                        <div class="text-gray-400">{{ formatCompetitionDate(competition.date) }}</div>
                                         <div>
-                                            <span class="badge m-1 float-end bg-[var(--gfr-red)]" v-for="award of competition.awards">{{ award }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Signature'">Signature Event</span>
-                                            <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Regional'">State Championship</span>
-                                            <span class="badge m-1 float-end bg-yellow-500" v-if="competition.level === 'World'">World Championship</span>
+                                            <div>
+                                                <span class="badge m-1 float-end bg-[var(--gfr-red)]" v-for="award of competition.awards">{{ award }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Signature'">Signature Event</span>
+                                                <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Regional'">State Championship</span>
+                                                <span class="badge m-1 float-end bg-yellow-500" v-if="competition.level === 'World'">World Championship</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                            </Transition>
                         </div>
                     </div>
                     <div class="col-span-6">
@@ -105,3 +108,13 @@ onMounted(async () => {
         </ClientOnly>
     </Section>
 </template>
+
+<style>
+.v-enter-from {
+    opacity: 0;
+}
+
+.v-enter-to {
+    opacity: 1;
+}
+</style>

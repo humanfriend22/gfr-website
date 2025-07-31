@@ -3,28 +3,19 @@ import { ModalsUserMiniCard } from '#components';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { capitalize } from 'vue';
 
-const { seasonId, creating } = defineProps<{
+const { season, creating } = defineProps<{
     creating: boolean;
-    seasonId: string
+    season: Season;
 }>();
 
 const closeButton = useTemplateRef('close');
 const saving = ref(false);
 const errorMessage = computed(() => {
-    if (Object.values(officers.value).includes('')) return 'All officer positions must be filled';
+    if (season.officers.president === '') return 'President is required!';
     return '';
 });
 
-const officers = ref<Season['officers']>(creating ? {
-    president: '',
-    vice_president: '',
-    secretary: '',
-    treasurer: '',
-    junior_pred: '',
-    senior_pred: ''
-} : currentSeason.value.officers);
-
-const currentOfficer = ref<keyof Season['officers']>('president');
+const currentOfficer = ref<keyof Season['officers']>(creating ? 'president' : 'vice_president');
 const officerTitleMap = {
     president: 'President',
     vice_president: 'Vice President',
@@ -43,28 +34,33 @@ watchEffect(() => {
         return;
     }
     const results = users.value.filter(user => {
-        return !Object.values(officers.value).includes(user.uid) && user.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+        return !Object.values(season.officers).includes(user.uid) && user.name.toLowerCase().includes(searchTerm.value.toLowerCase())
     });
     searchResults.value = results.slice(0, 3);
 });
 
 function addOfficer(user: User) {
-    officers.value[currentOfficer.value] = user.uid;
+    season.officers[currentOfficer.value] = user.uid;
     // go to next officer
-    const keys = Object.keys(officers.value) as (keyof Season['officers'])[];
+    const keys = Object.keys(season.officers) as (keyof Season['officers'])[];
     const i = keys.indexOf(currentOfficer.value);
     currentOfficer.value = i < keys.length - 1 ? keys[i + 1] : 'president';
     searchTerm.value = '';
 };
 
 function removeOfficer(uid: string) {
-    for (const key in officers.value) {
-        if (officers.value[key as keyof Season['officers']] === uid) {
-            officers.value[key as keyof Season['officers']] = '';
+    if (season.officers.president === uid) return;
+    for (const key in season.officers) {
+        if (season.officers[key as keyof Season['officers']] === uid) {
+            season.officers[key as keyof Season['officers']] = '';
             currentOfficer.value = key as keyof Season['officers'];
             break;
         }
     }
+};
+
+async function updateREId() {
+    season.reId = await fetchSeasonREId(season.id);
 };
 
 async function save() {
@@ -72,28 +68,28 @@ async function save() {
 
     saving.value = true;
 
-    const seasonDoc = doc(firestore.value!, 'seasons', seasonId);
+    const seasonDoc = doc(firestore.value!, 'seasons', season.id);
     const siteDoc = doc(firestore.value!, 'site', 'site');
 
     // Only the officers could be changed so we can assume captains are the same.
-    currentSeason.value.officers = officers.value;
+    currentSeason.value.officers = season.officers;
 
     if (creating) {
         await setDoc(seasonDoc, {
             reId: latestSeason.value.reId,
-            officers: officers.value,
+            officers: season.officers,
         });
         await updateDoc(siteDoc, {
-            currentSeason: seasonId,
+            currentSeason: season.id,
             admins: resolveAdmins()
         });
         window.location.reload();
     } else {
         await updateDoc(seasonDoc, {
-            officers: officers.value
+            officers: season.officers
         });
         await updateDoc(siteDoc, {
-            currentSeason: seasonId,
+            currentSeason: season.id,
             admins: resolveAdmins()
         });
     }
@@ -104,26 +100,34 @@ async function save() {
 </script>
 
 <template>
-    <dialog :id="creating ? 'create_season_modal' : 'edit_season_modal'" class="modal">
+    <dialog id="edit_season_modal" class="modal">
         <div class="modal-box w-11/12 max-w-[var(--container-4xl)] h-[var(--container-3xl)] flex flex-col">
             <h3 class="text-lg font-bold">{{ creating ? 'Create' : 'Edit' }} Season</h3>
             <div class="flex-1">
                 <div>
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend">ID</legend>
-                        <input type="text" class="input" placeholder="Type here" :value="seasonId" disabled />
+                        <input type="text" class="input" placeholder="Type here" :value="season.id" disabled />
+                    </fieldset>
+                    <fieldset class="fieldset w-2/3">
+                        <legend class="fieldset-legend">RobotEvents ID</legend>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="url" class="input" placeholder="Type here" v-model="season.reId" :disabled="creating" />
+                            <button class="btn" @click="updateREId" v-if="!creating">Auto Update ID</button>
+                        </div>
+                        <p class="label text-wrap">This is used to propagate competition info.</p>
                     </fieldset>
                     <fieldset class="fieldset">
                         <legend class="fieldset-legend">Officers</legend>
                         <div class="flex flex-row gap-4">
                             <div role="tablist" class="tabs tabs-box flex flex-col h-65 w-40">
-                                <a v-for="key of Object.keys(officers)" role="tab" @click="currentOfficer = key as keyof Season['officers']"
+                                <a v-for="key of Object.keys(season.officers)" role="tab" @click="() => { if (key === 'president' ? creating : true) currentOfficer = key as keyof Season['officers'] }"
                                     :class="'tab flex-1 ' + (key === currentOfficer ? 'tab-active' : '')">
                                     {{ officerTitleMap[key as keyof typeof officerTitleMap] }}
                                 </a>
                             </div>
                             <div class="w-fit h-40">
-                                <ModalsUserMiniCard class="mb-2" v-for="uid of Object.values(officers)" mode="remove" @click="removeOfficer(uid)">
+                                <ModalsUserMiniCard class="mb-2" v-for="uid of Object.values(season.officers)" mode="remove" @click="removeOfficer(uid)" :disabled="season.officers.president === uid">
                                     {{ uid === '' ? 'n/a' : userFromUID(uid)?.name }}
                                 </ModalsUserMiniCard>
                             </div>

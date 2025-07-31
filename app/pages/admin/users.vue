@@ -39,7 +39,7 @@ onMounted(async () => {
         </dialog>
 
         <h1 class="text-2xl font-bold">Users</h1>
-        <div role="tablist" class="tabs tabs-box flex flex-row mt-7 mb-4 w-1/2" v-if="isCurrentPresident">
+        <div role="tablist" class="tabs tabs-sm tabs-box flex flex-row mt-7 mb-4 w-1/2" v-if="isCurrentPresident">
             <a role="tab" @click="usersSortMode = 'all'" :class="'tab flex-1 ' + (usersSortMode === 'all' ? 'tab-active' : '')">All</a>
             <!-- <a role="tab" @click="usersSortMode = 'member'" :class="'tab flex-1 ' + (usersSortMode === 'member' ? 'tab-active' : '')">Members</a> -->
             <a role="tab" @click="usersSortMode = 'admin'" :class="'tab flex-1 ' + (usersSortMode === 'admin' ? 'tab-active' : '')">Admin</a>
