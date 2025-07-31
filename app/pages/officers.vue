@@ -16,7 +16,7 @@ const season = computed(() => currentSeason.value);
 
                 <div class="grid grid-cols-3 w-2/3">
                     <ClientOnly>
-                        <OfficerCard :user="userFromUID(uid)!" v-for="uid of Object.values(season.officers || [])" v-if="season" />
+                        <OfficerCard :user="userFromUID(uid)" v-for="uid of Object.values(season.officers || [])" v-if="season" />
                     </ClientOnly>
                 </div>
             </div>

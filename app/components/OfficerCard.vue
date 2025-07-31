@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { user } = defineProps<{
-    user: User;
+    user: User | null;
 }>();
 </script>
 
