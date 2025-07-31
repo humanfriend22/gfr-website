@@ -121,7 +121,7 @@ async function save() {
 };
 
 async function updateREId() {
-    const url = `https://www.robotevents.com/api/v2/teams?registered=false&number%5B%5D=5327${team.letter}`;
+    const url = `https://www.robotevents.com/api/v2/teams?registered=true&number%5B%5D=5327${team.letter}`;
     const response = await fetch(url, {
         headers: {
             'Authorization': `Bearer ${useRuntimeConfig().public.robotevents}`
