@@ -7,5 +7,5 @@ defineProps<{
 </script>
 
 <template>
-    <NuxtImg class="aspect-square rounded-md bg-black" :src="src" :width="width" :height="height" />
+    <NuxtImg class="aspect-square rounded-md bg-black max-h-40" :src="src" :width="width" :height="height" />
 </template>

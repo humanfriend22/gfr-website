@@ -14,7 +14,7 @@ const { team, seasonId, creating, allowedLetters } = defineProps<{
 
 const saving = ref(false);
 const errorMessage = computed(() => {
-    if (team.name.length > 20) return 'Invalid team name (max 20 characters)';
+    if (team.name.length > 35) return 'Invalid team name (max 35 characters)';
     if (team.captains.length < 1 || team.captains.length > 2) return '1-2 Captains required';
     if (team.members.length < 1 || team.members.length > 20) return '1-20 Members required';
     return '';
