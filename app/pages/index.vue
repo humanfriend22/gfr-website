@@ -1,3 +1,15 @@
+<script setup lang="ts">
+
+const steps = ['Summer Camp & Workshops', 'Development Academy', 'Contact Captains', 'Compete!'];
+const stepsContent = [
+    'Gael Force Robotics hosts many summer camps and workshops to introduce students to robotics. Check out our events page for more information on upcoming events.',
+    'Join our Development Academy to learn the basics of robotics, programming, and engineering. Read this blog post to learn more.',
+    'Reach out to our captains for any questions or guidance on how to get involved.',
+    'Participate in competitions and showcase your skills!'
+];
+const stepIndex = ref(0);
+</script>
+
 <template>
     <div>
         <Section class="flex flex-col justify-center items-center h-full min-h-screen">
@@ -45,6 +57,24 @@
                     <div class="stat-title">Events Hosted</div>
                     <div class="stat-value">31K</div>
                     <div class="stat-desc">Jan 1st - Feb 1st</div>
+                </div>
+            </div>
+        </Section>
+        <Section class="max-w-3xl mx-auto mb-30">
+            <h1 class="text-4xl text-center font-bold mb-15">
+                <span class="gfr-gradient">Join Us</span>
+            </h1>
+            <div class="flex flex-row gap-10">
+                <ul class="steps steps-vertical w-200">
+                    <li v-for="(step, index) in steps" :class="'step ' + (index <= stepIndex ? 'step-primary' : '')" @click="stepIndex = index" class="cursor-pointer">
+                        <span :class="'step-icon ' + (index == stepIndex + 1 ? 'animate-pulse' : '')">{{ index }}</span>{{ step }}
+                    </li>
+                    <!-- <li class="step">
+                        <span class="step-icon  animate-pulse">1</span>Test
+                    </li> -->
+                </ul>
+                <div class="text-xl font-base">
+                    {{ stepsContent[stepIndex] }}
                 </div>
             </div>
         </Section>

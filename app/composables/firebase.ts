@@ -132,7 +132,7 @@ export async function updateFiles(force: boolean = false) {
 }
 
 // USERS DATA
-export const users = useLocalStorage<User[]>("users", []);
+export const users = useLocalStorage<User[]>("app-users", []);
 /**
  * Doesn't make sense to ship with the site but is pretty crucial and so it is fetched on app startup but cached.
  * @param force Fetch all users from Firebase no matter what
@@ -169,7 +169,7 @@ export function userFromUID(uid: string) {
 
 // SEASONS DATA
 // TODO: speed up this function with parallel requests
-export const seasons = ref<Season[]>([]);
+export const seasons = useLocalStorage<Season[]>("app-seasons", []);
 export async function updateSeason(id: string) {
     if (id === "") {
         return console.warn("No season ID provided, skipping update.");
@@ -214,27 +214,33 @@ export async function updateSeason(id: string) {
     }
 }
 
-export async function updateSeasons() {
-    if (seasons.value.length > 0) {
+export async function updateSeasons(force: boolean = false) {
+    if (seasons.value.length > 0 && !force) {
         return console.warn("Seasons already loaded, skipping update.");
     }
 
     const snapshot = await getCollectionDocs(
         collection(firestore.value!, "seasons"),
     );
-    for (const doc of snapshot.docs) {
-        const season = {
-            id: doc.id,
-            teams: [] as Team[],
-            ...doc.data(),
-        };
-        const teamDocs = await getCollectionDocs(collection(doc.ref, "teams"));
-        season.teams = teamDocs.docs.map((teamDoc) => ({
-            letter: teamDoc.id,
-            ...teamDoc.data(),
-        })) as Team[];
-        seasons.value.push(season as Season);
-    }
+    seasons.value = await Promise.all(
+        snapshot.docs.map(
+            async (doc) => {
+                const season = {
+                    id: doc.id,
+                    teams: [] as Team[],
+                    ...doc.data(),
+                };
+                const teamDocs = await getCollectionDocs(
+                    collection(doc.ref, "teams"),
+                );
+                season.teams = teamDocs.docs.map((teamDoc) => ({
+                    letter: teamDoc.id,
+                    ...teamDoc.data(),
+                })) as Team[];
+                return season as Season;
+            },
+        ),
+    );
 }
 
 // REACTIVE COMPUTED PROPERTIES - these are used to simplify checking for certain conditions in various parts of the admin panel

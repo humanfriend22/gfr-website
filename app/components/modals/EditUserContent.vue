@@ -103,7 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div :class="insideModal ? 'modal-box ' + (isForOfficer ? 'w-11/12 max-w-[var(--container-3xl)]' : '') : ('box ' + (isForOfficer ? 'w-180' : 'w-90'))">
+    <div :class="insideModal ? 'modal-box ' + (isForOfficer ? 'w-11/12 max-w-[var(--container-3xl)]' : '') : ('box ' + (isForOfficer ? 'w-150' : 'w-90'))">
         <h3 class="text-lg font-bold">
             <slot />
         </h3>
@@ -140,7 +140,7 @@ onMounted(() => {
                     <input type="file" accept=".png,.jpg,.jpeg,.webp" class="file-input w-full" ref="pfp" @change="updatePfpPreview" />
                     <p class="label">Preview will update below.</p>
                 </fieldset>
-                <ImageDisplay :src="pfpPreviewSrc" class="w-2/3 mt-1 max-w-[200px] mask mask-circle" />
+                <ImageDisplay :src="pfpPreviewSrc" class="w-2/3 mt-1 ml-1 max-w-[200px] mask mask-circle" />
             </div>
         </div>
 

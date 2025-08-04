@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const appConfig = useAppConfig();
-
+async function update() {
+    await Promise.all([updateUsers(true), updateSeasons(true)]);
+}
 </script>
 
 <template>
@@ -17,7 +18,10 @@ const appConfig = useAppConfig();
                 <br>
                 Developed by Saketh
             </p>
-            <button class="btn btn-sm text-gray-400 hover:text-gray-300" @click="updateUsers(true)">Force Update Users</button>
+            <ClientOnly>
+                <button class="btn btn-sm text-gray-400 hover:text-gray-300" @click="update">Force Update Data</button>
+
+            </ClientOnly>
         </aside>
         <nav>
             <h6 class="footer-title">Explore</h6>

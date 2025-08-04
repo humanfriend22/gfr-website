@@ -46,7 +46,6 @@ function launchHomeImageModal() {
                         <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>
                     </div>
                 </div>
-
             </ClientOnly>
         </div>
     </Section>
