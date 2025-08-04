@@ -170,7 +170,7 @@ async function updateREId() {
                             <input type="file" accept=".png,.jpg,.jpeg" class="file-input" ref="logo" @change="updateLogoPreview" />
                             <p class="label">Preview will update below.</p>
                         </fieldset>
-                        <TeamLogoDisplay :src="logoPreviewSrc" class="w-48 h-48 my-2 rounded-box"></TeamLogoDisplay>
+                        <ImageDisplay :src="logoPreviewSrc" class="w-48 h-48 my-2 rounded-box" />
 
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">RobotEvents ID</legend>

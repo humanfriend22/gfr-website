@@ -21,23 +21,22 @@
             </div>
         </Section>
         <Section class="flex flex-col justify-center items-center w-full">
-            <h1 class="text-5xl text-center font-bold mb-15">GFR <span class="gfr-gradient">By The Numbers</span></h1>
+            <h1 class="text-4xl text-center font-bold mb-15"> <span class="gfr-gradient">By The Numbers</span></h1>
+
             <div class="stats stats-vertical lg:stats-horizontal shadow lg:w-full mb-30">
                 <div class="stat text-center">
                     <div class="stat-title">Years</div>
                     <div class="stat-value">{{ new Date().getFullYear() - 2010 }}</div>
                     <div class="stat-desc">2010 - present</div>
                 </div>
-
                 <div class="stat text-center">
                     <div class="stat-title">Awards</div>
-                    <div class="stat-value">31K</div>
+                    <div class="stat-value">180+</div>
                     <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>
-
                 <div class="stat text-center">
                     <div class="stat-title">Worlds Quals</div>
-                    <div class="stat-value">31K</div>
+                    <div class="stat-value">25+</div>
                     <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>
                 <div class="stat text-center">
@@ -48,5 +47,4 @@
             </div>
         </Section>
     </div>
-
 </template>

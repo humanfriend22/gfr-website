@@ -32,19 +32,13 @@ function updateBlogId() {
 
 const image = useTemplateRef('image');
 function updateImagePreview() {
-    const files = image.value?.files;
-    if (files && files.length > 0) {
-        blog.image = URL.createObjectURL(files[0]);
-    };
+    blog.image = readObjectURLFromImage(image);
 };
 
 const rawDate = ref('');
 watch(rawDate, (newValue) => {
     blog.date = new Date(newValue);
 });
-
-
-
 
 const image1 = useTemplateRef('image1'),
     image2 = useTemplateRef('image2'),
@@ -67,8 +61,8 @@ async function save() {
     saving.value = true;
 
     // Cover Image
-    if (blog.image !== '') {
-        await uploadImage(image, `blogs/${blog.id}/cover`);
+    if (readObjectURLFromImage(image) !== '') {
+        blog.image = await uploadImage(image, `blogs/${blog.id}/cover`);
     };
 
     // Suplementary Images

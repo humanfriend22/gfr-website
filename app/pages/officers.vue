@@ -12,11 +12,11 @@ const season = computed(() => currentSeason.value);
                         Meet Our Club <span class="gfr-gradient" v-if="season">Officers</span>
                     </ClientOnly>
                 </div>
-                <Divider class="w-2/3" />
+                <Divider class="w-4/5" />
 
-                <div class="grid grid-cols-3 w-2/3">
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 md:w-4/5 gap-1">
                     <ClientOnly>
-                        <OfficerCard :user="userFromUID(uid)" v-for="uid of Object.values(season.officers || [])" v-if="season" />
+                        <OfficerCard v-for="[title, uid] of Object.entries(season.officers || {})" v-if="season" :user="userFromUID(uid)" :title="title as keyof Season['officers']" />
                     </ClientOnly>
                 </div>
             </div>

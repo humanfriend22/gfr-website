@@ -81,7 +81,7 @@ export async function uploadImage(
     if (file) {
         const reference = storageRef(
             storage.value!,
-            path + "." + file.name.split(".").pop(),
+            path,
         );
         await uploadBytes(reference, file);
         return await getDownloadURL(reference);

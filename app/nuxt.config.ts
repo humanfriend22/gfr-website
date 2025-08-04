@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: [
         "@nuxt/image",
-        "@nuxt/icon",
         "@nuxtjs/html-validator",
     ],
     vite: {
@@ -31,5 +30,8 @@ export default defineNuxtConfig({
     },
     dir: {
         public: "public",
+    },
+    routeRules: {
+        "/blog/**": { prerender: true },
     },
 });

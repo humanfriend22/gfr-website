@@ -22,7 +22,9 @@ function launchHomeImageModal() {
 
 <template>
     <Section class="px-5 flex flex-col gap-5">
-        <ModalsHomeImage :src="site.homeImage" />
+        <ClientOnly>
+            <ModalsHomeImage :src="site.homeImage" />
+        </ClientOnly>
 
         <h1 class="text-4xl font-bold">Welcome!</h1>
         <div class="flex flex-row gap-4">
@@ -30,21 +32,22 @@ function launchHomeImageModal() {
                 <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData">
                     Manage Account
                 </ModalsEditUserContent>
+                <div class="w-100 h-100 box flex flex-col justify-between" v-if="isCurrentPresident">
+                    <div>
+                        <h1 class="font-bold">Site Settings</h1>
+                        <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Banner Markdown</legend>
+                            <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                        </fieldset>
+                        <button class="btn" @click="launchHomeImageModal">Edit Home Image</button>
+                    </div>
+                    <div>
+                        <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>
+                    </div>
+                </div>
+
             </ClientOnly>
-            <div class="w-100 box flex flex-col justify-between" v-if="isCurrentPresident">
-                <div>
-                    <h1 class="font-bold">Site Settings</h1>
-                    <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>
-                    <fieldset class="fieldset">
-                        <legend class="fieldset-legend">Banner Markdown</legend>
-                        <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
-                    </fieldset>
-                    <button class="btn" @click="launchHomeImageModal">Edit Home Image</button>
-                </div>
-                <div>
-                    <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>
-                </div>
-            </div>
         </div>
     </Section>
 </template>

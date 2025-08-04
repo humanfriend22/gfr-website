@@ -1,16 +1,31 @@
 <script setup lang="ts">
 import { updateProfile } from 'firebase/auth';
 import { collection, doc, FieldValue, updateDoc } from 'firebase/firestore';
+import OfficerCard from '../OfficerCard.vue';
+import ImageDisplay from '../ImageDisplay.vue';
 
-const { user } = defineProps<{
+const { user, forOwner } = defineProps<{
     user: User;
     forOwner: boolean;
 }>();
 
 const insideModal = ref(false);
+const pfpImage = useTemplateRef('pfp');
+const pfpPreviewSrc = ref('');
+function updatePfpPreview() {
+    pfpPreviewSrc.value = readObjectURLFromImage(pfpImage);
+};
 
 const userIsACaptain = computed(() => {
     return currentSeason.value?.teams.find(team => team.captains.includes(user.uid));
+});
+
+const isForOfficer = computed(() => {
+    if (!(forOwner || isCurrentPresident)) return false;
+    for (const [key, value] of Object.entries(currentSeason.value.officers)) {
+        if (value === user.uid) return key;
+    }
+    return false;
 });
 
 const saving = ref(false);
@@ -21,7 +36,7 @@ const errorMessage = computed(() => {
     if (!user.name.includes(' ')) return 'Invalid name (must include first and last name)';
     const min = (new Date()).getFullYear();
     if (user.graduatingYear < min || user.graduatingYear > min + 5) return `Invalid graduating year (${min}-${min + 5})`;
-    if (user.bio.length > 500) return 'Invalid bio (max 100 characters)';
+    if (user.bio?.length > 200) return 'Invalid bio (max 300 characters)';
     return '';
 });
 
@@ -30,6 +45,13 @@ const shouldRevokeAdminAccess = ref(false);
 async function save() {
     saving.value = true;
 
+    if (!currentUser.value) return;
+
+    let pfpUrl = currentUserData.value?.pfp || '';
+    if (readObjectURLFromImage(pfpImage) !== '') {
+        pfpUrl = await uploadImage(pfpImage, `users/${user.uid}`);
+    }
+
     const userDoc = doc(firestore.value!, 'users', user.uid);
     let promises = [
         // The user's data
@@ -37,6 +59,7 @@ async function save() {
             name: user.name,
             graduatingYear: user.graduatingYear,
             bio: user.bio,
+            pfp: pfpUrl,
         }),
         updateProfile(currentUser.value!, {
             displayName: user.name
@@ -76,34 +99,48 @@ async function handleLogout() {
 
 onMounted(() => {
     insideModal.value = !!document.querySelector('#edit_user_modal');
-})
+});
 </script>
 
 <template>
-    <div :class="insideModal ? 'modal-box' : 'box w-100'">
+    <div :class="insideModal ? 'modal-box ' + (isForOfficer ? 'w-11/12 max-w-[var(--container-3xl)]' : '') : ('box ' + (isForOfficer ? 'w-180' : 'w-90'))">
         <h3 class="text-lg font-bold">
             <slot />
         </h3>
         <p class="text-sm text-gray-500 mt-2">UID: {{ user.uid }}</p>
         <p class="text-sm text-gray-500 mt-2">Email: {{ user.email }}</p>
-        <div class="ml-1">
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend">Name</legend>
-                <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
-                <p class="label">Users and their captains can edit this.</p>
-            </fieldset>
-            <fieldset class="fieldset" v-if="Object.values(currentSeason.officers).includes(user.uid) && (forOwner || isCurrentPresident)">
-                <legend class="fieldset-legend">Officer Bio</legend>
-                <textarea class="textarea h-35 w-full" placeholder="Shown on blog preview" v-model="user.bio" />
-                <div class="label">This will be shown on the officers page.</div>
-            </fieldset>
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend">Graduating Year</legend>
-                <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />
-                <p class="label">Users and their captains can edit this.</p>
-            </fieldset>
+        <div :class="'ml-1 grid gap-2 ' + (isForOfficer ? 'grid-cols-2' : 'grid-cols-1')">
             <div>
-                <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="shouldRevokeAdminAccess = true">REVOKE ADMIN ACCESS</button>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Name</legend>
+                    <div class="flex flex-row gap-2">
+                        <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
+                    </div>
+                    <p class="label">Users and their captains can edit this.</p>
+                </fieldset>
+                <div v-if="isForOfficer">
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend">Officer Bio</legend>
+                        <textarea class="textarea h-35" placeholder="Shown on blog preview" v-model="user.bio" />
+                        <div class="label">This will be shown on the officers page.</div>
+                    </fieldset>
+                </div>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Graduating Year</legend>
+                    <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />
+                    <p class="label">Users and their captains can edit this.</p>
+                </fieldset>
+                <div>
+                    <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="shouldRevokeAdminAccess = true">REVOKE ADMIN ACCESS</button>
+                </div>
+            </div>
+            <div v-if="isForOfficer" class="flex flex-col">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Profile Picture</legend>
+                    <input type="file" accept=".png,.jpg,.jpeg,.webp" class="file-input w-full" ref="pfp" @change="updatePfpPreview" />
+                    <p class="label">Preview will update below.</p>
+                </fieldset>
+                <ImageDisplay :src="pfpPreviewSrc" class="w-2/3 mt-1 max-w-[200px] mask mask-circle" />
             </div>
         </div>
 

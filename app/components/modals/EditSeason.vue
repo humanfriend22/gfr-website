@@ -16,14 +16,6 @@ const errorMessage = computed(() => {
 });
 
 const currentOfficer = ref<keyof Season['officers']>(creating ? 'president' : 'vice_president');
-const officerTitleMap = {
-    president: 'President',
-    vice_president: 'Vice President',
-    secretary: 'Secretary',
-    treasurer: 'Treasurer',
-    junior_pred: 'Junior PRED',
-    senior_pred: 'Senior PRED'
-};
 
 const searchTerm = ref('');
 const searchResults = ref<User[]>([]);

@@ -4,6 +4,7 @@ export interface User {
     // Document ID
     uid: string;
     name: string;
+    pfp: string;
     // In case they use a different email than their Google account
     email: string;
     graduatingYear: number;
@@ -94,3 +95,12 @@ interface Database {
     events: WebsiteEvent[];
     blogs: Blog[];
 }
+
+export const officerTitleMap = {
+    president: "President",
+    vice_president: "Vice President",
+    secretary: "Secretary",
+    treasurer: "Treasurer",
+    junior_pred: "Junior PRED",
+    senior_pred: "Senior PRED",
+};
