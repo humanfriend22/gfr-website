@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: [
         "@nuxt/image",
-        "@nuxtjs/html-validator",
     ],
     vite: {
         plugins: [tailwindcss()],

@@ -16,8 +16,7 @@
         "@tailwindcss/typography": "^0.5.16",
         "@types/markdown-it": "^14.1.2",
         "@types/showdown": "^2.0.6",
-        "daisyui": "^5.0.43",
-        "nuxt": "^3.17.6"
+        "daisyui": "^5.0.43"
     },
     "dependencies": {
         "@nuxt/icon": "^1.15.0",
@@ -27,6 +26,7 @@
         "debounce": "^2.2.0",
         "firebase": "^11.10.0",
         "marked": "^16.1.1",
+        "nuxt": "^3.18.0",
         "pretty-bytes": "^7.0.0",
         "tailwindcss": "^4.1.11",
         "vue": "^3.5.17",

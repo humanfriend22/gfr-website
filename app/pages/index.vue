@@ -14,14 +14,16 @@
                     </template>
                     <ClientOnly>
                         <Tilt :repel-at-mouse="false" :horizontal-tilt-angle="20" :vertical-tilt-angle="20">
-                            <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="site.homeImage" alt="" priority />
+                            <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="site.homeImage" alt="Homepage image" priority />
                         </Tilt>
                     </ClientOnly>
                 </Hero>
             </div>
         </Section>
         <Section class="flex flex-col justify-center items-center w-full">
-            <h1 class="text-4xl text-center font-bold mb-15"> <span class="gfr-gradient">By The Numbers</span></h1>
+            <h1 class="text-4xl text-center font-bold mb-15">
+                <span class="gfr-gradient">By The Numbers</span>
+            </h1>
 
             <div class="stats stats-vertical lg:stats-horizontal shadow lg:w-full mb-30">
                 <div class="stat text-center">
