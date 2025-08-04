@@ -6,6 +6,13 @@ export function renderBannerMarkdown(markdown: string) {
     });
 }
 
+export function renderStepMarkdown(markdown: string) {
+    return marked.parse(markdown, {
+        async: false,
+        gfm: true,
+    });
+}
+
 export function preFormatBlogMarkdown(markdown: string, images: string[]) {
     return markdown
         .replaceAll("{image1}", images[0] || "")

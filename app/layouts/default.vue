@@ -28,6 +28,7 @@ function handleLoginClick() {
                 <HeaderLink to="/officers">Officers</HeaderLink>
                 <HeaderLink to="/events">Events</HeaderLink>
                 <HeaderLink to="/blog">Blog</HeaderLink>
+                <HeaderLink to="/sponsor">Sponsor</HeaderLink>
                 <div>
                     <ClientOnly>
                         <HeaderLink @click="handleLoginClick">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>

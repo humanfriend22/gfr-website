@@ -103,19 +103,24 @@ onMounted(() => {
 </script>
 
 <template>
-    <div :class="insideModal ? 'modal-box ' + (isForOfficer ? 'w-11/12 max-w-[var(--container-3xl)]' : '') : ('box ' + (isForOfficer ? 'w-150' : 'w-90'))">
+    <div :class="insideModal ? 'modal-box ' + (isForOfficer ? 'w-11/12 max-w-[var(--container-3xl)]' : '') : ('box w-fit')">
         <h3 class="text-lg font-bold">
             <slot />
         </h3>
         <p class="text-sm text-gray-500 mt-2">UID: {{ user.uid }}</p>
         <p class="text-sm text-gray-500 mt-2">Email: {{ user.email }}</p>
-        <div :class="'ml-1 grid gap-2 ' + (isForOfficer ? 'grid-cols-2' : 'grid-cols-1')">
+        <div :class="'ml-1 flex flex-row '">
             <div>
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">Name</legend>
                     <div class="flex flex-row gap-2">
                         <input type="text" class="input" placeholder="e.g. John Doe" v-model="user.name" />
                     </div>
+                    <p class="label">Users and their captains can edit this.</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Graduating Year</legend>
+                    <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />
                     <p class="label">Users and their captains can edit this.</p>
                 </fieldset>
                 <div v-if="isForOfficer">
@@ -126,21 +131,19 @@ onMounted(() => {
                     </fieldset>
                 </div>
                 <fieldset class="fieldset">
-                    <legend class="fieldset-legend">Graduating Year</legend>
-                    <input type="number" class="input" placeholder="e.g. 2027" v-model="user.graduatingYear" />
-                    <p class="label">Users and their captains can edit this.</p>
-                </fieldset>
-                <div>
-                    <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="shouldRevokeAdminAccess = true">REVOKE ADMIN ACCESS</button>
-                </div>
-            </div>
-            <div v-if="isForOfficer" class="flex flex-col">
-                <fieldset class="fieldset">
                     <legend class="fieldset-legend">Profile Picture</legend>
                     <input type="file" accept=".png,.jpg,.jpeg,.webp" class="file-input w-full" ref="pfp" @change="updatePfpPreview" />
                     <p class="label">Preview will update below.</p>
                 </fieldset>
-                <ImageDisplay :src="pfpPreviewSrc" class="w-2/3 mt-1 ml-1 max-w-[200px] mask mask-circle" />
+
+                <div>
+                    <button class="btn btn-error" v-if="!!userIsACaptain && !forOwner" @click="shouldRevokeAdminAccess = true">REVOKE ADMIN ACCESS</button>
+                </div>
+            </div>
+            <div v-if="pfpPreviewSrc !== ''" class="flex flex-col">
+                <div class="flex justify-center">
+                    <ImageDisplay :src="pfpPreviewSrc" class="w-2/3  max-w-[200px] mask mask-circle" />
+                </div>
             </div>
         </div>
 

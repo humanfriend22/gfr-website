@@ -18,11 +18,17 @@ function launchHomeImageModal() {
     const modal = document.getElementById('home_image_modal') as HTMLDialogElement;
     modal.showModal();
 };
+
+function launchEditStepsModal() {
+    const modal = document.getElementById('edit_steps_modal') as HTMLDialogElement;
+    modal.showModal();
+};
 </script>
 
 <template>
     <Section class="px-5 flex flex-col gap-5">
         <ClientOnly>
+            <ModalsEditSteps />
             <ModalsHomeImage :src="site.homeImage" />
         </ClientOnly>
 
@@ -41,6 +47,7 @@ function launchHomeImageModal() {
                             <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
                         </fieldset>
                         <button class="btn" @click="launchHomeImageModal">Edit Home Image</button>
+                        <button class="btn ml-1" @click="launchEditStepsModal">Edit "Join Us" Steps</button>
                     </div>
                     <div>
                         <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>

@@ -200,10 +200,14 @@ const siteDocument = firestore.collection("site").doc("site");
 if ((await siteDocument.get()).exists) {
     console.log("Site document already exists, skipping creation.");
 } else {
-    await siteDocument.create({
+    await lenientCreateDocument(siteDocument, {
         homeImage: "/gfr-worlds-2023.jpeg",
         bannerMarkdown: "Welcome to the GFR Website",
         currentSeason: "high-stakes-2425",
         admins: [googlePresidentUser, googleCaptainUser],
+        steps: Array(10).fill({
+            title: "",
+            markdown: "",
+        }),
     });
 }

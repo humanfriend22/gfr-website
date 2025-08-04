@@ -20,6 +20,11 @@ export interface Site {
     currentSeason: string;
     // all uids that can access the admin panel
     admins: string[];
+
+    steps: {
+        title: string;
+        markdown: string;
+    }[];
 }
 
 export interface Team {

@@ -68,6 +68,10 @@ export const site = useLocalStorage<Site>("site/site", {
     bannerMarkdown: "",
     currentSeason: "pushback-2526",
     admins: [],
+    steps: Array(10).fill({
+        title: "",
+        markdown: "",
+    }),
 });
 
 // Authentication is organized into: data, direct functions, and computed helpers
@@ -302,10 +306,6 @@ export const isCurrentPresident = computed<boolean>(() => {
  * @returns An array of UIDs of users that can access the admin panel.
  */
 export function resolveAdmins() {
-    if (!isCurrentPresident.value) {
-        throw new Error("Only the current president needs to resolve admins.");
-    }
-
     return Array.from(
         new Set([
             ...currentCaptains.value,
