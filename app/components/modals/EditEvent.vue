@@ -168,7 +168,7 @@ onBeforeUpdate(() => {
                         <!-- if there is a button in form, it will close the modal -->
                         <button class="btn" ref="close">Cancel</button>
                     </form>
-                    <button class=" btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving || errorMessage !== ''">
+                    <button class=" btn bg-gfr-blue" @click="save" :disabled="saving || errorMessage !== ''">
                         <span class="loading" v-if="saving"></span>
                         {{ saving ? 'Saving...' : 'Save' }}
                     </button>

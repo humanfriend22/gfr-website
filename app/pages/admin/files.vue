@@ -53,7 +53,7 @@ onMounted(async () => {
                 </thead>
                 <tbody>
                     <tr v-for="file of [...files, ...files, ...files]" :key="file.path" @click="fetchPreviewImage(file.path)">
-                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" onclick="image_preview.show()">{{ file.path }}</td>
+                        <td class="underline hover:text-gfr-blue duration-300 cursor-pointer" onclick="image_preview.show()">{{ file.path }}</td>
                         <td>{{ prettyBytes(file.size) }}</td>
                         <td>{{ file.dateUploaded }}</td>
                     </tr>

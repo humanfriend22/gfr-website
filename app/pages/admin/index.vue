@@ -50,7 +50,7 @@ function launchEditStepsModal() {
                         <button class="btn ml-1" @click="launchEditStepsModal">Edit "Join Us" Steps</button>
                     </div>
                     <div>
-                        <button class="btn bg-[var(--gfr-blue)] float-right" @click="saveSite" :disabled="savingSite">Save</button>
+                        <button class="btn bg-gfr-blue float-right" @click="saveSite" :disabled="savingSite">Save</button>
                     </div>
                 </div>
             </ClientOnly>

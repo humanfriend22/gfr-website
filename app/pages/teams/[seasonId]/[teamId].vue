@@ -76,11 +76,11 @@ onMounted(async () => {
                                         <div class="text-gray-400">{{ formatCompetitionDate(competition.date) }}</div>
                                         <div>
                                             <div>
-                                                <span class="badge m-1 float-end bg-[var(--gfr-red)]" v-for="award of competition.awards">{{ award }}</span>
+                                                <span class="badge m-1 float-end bg-gfr-red" v-for="award of competition.awards">{{ award }}</span>
                                             </div>
                                             <div>
-                                                <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Signature'">Signature Event</span>
-                                                <span class="badge m-1 float-end bg-[var(--gfr-blue)]" v-if="competition.level === 'Regional'">State Championship</span>
+                                                <span class="badge m-1 float-end bg-gfr-blue" v-if="competition.level === 'Signature'">Signature Event</span>
+                                                <span class="badge m-1 float-end bg-gfr-blue" v-if="competition.level === 'Regional'">State Championship</span>
                                                 <span class="badge m-1 float-end bg-yellow-500" v-if="competition.level === 'World'">World Championship</span>
                                             </div>
                                         </div>

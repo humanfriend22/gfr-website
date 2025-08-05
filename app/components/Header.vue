@@ -1,18 +1,9 @@
-<script setup lang="ts">
-defineProps({
-    title: {
-        type: String,
-        default: 'Gael Force Robotics'
-    }
-});
-</script>
-
 <template>
     <div class="flex items-center lg:justify-center h-24 w-full max-w-screen-xl mx-auto sticky top-0 left-0 z-30 text-primary bg-gradient-to-b from-black/80 to-black/1 px-3">
         <NuxtLink to="/" class="flex items-center gap-5 text-lg font-extrabold tracking-wide sm:text-lg">
             <NuxtImg src="gfr.png" width="50" height="50" class="inline" />
             <h1 class="gfr-gradient bg-clip-text text-transparent bg-gradient-to-r">
-                {{ title }}
+                {{ $route.meta.layout === 'admin' ? 'Admin Panel' : 'Gael Force Robotics' }}
             </h1>
         </NuxtLink>
 

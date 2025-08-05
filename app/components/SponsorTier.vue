@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-center items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-[var(--gfr-blue)] duration-400 p-4"
+    <div class="flex flex-col justify-center items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-gfr-blue duration-400 p-4"
         v-for="i in Array(3)">
         <Trophy class="w-12 h-12 text-amber-600 mb-4" />
         <h3 class="text-xl font-bold text-amber-600 mb-2">Bronze</h3>

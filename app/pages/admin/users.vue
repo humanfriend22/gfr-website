@@ -59,12 +59,12 @@ onMounted(async () => {
                 </thead>
                 <tbody>
                     <tr v-for="user of sortedUsers">
-                        <td class="underline hover:text-[var(--gfr-blue)] duration-300 cursor-pointer" @click="showEditUserModal(user)">{{ user.name }}</td>
+                        <td class="underline hover:text-gfr-blue duration-300 cursor-pointer" @click="showEditUserModal(user)">{{ user.name }}</td>
                         <td>{{ user.uid }}</td>
                         <td>{{ user.email }}</td>
                         <td class="flex flex-row">
-                            <span class="badge bg-[var(--gfr-red)] mr-1" v-if="site.admins.includes(user.uid)">Admin</span>
-                            <span class="badge bg-[var(--gfr-blue)] mr-1" v-if="currentCaptains.includes(user.uid)">Captain</span>
+                            <span class="badge bg-gfr-red mr-1" v-if="site.admins.includes(user.uid)">Admin</span>
+                            <span class="badge bg-gfr-blue mr-1" v-if="currentCaptains.includes(user.uid)">Captain</span>
                         </td>
                     </tr>
                 </tbody>

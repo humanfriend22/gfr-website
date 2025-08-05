@@ -27,7 +27,7 @@
                 Our <span class="gfr-gradient">Programs</span>
             </h1>
             <div class="grid grid-cols-2 gap-5">
-                <div v-for="i in Array(6)" class="h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-[var(--gfr-blue)]  duration-400">
+                <div v-for="i in Array(6)" class="h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
                     <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
                         <NuxtImg src="girlpowered2024.jpg" class="h-full w-full object-cover" />
                     </div>

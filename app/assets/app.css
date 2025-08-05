@@ -10,6 +10,23 @@
     --gfr-blue: #3b82f6;
 }
 
+@theme {
+    --color-gfr-red: #d94c4e;
+    --color-gfr-blue: #3b82f6;
+}
+@source inline("{hover:,}text-gfr-red");
+@source inline("{hover:,}bg-gfr-red");
+@source inline("{hover:,}border-gfr-red");
+@source inline("{hover:,}text-gfr-blue");
+@source inline("{hover:,}bg-gfr-blue");
+@source inline("{hover:,}border-gfr-blue");
+@source inline("text-yellow-500");
+@source inline("text-zinc-400");
+@source inline("text-amber-600");
+@source inline("hover:border-yellow-500");
+@source inline("hover:border-zinc-400");
+@source inline("hover:border-amber-600");
+
 html,
 body {
     @apply h-screen w-screen;

@@ -38,16 +38,12 @@ onBeforeUpdate(() => {
                         <span v-if="event.start.getTime() !== event.end.getTime()"> - {{ formatDate(event.end, true) }}</span>
                     </span>
                 </div>
-                <!-- <div class="card-actions justify-end flex-wrap">
-                    <button class="btn bg-[var(--gfr-red)] flex-shrink-0" v-if="event.volunteer_link !== ''">Volunteer</button>
-                    <button class="btn bg-[var(--gfr-blue)] flex-shrink-0" v-if="event.signup_link !== ''">Sign Up</button>
-                </div> -->
             </div>
 
         </div>
         <div class="card-actions justify-end flex-wrap absolute bottom-4 right-4">
-            <NuxtLink class="btn bg-[var(--gfr-red)] flex-shrink-0" v-if="event.volunteer_link !== ''" :to="event.volunteer_link" target="_blank">Volunteer</NuxtLink>
-            <NuxtLink class="btn bg-[var(--gfr-blue)] flex-shrink-0" v-if="event.signup_link !== ''" :to="event.signup_link" target="_blank">Sign Up</Nuxtlink>
+            <NuxtLink class="btn bg-gfr-red flex-shrink-0" v-if="event.volunteer_link !== ''" :to="event.volunteer_link" target="_blank">Volunteer</NuxtLink>
+            <NuxtLink class="btn bg-gfr-blue flex-shrink-0" v-if="event.signup_link !== ''" :to="event.signup_link" target="_blank">Sign Up</Nuxtlink>
         </div>
     </div>
 </template>

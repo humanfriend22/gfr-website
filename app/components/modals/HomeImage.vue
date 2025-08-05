@@ -65,7 +65,7 @@ async function save() {
                 <form method="dialog">
                     <button class="btn">Close</button>
                 </form>
-                <button class="btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving">Save</button>
+                <button class="btn bg-gfr-blue" @click="save" :disabled="saving">Save</button>
             </div>
         </div>
     </dialog>

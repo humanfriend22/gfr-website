@@ -153,15 +153,15 @@ onMounted(() => {
 
                 <div class="flex flex-row justify-between gap-2 w-full">
                     <div>
-                        <button class="btn bg-[var(--gfr-red)]" @click="handleLogout" v-if="forOwner && insideModal">Logout</button>
+                        <button class="btn bg-gfr-red" @click="handleLogout" v-if="forOwner && insideModal">Logout</button>
                         <span class="text-sm text-start text-red-500" v-else-if="errorMessage !== ''">{{ errorMessage }}</span>
                     </div>
                     <div class="flex flex-row justify-between gap-2">
                         <form method="dialog">
                             <button class="btn" id="close" v-if="insideModal">Cancel</button>
-                            <button class="btn bg-[var(--gfr-red)]" v-else @click="handleLogout">Logout</button>
+                            <button class="btn bg-gfr-red" v-else @click="handleLogout">Logout</button>
                         </form>
-                        <button class="btn bg-[var(--gfr-blue)]" @click="save" :disabled="saving || errorMessage !== ''">
+                        <button class="btn bg-gfr-blue" @click="save" :disabled="saving || errorMessage !== ''">
                             <span class="loading" v-if="saving"></span>
                             {{ saving ? 'Saving...' : 'Save' }}
                         </button>

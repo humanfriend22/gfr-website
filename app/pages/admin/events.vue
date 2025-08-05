@@ -55,7 +55,7 @@ onMounted(async () => {
         <h1 class="text-2xl font-bold">Events</h1>
         <p class="text-gray-500">Manage events for the GFR community.</p>
         <div>
-            <button class="btn bg-[var(--gfr-blue)]" @click="launchCreateEventModal">Create New Event</button>
+            <button class="btn bg-gfr-blue" @click="launchCreateEventModal">Create New Event</button>
         </div>
         <EventsGridContainer>
             <ClientOnly>

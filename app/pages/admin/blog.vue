@@ -56,7 +56,7 @@ onMounted(async () => {
         <h1 class="text-2xl font-bold">Blog</h1>
         <p class="text-gray-500">Write blog posts on behalf of GFR.</p>
         <div>
-            <button class="btn bg-[var(--gfr-blue)]" @click="launchCreateBlogModal">Create New Blog</button>
+            <button class="btn bg-gfr-blue" @click="launchCreateBlogModal">Create New Blog</button>
         </div>
         <div class="w-1/2">
             <BlogPreviewCard :index="0" :blog="blog" :preview-mode="true" v-for="blog of blogs" :click-handler="launchEditBlogModal" />
