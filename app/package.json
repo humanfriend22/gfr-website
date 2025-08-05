@@ -26,6 +26,7 @@
         "@vueuse/core": "^13.6.0",
         "debounce": "^2.2.0",
         "firebase": "^11.10.0",
+        "lucide-vue-next": "^0.536.0",
         "marked": "^16.1.1",
         "nuxt": "^3.18.0",
         "pretty-bytes": "^7.0.0",
