@@ -17,6 +17,8 @@ const errorMessage = computed(() => {
     if (blog.description.length < 10 || blog.description.length > 200) return 'Invalid description (10-200 characters)';
     if (blog.author.length < 5 || blog.author.length > 30) return 'Invalid author (5-30 characters)';
     if (blog.date.toString() === 'Invalid Date') return 'Invalid date';
+    if (blog.signup_link && !/^https?:\/\//.test(blog.signup_link)) return 'Invalid signup link (must start with http:// or https://)';
+    if (blog.volunteer_link && !/^https?:\/\//.test(blog.volunteer_link)) return 'Invalid volunteer link (must start with http:// or https://)';
     if (content.value.length < 10 || content.value.length > 10000) return 'Invalid content (10-10000 characters)';
     if (blog.image === '') return 'Please upload an image.';
     const idCheck = isValidBlogEventId(blog.id);
@@ -166,6 +168,10 @@ onMounted(() => {
                                         <p class="label">This will determine blog sorting!</p>
                                     </fieldset>
                                     <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Location</legend>
+                                        <input type="text" class="input w-full" placeholder="Type here" v-model="blog.location" />
+                                    </fieldset>
+                                    <fieldset class="fieldset">
                                         <legend class="fieldset-legend">Image</legend>
                                         <input type="file" accept=".png,.jpg,.jpeg" class="file-input w-full" ref="image" @change="updateImagePreview" />
                                         <p class="label">Preview will update below.</p>
@@ -174,8 +180,18 @@ onMounted(() => {
                                 <div>
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend">Description</legend>
-                                        <textarea class="textarea h-35 w-full" placeholder="Shown on blog preview" v-model="blog.description" />
+                                        <textarea class="textarea h-30 w-full" placeholder="Shown on blog preview" v-model="blog.description" />
                                         <div class="label">You can use markdown!</div>
+                                    </fieldset>
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Sign Up Link</legend>
+                                        <input type="url" class="input w-full" placeholder="Type here" v-model="blog.signup_link" />
+                                        <p class="label">Leave blank to disable.</p>
+                                    </fieldset>
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Volunteer Link</legend>
+                                        <input type="url" class="input w-full" placeholder="Type here" v-model="blog.volunteer_link" />
+                                        <p class="label">Leave blank to disable.</p>
                                     </fieldset>
                                 </div>
                             </div>

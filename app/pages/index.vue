@@ -27,15 +27,15 @@
                 Our <span class="gfr-gradient">Programs</span>
             </h1>
             <div class="grid grid-cols-2 gap-5">
-                <div v-for="i in Array(6)" class="h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
+                <div v-for="blog of programBlogs" class="h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
                     <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
-                        <NuxtImg src="girlpowered2024.jpg" class="h-full w-full object-cover" />
+                        <NuxtImg :src="blog.image" class="h-full w-full object-cover" />
                     </div>
                     <div class="h-full w-full flex flex-col justify-center items-center relative z-10">
-                        <h2 class="text-2xl font-bold text-white mb-2">Program {{ i }}</h2>
-                        <p class="text-gray-300 text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <h2 class="text-2xl font-bold text-white mb-2">{{ blog.title }}</h2>
+                        <p class="text-gray-300 text-center">{{ blog.description }}</p>
                     </div>
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
+                    <svg @click="navigateTo('/blog/' + blog.id)" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
                         class="absolute right-5 bottom-3 h-8 w-8 outlinedText md:h-10 md:w-10 opacity-0 group-hover:opacity-100 duration-400 cursor-pointer z-40" height="1em" width="1em"
                         xmlns="http://www.w3.org/2000/svg">
                         <path

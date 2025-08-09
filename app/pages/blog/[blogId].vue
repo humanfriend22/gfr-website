@@ -10,7 +10,7 @@ onMounted(async () => {
         navigateTo('/blog');
         return;
     };
-    const markdown = await (await fetch(blog.value.content)).text();
+    const markdown = await fetchBlogContent(blog.value.id, blog.value.content);
     content.value = await marked.parse(markdown, {
         gfm: true,
         breaks: true

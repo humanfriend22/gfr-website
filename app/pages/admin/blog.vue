@@ -13,6 +13,9 @@ const editingBlog = ref<Blog>({
     image: '',
     images: [],
     date: new Date(),
+    location: '',
+    signup_link: '',
+    volunteer_link: ''
 });
 const initialMarkdown = ref('');
 
@@ -27,11 +30,14 @@ function launchCreateBlogModal() {
         image: '',
         images: [],
         date: new Date(),
+        location: '',
+        signup_link: '',
+        volunteer_link: ''
     };
     initialMarkdown.value = '';
     const modal = document.getElementById('edit_blog_modal') as HTMLDialogElement;
     modal.showModal();
-}
+};
 
 async function launchEditBlogModal(blog: Blog) {
     creating.value = false;

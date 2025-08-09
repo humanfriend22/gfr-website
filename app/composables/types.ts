@@ -25,6 +25,8 @@ export interface Site {
         title: string;
         markdown: string;
     }[];
+
+    programs: string[];
 }
 
 export interface Team {
@@ -87,10 +89,15 @@ export interface Blog {
     title: string;
     author: string;
     description: string;
-    content: string;
     image: string;
-    images: string[];
     date: Date;
+    location: string;
+
+    signup_link: string;
+    volunteer_link: string;
+
+    content: string;
+    images: string[];
 }
 
 interface Database {

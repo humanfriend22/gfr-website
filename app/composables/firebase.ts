@@ -72,6 +72,7 @@ export const site = useLocalStorage<Site>("site/site", {
         title: "",
         markdown: "",
     }),
+    programs: Array(6).fill(""),
 });
 
 // Authentication is organized into: data, direct functions, and computed helpers
@@ -338,7 +339,11 @@ export async function updateEvents(force: boolean = false) {
 }
 
 // BLOGS DATA
-export const blogs = ref<Blog[]>([]);
+export const blogs = useLocalStorage<Blog[]>("app-blogs", []);
+export const blogContents = useLocalStorage<{ [id: string]: string }>(
+    "app-blog-contents",
+    {},
+);
 
 export async function updateBlogs(force: boolean = false) {
     if (!force && blogs.value.length > 0) {
@@ -347,10 +352,9 @@ export async function updateBlogs(force: boolean = false) {
     const snapshot = await getCollectionDocs(
         collection(firestore.value!, "blogs"),
     );
-    blogs.value = [];
-    for (const doc of snapshot.docs) {
+    blogs.value = snapshot.docs.map((doc) => {
         const data = doc.data();
-        blogs.value.push({
+        return {
             id: doc.id,
             title: data.title,
             author: data.author,
@@ -359,9 +363,26 @@ export async function updateBlogs(force: boolean = false) {
             image: data.image,
             images: data.images,
             date: data.date.toDate(),
-        });
-    }
+            location: data.location,
+            signup_link: data.signup_link,
+            volunteer_link: data.volunteer_link,
+        };
+    });
 }
+export async function fetchBlogContent(
+    blogId: string,
+    blogContentLink: string,
+) {
+    if (blogContents.value[blogId]) {
+        return blogContents.value[blogId];
+    }
+
+    blogContents.value[blogId] = await (await fetch(blogContentLink)).text();
+    return blogContents.value[blogId];
+}
+export const programBlogs = computed(() => {
+    return blogs.value.filter((blog) => site.value.programs.includes(blog.id));
+});
 
 // CLIENT SIDE PLUGIN ONLY FUNCTION (ensures is only called once upon Nuxt app startup)
 export const initializeFirebase = async () => {

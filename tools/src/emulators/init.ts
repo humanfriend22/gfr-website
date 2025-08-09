@@ -7,6 +7,7 @@ import {
     NAMES,
 } from "./helpers";
 import { readFile } from "fs/promises";
+import { programs } from "robotevents";
 
 const { auth, firestore, bucket } = initializeFirebase();
 
@@ -161,8 +162,12 @@ async function createBlogs(n: number) {
             description:
                 `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempor non felis ac imperdiet. Aliquam consequat, augue nec finibus lacinia, nibh est porta urna, sed suscipit turpis leo ut nunc libero.`,
             image: "/gfr-summer-newsletter.png",
+            images: [],
             date: new Date(Date.now() + i * 86400000), // 1 day apart
             content: url,
+            location: "Student Union @ Dublin High School",
+            signup_link: "",
+            volunteer_link: "",
         };
         blogPromises.push(
             blogsCollection.doc(blogId).set(blogData),
@@ -173,10 +178,10 @@ async function createBlogs(n: number) {
 }
 
 await Promise.all([
-    // createSeason("push-back-2526", 4),
+    createSeason("push-back-2526", 4, 191),
     createSeason("high-stakes-2425", 5, 190),
-    createEvents(2),
-    createBlogs(2),
+    // createEvents(2),
+    createBlogs(4),
 ]);
 
 // 4. Change their names (captain is done when their team is known)
@@ -209,5 +214,6 @@ if ((await siteDocument.get()).exists) {
             title: "",
             markdown: "",
         }),
+        programs: Array(6).fill(""),
     });
 }

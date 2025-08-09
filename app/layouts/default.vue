@@ -16,9 +16,19 @@ function handleLoginClick() {
         <template #links>
             <HeaderLink to="/about">About</HeaderLink>
             <HeaderLink to="/teams">Teams</HeaderLink>
-            <HeaderLink to="/officers">Officers</HeaderLink>
-            <HeaderLink to="/events">Events</HeaderLink>
+            <div class="dropdown dropdown-hover">
+                <div>
+                    <HeaderLink>Programs</HeaderLink>
+                    <div tabindex="0" class="dropdown-content p-0 gap-0">
+                        <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-40 mt-1 p-2 shadow-sm">
+                            <HeaderLink v-for="i in Array(4)">Link</HeaderLink>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             <HeaderLink to="/blog">Blog</HeaderLink>
+            <HeaderLink to="/officers">Officers</HeaderLink>
             <HeaderLink to="/sponsor">Sponsor</HeaderLink>
             <ClientOnly>
                 <HeaderLink @click="handleLoginClick">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>
