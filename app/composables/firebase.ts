@@ -119,7 +119,7 @@ export async function updateFiles(force: boolean = false) {
     const promises = await Promise.all([
         items("teams"),
         ...blogs.value.map((blog) => items(`blogs/${blog.id}`)),
-        items("events"),
+        // items("events"),
         items("site"),
     ]);
 

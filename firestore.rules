@@ -80,10 +80,10 @@ service cloud.firestore {
                 allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
             }
         }
-        match /events/{eventId} {
-            allow read: if true;
-            allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
-        }
+    // match /events/{eventId} {
+        //     allow read: if true;
+        //     allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
+        // }
         match /blogs/{blogId} {
             allow read: if true;
             allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());

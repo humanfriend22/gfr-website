@@ -13,9 +13,6 @@
             <HeaderLink to="/admin/teams">
                 Teams
             </HeaderLink>
-            <HeaderLink to="/admin/events">
-                Events
-            </HeaderLink>
             <HeaderLink to="/admin/blog">
                 Blog
             </HeaderLink>
