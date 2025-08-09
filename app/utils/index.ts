@@ -74,10 +74,12 @@ const reducer = reduce();
  * Uploads an image to Firebase Storage and returns the download URL.
  * @param image The image input element to upload (useTemplateRef on a file input)
  * @param path the full path to the image excluding the file extension, e.g. `blogs/${blog.id}/cover`
+ * @param maxSize the maximum size of the image in pixels (default is 512)
  */
 export async function uploadImage(
     image: Readonly<ShallowRef<HTMLInputElement | null>>,
     path: string,
+    maxSize: number = 512,
 ) {
     const file = image.value?.files?.[0];
     if (file) {
@@ -88,7 +90,7 @@ export async function uploadImage(
         await uploadBytes(
             reference,
             await reducer.toBlob(file, {
-                max: 512,
+                max: maxSize,
             }),
         );
         return await getDownloadURL(reference);

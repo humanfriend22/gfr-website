@@ -64,7 +64,7 @@ async function save() {
 
     // Cover Image
     if (readObjectURLFromImage(image) !== '') {
-        blog.image = await uploadImage(image, `blogs/${blog.id}/cover`);
+        blog.image = await uploadImage(image, `blogs/${blog.id}/cover`, 900);
     };
 
     // Suplementary Images
@@ -115,7 +115,7 @@ onBeforeUpdate(async () => {
         } else {
             rawMarkdown.value = await (await fetch(blog.content)).text();
             pastContentLink.value = blog.content;
-            rawDate.value = blog.date.toISOString().split('T')[0];
+            rawDate.value = blog.date.toISOString().split('T')[0] || '';
         };
     }
 });

@@ -29,7 +29,7 @@
             <ClientOnly>
                 <div class="grid md:grid-cols-2 gap-5">
                     <div v-for="blog of programBlogs" @click="navigateTo('/blog/' + blog.id)"
-                        class="h-[250px] md:h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
+                        class="h-[250px] md:h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue duration-400 cursor-pointer">
                         <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
                             <NuxtImg :src="blog.image" class="h-full w-full object-cover" />
                         </div>

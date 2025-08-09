@@ -8,8 +8,8 @@ async function update() {
     <footer class="footer sm:footer-horizontal mx-auto w-full text-base-content text-xl mb-20 p-10 max-w-screen-xl">
         <aside>
             <div class="flex items-center gap-5 pb-2">
-                <NuxtImg src="dhs.png" width="60" height="60" class="inline" />
-                <NuxtImg src="gfr.png" width="50" height="50" class="inline" />
+                <NuxtImg src="dhs.png" alt="dublin high school logo" width="60" height="60" class="inline" />
+                <NuxtImg src="gfr.png" alt="gael force robotics logo" width="50" height="50" class="inline" />
             </div>
             <p>
                 <span class="gfr-gradient font-semibold">Gael Force Robotics</span>
