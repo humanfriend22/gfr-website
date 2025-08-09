@@ -8,7 +8,7 @@ onMounted(async () => {
     <Section>
         <div class="flex flex-col justify-center items-center gap-y-5 px-4 h-fit">
             <div class="text-5xl font-bold mt-10">Read our <span class="gfr-gradient">Blog</span></div>
-            <div class="text-center text-gray-500 text-lg">
+            <div class="text-center text-gray-400 text-lg">
                 <p>Learn more about our club and get monthly insights into our Competition Teams!</p>
             </div>
 

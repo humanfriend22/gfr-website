@@ -16,7 +16,7 @@ function closeDrawer() {
 
 <template>
     <div class="drawer drawer-end h-screen w-screen">
-        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" />
+        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" tabindex="-1" />
         <div class="drawer-content">
             <div class="min-h-screen">
                 <Header>

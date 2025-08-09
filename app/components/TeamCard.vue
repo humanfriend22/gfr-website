@@ -10,7 +10,7 @@ defineProps<{
 
         <div class="py-2.5 flex flex-col md:gap-2">
             <div class="text-white text-2xl md:text-4xl font-semibold leading-10">{{ team.name }}</div>
-            <div class="text-gray-500 text-base md:text-xl font-normal">{{team.captains.map(uid => userFromUID(uid)?.name).join(' & ')}}</div>
+            <div class="text-gray-400 text-base md:text-xl font-normal">{{team.captains.map(uid => userFromUID(uid)?.name).join(' & ')}}</div>
         </div>
     </div>
 </template>

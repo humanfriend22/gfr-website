@@ -15,7 +15,7 @@ defineProps<{
 
                 <div class="py-2.5 flex flex-col gap-2">
                     <div class="text-white text-lg font-semibold text-wrap text-center">{{ user?.name }}</div>
-                    <div class="text-gray-500 text-sm font-normal text-center">{{ user?.bio || '' }}</div>
+                    <div class="text-gray-400 text-sm font-normal text-center">{{ user?.bio || '' }}</div>
                 </div>
             </ClientOnly>
         </div>

@@ -88,7 +88,7 @@ export async function uploadImage(
         await uploadBytes(
             reference,
             await reducer.toBlob(file, {
-                max: 1024,
+                max: 512,
             }),
         );
         return await getDownloadURL(reference);

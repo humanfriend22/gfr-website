@@ -28,9 +28,9 @@ const left = index % 2 !== 0;
             <div class="flex-1 h-full">
                 <div :class="'flex flex-col justify-start h-full ' + (left ? 'items-end' : 'items-start')">
                     <span class="text-gray-400 text-sm">{{ formatDate(blog.date) }}</span>
-                    <h1 class="font-bold text-3xl">{{ blog.title }}</h1>
+                    <div class="font-bold text-3xl">{{ blog.title }}</div>
                     <div :class="'flex flex-row gap-3 ' + (left ? 'flex-row-reverse' : '')">
-                        <NuxtImg :src="blog.image" class="rounded-md flex-1 mt-2 w-3/5" />
+                        <NuxtImg :src="blog.image" alt="blog image preview" class="rounded-md flex-1 mt-2 w-3/5" />
                         <div class="mt-3">
                             <p class="text-gray-400 text-md mb-4">
                                 {{ blog.description }}
@@ -51,7 +51,7 @@ const left = index % 2 !== 0;
                 <div class="flex-grow mb-5">
                     <span class="text-gray-400 text-sm">{{ formatDate(blog.date) }}</span>
                     <h1 class="font-bold text-3xl">{{ blog.title }}</h1>
-                    <NuxtImg :src="blog.image" class="rounded-md mt-2 max-h-36" />
+                    <NuxtImg :src="blog.image" alt="blog image preview" class="rounded-md mt-2 max-h-36" />
                     <div class="mt-2">
                         <p class="text-gray-400 text-md">
                             {{ blog.description }}
