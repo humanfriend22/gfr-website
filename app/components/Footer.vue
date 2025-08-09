@@ -18,17 +18,16 @@ async function update() {
                 <br>
                 Developed by Saketh
             </p>
-            <ClientOnly>
+            <DevOnly>
                 <button class="btn btn-sm text-gray-400 hover:text-gray-300" @click="update">Force Update Data</button>
-
-            </ClientOnly>
+            </DevOnly>
         </aside>
         <nav>
             <h1 class="footer-title">Explore</h1>
             <a class="link hover:text-blue-500 duration-200 no-underline">About Us</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Events</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Newsletter</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Contact</a>
+            <a class="link hover:text-blue-500 duration-200 no-underline">Officers</a>
+            <a class="link hover:text-blue-500 duration-200 no-underline">Blog</a>
+            <a class="link hover:text-blue-500 duration-200 no-underline" href="/#contact">Contact</a>
         </nav>
         <nav>
             <h1 class="footer-title">Events</h1>

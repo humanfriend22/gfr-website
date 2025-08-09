@@ -25,11 +25,3 @@ if (import.meta.env.DEV) {
         <ToastContainer />
     </NuxtLayout>
 </template>
-
-<style>
-/* SIZING DEBUG */
-
-/* * {
-    outline: 1px solid red;
-} */
-</style>

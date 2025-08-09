@@ -16,14 +16,13 @@ function handleLoginClick() {
 <template>
     <PageContainer>
         <template #links>
-            <HeaderLink to="/about">About</HeaderLink>
             <HeaderLink to="/teams">Teams</HeaderLink>
             <div class="dropdown dropdown-hover">
                 <div>
                     <HeaderLink>Programs</HeaderLink>
                     <div tabindex="0" class="dropdown-content p-0 gap-0">
                         <ClientOnly>
-                            <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-40 mt-1 p-2 shadow-sm">
+                            <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-max mt-1.5 p-2 shadow-sm">
                                 <HeaderLink v-for="blog of programBlogs" :to="'/blog/' + blog.id">{{ blog.title }}</HeaderLink>
                             </div>
                         </ClientOnly>
@@ -33,6 +32,7 @@ function handleLoginClick() {
             <HeaderLink to="/blog">Blog</HeaderLink>
             <HeaderLink to="/officers">Officers</HeaderLink>
             <HeaderLink to="/sponsor">Sponsor</HeaderLink>
+            <HeaderLink to="/#contact">Contact</HeaderLink>
             <ClientOnly>
                 <HeaderLink @click="handleLoginClick" class="invisible md:visible">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>
             </ClientOnly>

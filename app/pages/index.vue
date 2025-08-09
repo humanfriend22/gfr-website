@@ -22,7 +22,7 @@
                 </ClientOnly>
             </Hero>
         </Section>
-        <Section class="px-5 md:px-20 mb-30" id="programs">
+        <Section class="px-5 md:px-20" id="programs">
             <h1 class="text-4xl text-center font-bold mb-15">
                 Our <span class="gfr-gradient">Programs</span>
             </h1>
@@ -49,7 +49,7 @@
             </ClientOnly>
         </Section>
         <Section class="flex flex-col justify-center items-center w-full" id="by-the-numbers">
-            <h1 class="text-4xl text-center font-bold mb-15">
+            <h1 class="text-4xl text-center font-bold mt-30 mb-15">
                 <span class="gfr-gradient">By The Numbers</span>
             </h1>
 
@@ -83,6 +83,24 @@
             <ClientOnly>
                 <JoinUsStepsContent />
             </ClientOnly>
+        </Section>
+        <Section class="max-w-3xl mx-auto mb-30" id="join-us">
+            <h1 class="text-4xl text-center font-bold mb-10">
+                <span class="gfr-gradient">Contact</span>
+            </h1>
+            <div>
+                <p class="text-xl text-center">
+                    We'd love to get in touch! We check our email regularly and is our prefered means of communication. If you are a student, check out our Discord server.
+                </p>
+                <div class="mt-10 mx-auto w-fit grid gap-2 grid-cols-2">
+                    <div>Club President:</div>
+                    <CopyText text="idk">email goes here</CopyText>
+                    <div>Club Vice President:</div>
+                    <CopyText text="idk">email goes here</CopyText>
+                    <div>Club Advisor:</div>
+                    <CopyText text="idk">email goes here</CopyText>
+                </div>
+            </div>
         </Section>
     </div>
 </template>

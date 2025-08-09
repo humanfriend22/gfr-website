@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         to.path.startsWith("/admin")
     ) {
         const params = new URLSearchParams({
-            error: "unauthenticated (please log in)",
+            error: "unauthorized",
         });
         return navigateTo(`/?` + params.toString());
     }
