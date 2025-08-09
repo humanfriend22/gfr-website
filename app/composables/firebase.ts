@@ -380,7 +380,7 @@ export async function fetchBlogContent(
     return blogContents.value[blogId];
 }
 export const programBlogs = computed(() => {
-    return blogs.value.filter((blog) => site.value.programs.includes(blog.id));
+    return blogs.value.filter((blog) => site.value.programs?.includes(blog.id));
 });
 
 // CLIENT SIDE PLUGIN ONLY FUNCTION (ensures is only called once upon Nuxt app startup)
