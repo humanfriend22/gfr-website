@@ -9,7 +9,10 @@
 
         <!-- Desktop -->
         <div id="links" class="ml-auto items-center justify-end hidden lg:flex gap-8">
-            <slot></slot>
+
+            <ClientOnly>
+                <slot></slot>
+            </ClientOnly>
         </div>
 
         <!-- Mobile -->

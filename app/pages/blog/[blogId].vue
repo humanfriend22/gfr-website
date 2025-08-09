@@ -25,6 +25,6 @@ onMounted(async () => {
 
 <template>
     <Section>
-        <BlogDisplay :blog="blog" :content="content" :width-percentage="40" />
+        <BlogDisplay :blog="blog" :content="content" class="w-5/6 md:w-3/5" />
     </Section>
 </template>

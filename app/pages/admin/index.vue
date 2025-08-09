@@ -61,7 +61,7 @@ function launchEditStepsModal() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="[i] of site.programs.entries()">
+                                    <tr v-for="[i] of site.programs?.entries()">
                                         <th>{{ i + 1 }}</th>
                                         <td><input type="text" placeholder="Type here" class="input" v-model="site.programs[i]" :disabled="i > 0 && site.programs[i - 1] === ''" /></td>
                                     </tr>

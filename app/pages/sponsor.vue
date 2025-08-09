@@ -25,7 +25,7 @@ const tiers = [
 
 <template>
     <div>
-        <Section class="flex flex-col justify-center items-center min-h-screen" id="home">
+        <Section class="flex flex-col justify-center items-center min-h-screen" id="sponsor">
             <Hero class="mb-30">
                 <template v-slot:title>
 
@@ -44,7 +44,7 @@ const tiers = [
                 </ClientOnly>
             </Hero>
         </Section>
-        <Section>
+        <Section class="mb-30" id="tiers">
             <h1 class="text-4xl text-center font-bold mb-15">
                 Sponsorship <span class="gfr-gradient">Tiers</span>
             </h1>
@@ -66,17 +66,7 @@ const tiers = [
                     </div>
                 </div>
             </div>
-            <!-- <div class="flex flex-row mx-30">
-                <div class="debug h-[300px] flex-1"></div>
-                <div class="debug h-[300px] w-5/12 grid grid-cols-3">
-                    <div class="" v-for="i in Array(3)">
-                        <div class="py-5 bg-yellow-400 flex flex-col justify-center items-center text-xl font-semibold">
-                            Gold
-                        </div>
-                        <div></div>
-                    </div>
-                </div>
-            </div> -->
+
         </Section>
     </div>
 </template>

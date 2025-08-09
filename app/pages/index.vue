@@ -28,7 +28,7 @@
             </h1>
             <ClientOnly>
                 <div class="grid md:grid-cols-2 gap-5">
-                    <div v-for="blog of programBlogs"
+                    <div v-for="blog of programBlogs" @click="navigateTo('/blog/' + blog.id)"
                         class="h-[250px] md:h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
                         <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
                             <NuxtImg :src="blog.image" class="h-full w-full object-cover" />
@@ -37,13 +37,13 @@
                             <h2 class="text-2xl font-bold text-white mb-2">{{ blog.title }}</h2>
                             <p class="text-gray-300 text-center text-sm">{{ blog.description }}</p>
                         </div>
-                        <svg @click="navigateTo('/blog/' + blog.id)" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
+                        <!-- <svg @click="navigateTo('/blog/' + blog.id)" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
                             class="absolute right-5 bottom-3 h-8 w-8 outlinedText md:h-10 md:w-10 opacity-0 group-hover:opacity-100 duration-400 cursor-pointer z-40" height="1em" width="1em"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z">
                             </path>
-                        </svg>
+                        </svg> -->
                     </div>
                 </div>
             </ClientOnly>
