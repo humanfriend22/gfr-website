@@ -24,20 +24,20 @@ async function update() {
             </ClientOnly>
         </aside>
         <nav>
-            <h6 class="footer-title">Explore</h6>
+            <h1 class="footer-title">Explore</h1>
             <a class="link hover:text-blue-500 duration-200 no-underline">About Us</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Events</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Newsletter</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Contact</a>
         </nav>
         <nav>
-            <h6 class="footer-title">Events</h6>
+            <h1 class="footer-title">Events</h1>
             <a class="link hover:text-blue-500 duration-200 no-underline">Game Day</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Battle of the Bay</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Girl Powered</a>
         </nav>
         <nav>
-            <h6 class="footer-title">Teams</h6>
+            <h1 class="footer-title">Teams</h1>
             <a class="link hover:text-blue-500 duration-200 no-underline">Resurgence</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Kittens</a>
             <a class="link hover:text-blue-500 duration-200 no-underline">Ascension</a>

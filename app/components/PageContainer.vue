@@ -16,7 +16,7 @@ function closeDrawer() {
 
 <template>
     <div class="drawer drawer-end h-screen w-screen">
-        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" />
+        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" />
         <div class="drawer-content">
             <div class="min-h-screen">
                 <Header>
@@ -30,7 +30,7 @@ function closeDrawer() {
             </div>
         </div>
         <div class="drawer-side drawer-end z-60">
-            <label for="mobile-links-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+            <!-- <label for="mobile-links-drawer" aria-label="close sidebar" class="drawer-overlay"></label> -->
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <li v-for="(vnode, index) in $slots.links?.()" :key="index" @click="closeDrawer">
                     <component :is="vnode" />
