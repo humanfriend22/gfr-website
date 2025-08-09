@@ -1,16 +1,4 @@
 <script setup lang="ts">
-import { formatSeasonId } from '~/utils';
-import { updateLatestSeason, latestSeason } from '~/composables/robotevents';
-import {
-    seasons,
-    currentSeason,
-    currentUser,
-    isCurrentPresident,
-    updateUsers,
-    updateSeasons,
-    userFromUID
-} from '~/composables/firebase';
-
 definePageMeta({
     layout: 'admin'
 });
@@ -61,7 +49,7 @@ function showCreateTeamModal() {
 
     allowedLetters.value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(letter => !currentSeason.value?.teams.some(team => team.letter === letter));
     currentEditingTeam.value = {
-        letter: allowedLetters.value[0],
+        letter: allowedLetters.value[0]!,
         name: '',
         reId: 0,
         logo: '',
@@ -109,7 +97,11 @@ function showSeasonModal(mode: 'create' | 'edit') {
 
 const viewableSeasons = computed(() => seasons.value
     .filter(season => (season.id === currentSeason.value?.id || isCurrentPresident.value))
-    .sort((a, b) => b.id.split('-')[2].localeCompare(a.id.split('-')[2])));
+    .sort((a, b) => {
+        const aPart = a.id.split('-')[2] ?? '';
+        const bPart = b.id.split('-')[2] ?? '';
+        return bPart.localeCompare(aPart);
+    }));
 
 onMounted(async () => {
     await Promise.all([
@@ -128,11 +120,7 @@ onMounted(async () => {
         <ClientOnly>
             <ModalsEditSeason :season="editingSeason" :creating="creatingSeason" v-if="isCurrentPresident" />
             <ModalsEditTeam :team="currentEditingTeam" :seasonId="editingSeasonId" :creating="creatingTeam" :allowed-letters="allowedLetters" />
-        </ClientOnly>
-        <!-- <h1 class="text-2xl font-bold">Teams</h1>
-        <p class="text-gray-400">Edit your competition team(s).</p> -->
 
-        <ClientOnly>
             <div class="flex flex-row gap-2">
                 <button class="btn w-fit" @click="showSeasonModal('edit')" v-if="isCurrentPresident">
                     Edit Season
@@ -164,5 +152,3 @@ onMounted(async () => {
         </ClientOnly>
     </Section>
 </template>
-
-<style scoped></style>

@@ -15,7 +15,7 @@ onMounted(async () => {
             <Divider />
 
             <div class=" lg:flex flex-col w-full h-fit">
-                <BlogPreviewCard :index="blogs.indexOf(blog)" :blog="blog" v-for="blog of blogs" :click-handler="(blog) => navigateTo('/blog/' + blog.id)" />
+                <BlogPreviewCard :index="blogs.indexOf(blog)" :blog="blog" v-for="blog of blogs" :click-handler="(blog: Blog) => navigateTo('/blog/' + blog.id)" />
             </div>
         </div>
     </Section>
