@@ -4,6 +4,7 @@ import {
     ref as storageRef,
     uploadBytes,
 } from "firebase/storage";
+import reduce from "image-blob-reduce";
 
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -12,7 +13,7 @@ export const capitalize = (str: string) => {
 export const formatCamelCase = (str: string) => {
     // Space, comma, or dash
     const words = str.split(/[ ,\-]+/);
-    return words[0].toLowerCase() + words.slice(1).join("");
+    return words[0]?.toLowerCase() + words.slice(1).join("");
 };
 
 export async function isRealWord(word: string) {
@@ -31,8 +32,8 @@ export async function isRealWord(word: string) {
 export function formatSeasonId(id: string, includeDate: boolean = true) {
     // e.g. "high-stakes-2425" -> "High Stakes 24-25"
     const parts = id.split("-");
-    let s = `${(capitalize(parts[0]))} ${capitalize(parts[1])}`;
-    if (includeDate) s += ` ${parts[2].slice(0, 2)}-${parts[2].slice(2)}`;
+    let s = `${(capitalize(parts[0] || ""))} ${capitalize(parts[1] || "")}`;
+    if (includeDate) s += ` ${parts[2]?.slice(0, 2)}-${parts[2]?.slice(2)}`;
     return s;
 }
 
@@ -47,7 +48,7 @@ export function randomLetter(exclude: string[] = []): string {
     }
 
     const index = Math.floor(Math.random() * filtered.length);
-    return filtered[index];
+    return filtered[index]!;
 }
 
 export function formatDate(date: Date, includeTime: boolean = false) {
@@ -68,6 +69,7 @@ export function formatDate(date: Date, includeTime: boolean = false) {
     }
 }
 
+const reducer = reduce();
 /**
  * Uploads an image to Firebase Storage and returns the download URL.
  * @param image The image input element to upload (useTemplateRef on a file input)
@@ -83,7 +85,12 @@ export async function uploadImage(
             storage.value!,
             path,
         );
-        await uploadBytes(reference, file);
+        await uploadBytes(
+            reference,
+            await reducer.toBlob(file, {
+                max: 1024,
+            }),
+        );
         return await getDownloadURL(reference);
     }
     return "";
@@ -99,7 +106,7 @@ export function readObjectURLFromImage(
 ) {
     const files = image.value?.files;
     if (files && files.length > 0) {
-        return URL.createObjectURL(files[0]);
+        return URL.createObjectURL(files[0] as Blob);
     }
     return "";
 }

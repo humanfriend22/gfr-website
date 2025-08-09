@@ -4,7 +4,6 @@ import {
     browserSessionPersistence,
     connectAuthEmulator,
     getAuth,
-    getRedirectResult,
     GoogleAuthProvider,
     setPersistence,
     signInWithPopup,
@@ -23,24 +22,15 @@ import {
     getDoc as originalGetDoc,
     getDocs,
     getFirestore,
-    initializeFirestore,
-    persistentLocalCache,
-    persistentMultipleTabManager,
-    Query,
-    QuerySnapshot,
-    Timestamp,
 } from "firebase/firestore";
 import { useLocalStorage } from "@vueuse/core";
 import {
     connectStorageEmulator,
     type FirebaseStorage,
-    getDownloadURL,
     getMetadata,
     getStorage,
     listAll,
     ref as storageRef,
-    type StorageReference,
-    uploadBytes,
 } from "firebase/storage";
 import type { ShallowRef } from "vue";
 import type { Season, Site, Team, User } from "./types";
