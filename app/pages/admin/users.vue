@@ -8,7 +8,8 @@ const editingUser = ref<User>({
     name: '',
     email: '',
     graduatingYear: 2027,
-    bio: ''
+    bio: '',
+    pfp: ''
 });
 
 function showEditUserModal(user: User) {
@@ -25,8 +26,8 @@ const sortedUsers = computed(() => {
 
 onMounted(async () => {
     await Promise.all([
-        updateUsers(),
-        updateSeasons()
+        updateUsers(true),
+        updateSeasons(true)
     ]);
 });
 </script>

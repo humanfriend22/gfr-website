@@ -14,8 +14,8 @@ const season = computed(() => {
                 </div>
                 <Divider />
                 <ClientOnly>
-                    <div class="grid grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2 max-h-[60vh]" v-if="season">
-                        <NuxtLink v-for="team of season.teams" :to="'/teams/' + (season.id) + '/' + team.letter">
+                    <div class="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-2" v-if="season">
+                        <NuxtLink v-for="team of season.teams" :to="'/teams/' + (season.id) + '/' + team.letter" class=" max-h-[180px]">
                             <TeamCard :team="team" />
                         </NuxtLink>
                     </div>

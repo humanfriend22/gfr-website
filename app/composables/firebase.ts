@@ -137,6 +137,7 @@ export async function updateFiles(force: boolean = false) {
 }
 
 // USERS DATA
+let userLoadFailCount = 0;
 export const users = useLocalStorage<User[]>("app-users", []);
 /**
  * Doesn't make sense to ship with the site but is pretty crucial and so it is fetched on app startup but cached.
@@ -167,6 +168,12 @@ export function userFromUID(uid: string) {
     const user = users.value.find((user) => user.uid === uid);
     if (!user) {
         console.warn(`Woah, that user doesnt exist! (${uid})`);
+        userLoadFailCount++;
+        if (userLoadFailCount > 10) {
+            console.log("User load failed too many times, updating users...");
+            updateUsers(true);
+            userLoadFailCount = -10000000000;
+        }
         return null;
     }
     return user;

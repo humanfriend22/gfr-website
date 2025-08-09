@@ -10,6 +10,11 @@ onMounted(async () => {
         navigateTo('/blog');
         return;
     };
+    window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    })
     const markdown = await fetchBlogContent(blog.value.id, blog.value.content);
     content.value = await marked.parse(markdown, {
         gfm: true,

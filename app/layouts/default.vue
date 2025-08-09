@@ -9,6 +9,8 @@ function handleLoginClick() {
         }
     } else login();
 };
+
+
 </script>
 
 <template>
@@ -20,18 +22,19 @@ function handleLoginClick() {
                 <div>
                     <HeaderLink>Programs</HeaderLink>
                     <div tabindex="0" class="dropdown-content p-0 gap-0">
-                        <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-40 mt-1 p-2 shadow-sm">
-                            <HeaderLink v-for="i in Array(4)">Link</HeaderLink>
-                        </div>
+                        <ClientOnly>
+                            <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-40 mt-1 p-2 shadow-sm">
+                                <HeaderLink v-for="blog of programBlogs" :to="'/blog/' + blog.id">{{ blog.title }}</HeaderLink>
+                            </div>
+                        </ClientOnly>
                     </div>
-
                 </div>
             </div>
             <HeaderLink to="/blog">Blog</HeaderLink>
             <HeaderLink to="/officers">Officers</HeaderLink>
             <HeaderLink to="/sponsor">Sponsor</HeaderLink>
             <ClientOnly>
-                <HeaderLink @click="handleLoginClick">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>
+                <HeaderLink @click="handleLoginClick" class="invisible md:visible">{{ currentUser ? 'Account' : 'Login' }}</HeaderLink>
             </ClientOnly>
         </template>
         <dialog id="edit_user_modal" class="modal">

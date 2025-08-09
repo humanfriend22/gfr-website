@@ -4,8 +4,8 @@
 
 <template>
     <div>
-        <Section class="flex flex-col justify-center items-center min-h-screen" id="home">
-            <Hero class="mb-30">
+        <Section class="flex flex-col items-center min-h-screen pt-[10vh] md:pt-[25vh]" id="home">
+            <Hero>
                 <template v-slot:title>
                     Dublin High's
                     <span class="gfr-gradient">Gael Force Robotics</span>
@@ -22,28 +22,31 @@
                 </ClientOnly>
             </Hero>
         </Section>
-        <Section class="px-20 mb-30" id="programs">
+        <Section class="px-5 md:px-20 mb-30" id="programs">
             <h1 class="text-4xl text-center font-bold mb-15">
                 Our <span class="gfr-gradient">Programs</span>
             </h1>
-            <div class="grid grid-cols-2 gap-5">
-                <div v-for="blog of programBlogs" class="h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
-                    <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
-                        <NuxtImg :src="blog.image" class="h-full w-full object-cover" />
+            <ClientOnly>
+                <div class="grid md:grid-cols-2 gap-5">
+                    <div v-for="blog of programBlogs"
+                        class="h-[250px] md:h-[400px] relative group overflow-hidden w-full border-4 p-4 rounded-box border-base-200/90 bg-cover hover:border-gfr-blue  duration-400">
+                        <div class="w-full h-full absolute left-0 top-0 opacity-40 group-hover:opacity-60 duration-400">
+                            <NuxtImg :src="blog.image" class="h-full w-full object-cover" />
+                        </div>
+                        <div class="h-full w-full flex flex-col justify-center items-center relative z-10">
+                            <h2 class="text-2xl font-bold text-white mb-2">{{ blog.title }}</h2>
+                            <p class="text-gray-300 text-center text-sm">{{ blog.description }}</p>
+                        </div>
+                        <svg @click="navigateTo('/blog/' + blog.id)" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
+                            class="absolute right-5 bottom-3 h-8 w-8 outlinedText md:h-10 md:w-10 opacity-0 group-hover:opacity-100 duration-400 cursor-pointer z-40" height="1em" width="1em"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z">
+                            </path>
+                        </svg>
                     </div>
-                    <div class="h-full w-full flex flex-col justify-center items-center relative z-10">
-                        <h2 class="text-2xl font-bold text-white mb-2">{{ blog.title }}</h2>
-                        <p class="text-gray-300 text-center">{{ blog.description }}</p>
-                    </div>
-                    <svg @click="navigateTo('/blog/' + blog.id)" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"
-                        class="absolute right-5 bottom-3 h-8 w-8 outlinedText md:h-10 md:w-10 opacity-0 group-hover:opacity-100 duration-400 cursor-pointer z-40" height="1em" width="1em"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z">
-                        </path>
-                    </svg>
                 </div>
-            </div>
+            </ClientOnly>
         </Section>
         <Section class="flex flex-col justify-center items-center w-full" id="by-the-numbers">
             <h1 class="text-4xl text-center font-bold mb-15">
