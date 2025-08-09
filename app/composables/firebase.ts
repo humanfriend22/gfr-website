@@ -362,18 +362,10 @@ export async function updateBlogs(force: boolean = false) {
     blogs.value = snapshot.docs.map((doc) => {
         const data = doc.data();
         return {
+            ...data,
             id: doc.id,
-            title: data.title,
-            author: data.author,
-            description: data.description,
-            content: data.content,
-            image: data.image,
-            images: data.images,
             date: data.date.toDate(),
-            location: data.location,
-            signup_link: data.signup_link,
-            volunteer_link: data.volunteer_link,
-        };
+        } as Blog;
     });
 }
 export async function fetchBlogContent(
