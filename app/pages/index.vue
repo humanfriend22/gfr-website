@@ -17,7 +17,7 @@
                 </template>
                 <ClientOnly>
                     <Tilt :repel-at-mouse="false" :horizontal-tilt-angle="20" :vertical-tilt-angle="20">
-                        <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="site.homeImage" alt="Homepage image" priority />
+                        <NuxtImg class="rounded-lg ring-4 ring-gray-700" :src="site.homeImage" :style="site.homeImage !== '' ? 'width: 100vh;' : ''" alt="Homepage image" priority />
                     </Tilt>
                 </ClientOnly>
             </Hero>

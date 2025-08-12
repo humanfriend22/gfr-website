@@ -24,7 +24,7 @@ defineProps<{
             </div>
         </div>
         <div>
-            <NuxtImg :src="blog?.image" alt="blog image preview" class="h-fit rounded-box" />
+            <NuxtImg :src="blog?.image" alt="blog image preview" class="h-fit rounded-box w-full" />
         </div>
         <div class="prose lg:prose-xl w-full" v-html="content"></div>
     </div>

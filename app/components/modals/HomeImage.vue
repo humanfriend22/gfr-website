@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import { doc, updateDoc } from 'firebase/firestore';
-import {
-    getDownloadURL,
-    uploadBytes,
-    ref as storageRef, type StorageReference,
-} from 'firebase/storage';
 
 const { src } = defineProps<{
     src: string;
@@ -13,10 +8,7 @@ const { src } = defineProps<{
 const input = useTemplateRef('input');
 const previewSrc = ref(src);
 function updatePreview() {
-    const files = input.value?.files;
-    if (files && files.length > 0) {
-        previewSrc.value = URL.createObjectURL(files[0]);
-    };
+    previewSrc.value = readObjectURLFromImage(input);
 };
 
 const saving = ref(false);
@@ -33,7 +25,7 @@ async function save() {
         // const file = input.value.files[0];
         // const reference = storageRef(storage.value!, `site/home.` + file.name.split('.').pop());
         // await uploadBytes(reference, file);
-        previewSrc.value = await uploadImage(input, `site/home`);
+        previewSrc.value = await uploadImage(input, `site/home`, 700);
         await updateDoc(doc(firestore.value!, 'site', 'site'), {
             homeImage: previewSrc.value,
         });
