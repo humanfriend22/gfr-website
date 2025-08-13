@@ -4,6 +4,17 @@ defineProps<{
     class?: string;
     message?: string;
 }>();
+
+const router = useRouter();
+
+onMounted(() => {
+    const element = document.querySelector(
+        "section" + router.currentRoute.value.hash,
+    ) as HTMLElement;
+    if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+    }
+})
 </script>
 
 <template>

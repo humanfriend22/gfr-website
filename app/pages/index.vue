@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 </script>
 
 <template>
@@ -84,7 +83,7 @@
                 <JoinUsStepsContent />
             </ClientOnly>
         </Section>
-        <Section class="max-w-3xl mx-auto mb-30" id="join-us">
+        <Section class="max-w-3xl mx-auto mb-30" id="contact">
             <h1 class="text-4xl text-center font-bold mb-10">
                 <span class="gfr-gradient">Contact</span>
             </h1>
