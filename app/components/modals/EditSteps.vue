@@ -21,6 +21,14 @@ async function save() {
         saving.value = false;
     }
 }
+
+onMounted(() => {
+    if (site.value.steps.length > 0 && site.value.steps.length < 11) {
+        for (let i = site.value.steps.length; i < 11; i++) {
+            site.value.steps.push({ title: '', markdown: '' });
+        }
+    }
+});
 </script>
 
 <template>
@@ -42,7 +50,7 @@ async function save() {
                         <tbody>
                             <tr v-for="(step, index) in site.steps" :key="index">
                                 <th>{{ index }}</th>
-                                <td><input type="text" placeholder="Type here" class="input" v-model="step.title" :disabled="index > 1 && site.steps[index - 1].title === ''" /></td>
+                                <td><input type="text" placeholder="Type here" class="input" v-model="step.title" :disabled="index > 1 && site.steps[index - 1]!.title === ''" /></td>
                                 <td><textarea class="textarea" v-model="step.markdown" :disabled="step.title === ''"></textarea></td>
                             </tr>
                         </tbody>
