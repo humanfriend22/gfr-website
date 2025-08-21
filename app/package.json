@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "nuxt build --prerender",
+        "build": "GIT_COMMIT=$(git rev-parse --short HEAD) nuxt build --prerender",
         "build:ssr": "nuxt build",
         "dev": "nuxt dev",
         "dev:host": "nuxt dev --host",

@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     css: ["@/assets/app.css"],
     runtimeConfig: {
         public: {
+            gitCommit: process.env.GIT_COMMIT || "dev",
             // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
             firebase: {
                 apiKey: "AIzaSyDFPQpKDLQt77aN4jtSDSGASQtLiqOl7Qk",
@@ -29,8 +30,5 @@ export default defineNuxtConfig({
     },
     dir: {
         public: "public",
-    },
-    routeRules: {
-        "/blog/**": { prerender: true },
     },
 });

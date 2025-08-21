@@ -1,4 +1,12 @@
 <script setup lang="ts">
+onMounted(() => {
+    const commit = useRuntimeConfig().public.gitCommit;
+    console.log('Git Commit:', commit);
+    if (commit !== 'dev' && commit.length > 0) {
+        console.warn('COMMIT CHANGED. ERASING LOCAL STORAGE');
+        localStorage.clear();
+    }
+})
 </script>
 
 <template>
