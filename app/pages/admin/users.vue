@@ -13,6 +13,8 @@ const editingUser = ref<User>({
 });
 
 function showEditUserModal(user: User) {
+    if (!isCurrentPresident.value) return;
+
     editingUser.value = user;
     const modal = document.getElementById('edit_user_modal') as HTMLDialogElement;
     modal.showModal();

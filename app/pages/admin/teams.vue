@@ -34,7 +34,7 @@ const currentEditingTeam = ref<Team>({
 
 const editingSeasonId = ref('');
 function showEditTeamModal(season: Season, team: Team) {
-    if (!(season.officers.president === currentUser.value?.uid) && !(team.captains.includes(currentUser.value?.uid || ''))) return;
+    if (!isCurrentPresident.value && (captainOfTeam.value !== team.letter)) return;
 
     currentEditingTeam.value = { ...team };
     editingSeasonId.value = season.id;

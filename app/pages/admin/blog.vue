@@ -20,6 +20,10 @@ const editingBlog = ref<Blog>({
 const initialMarkdown = ref('');
 
 function launchCreateBlogModal() {
+    if (!isCurrentPresident.value
+        && !(currentOfficerPosition.value?.includes('pred'))
+        && !(currentOfficerPosition.value === 'secretary')) return;
+
     creating.value = true;
     editingBlog.value = {
         id: '', // Document IDs
@@ -40,6 +44,10 @@ function launchCreateBlogModal() {
 };
 
 async function launchEditBlogModal(blog: Blog) {
+    if (!isCurrentPresident.value
+        && !(currentOfficerPosition.value?.includes('pred'))
+        && !(currentOfficerPosition.value === 'secretary')) return;
+
     creating.value = false;
     editingBlog.value = { ...blog };
     const modal = document.getElementById('edit_blog_modal') as HTMLDialogElement;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getDownloadURL, getMetadata, listAll, ref as storageRef } from 'firebase/storage'
+import { getDownloadURL, ref as storageRef } from 'firebase/storage'
 import prettyBytes from 'pretty-bytes';
 
 definePageMeta({
@@ -52,7 +52,7 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="file of [...files, ...files, ...files]" :key="file.path" @click="fetchPreviewImage(file.path)">
+                    <tr v-for="file of files" :key="file.path" @click="fetchPreviewImage(file.path)">
                         <td class="underline hover:text-gfr-blue duration-300 cursor-pointer" onclick="image_preview.show()">{{ file.path }}</td>
                         <td class="min-w-32">{{ prettyBytes(file.size) }}<br /></td>
                         <td>{{ file.dateUploaded }}</td>

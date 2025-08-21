@@ -33,7 +33,7 @@ import {
     ref as storageRef,
 } from "firebase/storage";
 import type { ShallowRef } from "vue";
-import type { Season, Site, Team, User } from "./types";
+import type { Season, SeasonOfficerMap, Site, Team, User } from "./types";
 
 // LOG EVERY SINGLE FIRESTORE REQUEST
 export function getDoc<AppModelType, DbModelType extends DocumentData>(
@@ -288,13 +288,24 @@ export const captainOfTeam = computed<string | null>(() => {
 });
 
 // Officer position check
+export const currentOfficerPosition = computed(() => {
+    if (!currentUser.value) return null;
+    if (!currentSeason.value?.officers) return null;
+
+    const position = Object.entries(currentSeason.value.officers).find(
+        ([, uid]) => uid === currentUser.value!.uid,
+    );
+
+    return position ? position[0] as keyof SeasonOfficerMap : null;
+});
+
 export const isCurrentPresident = computed<boolean>(() => {
     if (!currentUser.value) return false;
     if (!currentSeason.value?.officers.president) return false;
 
     // Little backdoor
     return currentUser.value.uid === "h4OHCNqfnGNtePbgJFUhoJCGkL62" ||
-        currentUser.value.uid === currentSeason.value.officers.president;
+        currentOfficerPosition.value === "president";
 });
 
 /**

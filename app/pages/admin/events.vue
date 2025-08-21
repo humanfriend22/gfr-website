@@ -44,7 +44,8 @@ function launchEditEventModal(event: WebsiteEvent) {
 };
 
 onMounted(async () => {
-    await updateEvents(true);
+    navigateTo('/admin');
+    // await updateEvents(true);
 });
 </script>
 
