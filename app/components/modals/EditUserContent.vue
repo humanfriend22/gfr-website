@@ -57,8 +57,8 @@ async function save() {
         // The user's data
         updateDoc(userDoc, {
             name: user.name,
-            graduatingYear: user.graduatingYear,
-            bio: user.bio,
+            graduatingYear: user.graduatingYear || 2027,
+            bio: user.bio || '',
             pfp: pfpUrl,
         }),
         updateProfile(currentUser.value!, {
@@ -130,7 +130,7 @@ onMounted(() => {
                         <div class="label">This will be shown on the officers page.</div>
                     </fieldset>
                 </div>
-                <fieldset class="fieldset">
+                <fieldset class="fieldset" v-if="isForOfficer">
                     <legend class="fieldset-legend">Profile Picture</legend>
                     <input type="file" accept=".png,.jpg,.jpeg,.webp" class="file-input w-full" ref="pfp" @change="updatePfpPreview" />
                     <p class="label">Preview will update below.</p>

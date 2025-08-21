@@ -37,7 +37,7 @@ const tiers = [
                     We are a <span class="font-extrabold">student-run</span> robotics club at Dublin High School that competes in the VEX Robotics Competition.
                     Our community is diverse, inclusive, and welcoming to all students interested in STEM, exploring who they are, or just looking to have fun.
                 </template>
-                <ClientOnly>
+                <ClientOnly class="hidden md:block">
                     <div>
                         <iframe src="https://drive.google.com/file/d/1MKBLPuLKCvSJ0V5Ne6pIyJen5JrRwoFl/preview" width="600" height="500" class="px-3" ref="iframe"></iframe>
                     </div>
@@ -49,7 +49,7 @@ const tiers = [
                 Sponsorship <span class="gfr-gradient">Tiers</span>
             </h1>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <div :class="`flex flex-col pt-20 items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-${tier.color} duration-400 p-4`"
+                <div :class="`flex flex-col pt-20 mx-10 items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-${tier.color} duration-400 p-4`"
                     v-for="tier in tiers">
                     <Trophy :class="`w-12 h-12 text-${tier.color} mb-4`" />
                     <h3 :class="`text-xl font-bold text-${tier.color} mb-2`">{{ tier.name }}</h3>
