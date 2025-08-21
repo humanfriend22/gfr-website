@@ -68,11 +68,6 @@ function launchEditStepsModal() {
                                 </tbody>
                             </table>
                         </div>
-                        <div>
-                            <div class="h-fit">
-                                <join-us-steps-content />
-                            </div>
-                        </div>
                     </div>
                     <div>
                         <button class="btn bg-gfr-blue float-right" @click="saveSite" :disabled="savingSite">Save</button>
