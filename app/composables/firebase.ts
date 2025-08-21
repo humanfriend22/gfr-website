@@ -308,6 +308,13 @@ export const isCurrentPresident = computed<boolean>(() => {
         currentOfficerPosition.value === "president";
 });
 
+export const isCurrentPREDorSecretary = computed<boolean>(() => {
+    if (!currentUser.value) return false;
+    if (!currentSeason.value?.officers) return false;
+    return currentOfficerPosition.value?.includes("pred") ||
+        currentOfficerPosition.value === "secretary";
+});
+
 /**
  * Contains every user that can access the admin panel. All officers, captains have access by default.
  * To create more admin positions, add fields to the officers field in season documents. Function is isolated

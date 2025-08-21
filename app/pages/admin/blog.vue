@@ -20,9 +20,7 @@ const editingBlog = ref<Blog>({
 const initialMarkdown = ref('');
 
 function launchCreateBlogModal() {
-    if (!isCurrentPresident.value
-        && !(currentOfficerPosition.value?.includes('pred'))
-        && !(currentOfficerPosition.value === 'secretary')) return;
+    if (!isCurrentPresident.value && !isCurrentPREDorSecretary.value) return;
 
     creating.value = true;
     editingBlog.value = {
@@ -44,9 +42,8 @@ function launchCreateBlogModal() {
 };
 
 async function launchEditBlogModal(blog: Blog) {
-    if (!isCurrentPresident.value
-        && !(currentOfficerPosition.value?.includes('pred'))
-        && !(currentOfficerPosition.value === 'secretary')) return;
+    if (!isCurrentPresident.value && !isCurrentPREDorSecretary.value) return;
+
 
     creating.value = false;
     editingBlog.value = { ...blog };
