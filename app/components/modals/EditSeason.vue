@@ -11,7 +11,7 @@ const { season, creating } = defineProps<{
 const closeButton = useTemplateRef('close');
 const saving = ref(false);
 const errorMessage = computed(() => {
-    if (season.officers.president === '') return 'President is required!';
+    if (season.officers?.president === '') return 'President is required!';
     return '';
 });
 
@@ -36,7 +36,7 @@ function addOfficer(user: User) {
     // go to next officer
     const keys = Object.keys(season.officers) as (keyof Season['officers'])[];
     const i = keys.indexOf(currentOfficer.value);
-    currentOfficer.value = i < keys.length - 1 ? keys[i + 1] : 'president';
+    currentOfficer.value = (i < keys.length - 1) ? keys[i + 1] || 'president' : 'president';
     searchTerm.value = '';
 };
 

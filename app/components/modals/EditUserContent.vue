@@ -21,7 +21,7 @@ const userIsACaptain = computed(() => {
 });
 
 const isForOfficer = computed(() => {
-    if (!(forOwner || isCurrentPresident)) return false;
+    if (!(forOwner || isCurrentPresident.value) || !currentSeason.value) return false;
     for (const [key, value] of Object.entries(currentSeason.value.officers)) {
         if (value === user.uid) return key;
     }

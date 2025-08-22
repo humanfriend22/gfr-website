@@ -9,14 +9,23 @@ useSeoMeta({
     description: 'Gael Force Robotics is a high school VEX robotics team based in Dublin, California that has been competing since 2010. We are a student-led team that focuses on building robots, mentoring younger students, and giving back to the community.',
 });
 
-if (import.meta.env.DEV) {
-    onMounted(() => {
+const router = useRouter();
+onMounted(() => {
+    if (import.meta.env.DEV) {
         document.querySelector('.firebase-emulator-warning')?.addEventListener('click', event => {
             // @ts-ignore
             event.target.remove();
         });
-    });
-}
+    };
+
+    const { hash } = router.currentRoute.value;
+    const element = document.querySelector(
+        hash === '' ? '#banner' : router.currentRoute.value.hash,
+    ) as HTMLElement;
+    if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+    }
+})
 </script>
 
 <template>
