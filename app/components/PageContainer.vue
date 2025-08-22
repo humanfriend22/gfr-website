@@ -19,6 +19,9 @@ function closeDrawer() {
         <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" tabindex="-1" />
         <div class="drawer-content">
             <div class="min-h-screen">
+                <div class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerMarkdown !== ''">
+                    <p class="font-semibold banner-container" v-html="renderBannerMarkdown(site.bannerMarkdown)"></p>
+                </div>
                 <Header>
                     <slot name="links" />
                 </Header>
