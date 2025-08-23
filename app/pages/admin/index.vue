@@ -36,10 +36,10 @@ function launchEditStepsModal() {
         <h1 class="text-4xl font-bold">Welcome!</h1>
         <div class="flex flex-row gap-4">
             <ClientOnly>
-                <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData" class="h-180">
+                <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData" class="h-fit">
                     Manage Account
                 </ModalsEditUserContent>
-                <div class="w-130 h-180 box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentPREDorSecretary">
+                <div class="w-130 h-185 box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentPREDorSecretary">
                     <div>
                         <h1 class="font-bold">Site Settings</h1>
                         <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>
