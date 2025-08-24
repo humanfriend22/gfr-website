@@ -32,13 +32,17 @@ async function update() {
         </nav>
         <nav>
             <h1 class="footer-title">Programs & Events</h1>
-            <FooterLink v-for="program in programBlogs" :link="'/blog/' + program.id">
-                {{ program.title }}
-            </FooterLink>
+            <ClientOnly>
+                <FooterLink v-for="program in programBlogs" :link="'/blog/' + program.id">
+                    {{ program.title }}
+                </FooterLink>
+            </ClientOnly>
         </nav>
         <nav>
             <h1 class="footer-title">Teams</h1>
-            <FooterLink v-for="team of currentSeason.teams" :link="'/teams/' + currentSeason.id + '/' + team.letter">{{ team.name }}</FooterLink>
+            <ClientOnly>
+                <FooterLink v-for="team of currentSeason.teams" :link="'/teams/' + currentSeason.id + '/' + team.letter">{{ team.name }}</FooterLink>
+            </ClientOnly>
         </nav>
     </footer>
 </template>
