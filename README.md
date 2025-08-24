@@ -1,24 +1,24 @@
 # Gael Force Robotics Website
 
-This is the full codebase for the Gael Force Robotics Website. This page aims to
-outline the structure, functionality, and permissions on this website.
+This is the full codebase for the Gael Force Robotics Website. This design takes inspriation from [Lukas' original version](https://github.com/ItsJustLukas78/GFRWebsite) but makes it dynamic with a working backend. Instead of static data that only developers can modify, this web app encompasses a full fledged admin panel for the GFR officer board and captains. Here are a list of main features:
 
-One of the main features of this website is the ability to change the content of
-teams and events on the fly. However, to better balance the benefits of
-saturating with content before hand versus dynamically loading the content,
-every page has the ability to perform with 3 behaviors when it comes to content
-loading.
+- **Full landing page control**: presidents can edit the full-site banner, the main image, the `Programs` section, and the steps for the `Join Us` section.
+- **Fully dynamic officers page**: officers can set their profile picture and write descriptions of their goals on the board
+- **Dedicated Team Pages**: Captains can edit their team's roster, name, logo, and social links.
+- **Fully Functional Blog**: PREDs can write blogs with Markdown with a bonus functionality of 5 supplementary images seperate from the cover hosted in the sites file storage
+- **Sponsor page**: a full page dedicated to sponsors and supporting our work and GFR's club
 
-### 1. Fully Static (e.g. Home)
-
-For example, although admins can modify the image on the homepage, the changes
-will not be reflected until the site is completly rebuilt and redeployed.
-
-### 2. Hybrid (e.g. Blog Posts)
-
-These can be hydrated on build as much as possible but the site will also push
-any new blog posts and events after requesting the database.
-
-### 3. Fully Dynamic (Admin)
-
-Admin pages will always pull the latest data from the Database.
+## Technologies Used
+- Github Actions (click the actions tab on this repository to see all the auto deploys)
+- [RobotEvents API](https://www.robotevents.com/api/v2) (used to propagate team competition/award data)
+- [Firebase](https://firebase.google.com/products-build)
+  - Authentication (Google SSO)
+  - Firestore
+  - Firebase Storage
+  - Hosting
+  - Functions (initialize user document on signup)
+  - Emulators (see `tools/emulators/init.ts` to see the dev init code)
+- [Nuxt 4](https://nuxt.com/) (mainly 3 as 4 didn't come out until recently)
+- [TailwindCSS 4](https://tailwindcss.com/)
+- [DaisyUI 5](https://daisyui.com/)
+- Other minor dependencies in `package.json`
