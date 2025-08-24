@@ -49,7 +49,7 @@ const tiers = [
                 Sponsorship <span class="gfr-gradient">Tiers</span>
             </h1>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <div :class="`flex flex-col pt-20 mx-10 items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-${tier.color} duration-400 p-4`"
+                <div :class="`flex flex-col pt-20 mx-10 md:mx-0 items-center transition-colors group rounded-box border-4 select-none border-base-200/90 hover:border-${tier.color} duration-400 p-4`"
                     v-for="tier in tiers">
                     <Trophy :class="`w-12 h-12 text-${tier.color} mb-4`" />
                     <h3 :class="`text-xl font-bold text-${tier.color} mb-2`">{{ tier.name }}</h3>
