@@ -28,6 +28,9 @@
 @source inline("hover:border-yellow-500");
 @source inline("hover:border-zinc-400");
 @source inline("hover:border-amber-600");
+@source inline("alert");
+@source inline("alert-info");
+@source inline("w-{1..9}");
 
 html,
 body {

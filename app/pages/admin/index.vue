@@ -39,9 +39,9 @@ function launchEditStepsModal() {
                 <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData" class="h-fit">
                     Manage Account
                 </ModalsEditUserContent>
-                <div class="w-130 h-185 box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentPREDorSecretary">
+                <div class="w-130 h-fit box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentPREDorSecretary">
                     <div>
-                        <h1 class="font-bold">Site Settings</h1>
+                        <h1 class="font-bold">Landing Page</h1>
                         <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend">Banner Markdown</legend>
@@ -68,6 +68,30 @@ function launchEditStepsModal() {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div>
+                        <button class="btn bg-gfr-blue float-right" @click="saveSite" :disabled="savingSite">Save</button>
+                    </div>
+                </div>
+                <div class="w-130 h-fit box flex flex-col justify-between" v-if="false && isCurrentPresident || isCurrentPREDorSecretary">
+                    <div>
+                        <h1 class="font-bold">Contact Info</h1>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Club Email</legend>
+                            <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                        </fieldset>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">President Email</legend>
+                            <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                        </fieldset>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Vice President Email</legend>
+                            <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                        </fieldset>
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Club Advisor</legend>
+                            <input type="text" class="input" placeholder="e.g. **Bold** *Italics*" v-model="site.bannerMarkdown" />
+                        </fieldset>
                     </div>
                     <div>
                         <button class="btn bg-gfr-blue float-right" @click="saveSite" :disabled="savingSite">Save</button>

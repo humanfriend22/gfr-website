@@ -5,6 +5,7 @@ import {
     uploadBytes,
 } from "firebase/storage";
 import reduce from "image-blob-reduce";
+import { useMediaQuery } from "@vueuse/core";
 
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -112,3 +113,15 @@ export function readObjectURLFromImage(
     }
     return "";
 }
+
+export const sortOfficerKeys = (officerKeys: (keyof SeasonOfficerMap)[]) => {
+    const order: (keyof SeasonOfficerMap)[] = [
+        "president",
+        "vice_president",
+        "secretary",
+        "treasurer",
+        "senior_pred",
+        "junior_pred",
+    ];
+    return officerKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+};

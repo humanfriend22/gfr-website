@@ -9,7 +9,7 @@ onMounted(() => {
         localStorage.clear();
         localStorage.setItem('commit', commit);
     }
-})
+});
 </script>
 
 <template>
@@ -102,13 +102,19 @@ onMounted(() => {
                 <p class="text-xl text-center">
                     We'd love to get in touch! We check our email regularly and is our prefered means of communication. If you are a student, check out our Discord server.
                 </p>
-                <div class="mt-10 mx-auto w-fit grid gap-2 grid-cols-2">
+                <div class="mt-10 mx-auto w-fit">
+                    <CopyText text="gaelforcerobotics@gmail.com" class="text-2xl" @click="() => launchToast({
+                        message: 'Copied email to clipboard!',
+                        purpose: 'info',
+                    })">gaelforcerobotics@gmail.com</CopyText>
+                    <!-- <div>Club Email:</div>
+                    <CopyText text="gaelforcerobotics@gmail.com">gaelforcerobotics@gmail.com</CopyText>
                     <div>Club President:</div>
-                    <CopyText text="idk">email goes here</CopyText>
+                    <CopyText text="idk">{{ userFromUID(currentSeason.officers.president)?.email }}</CopyText>
                     <div>Club Vice President:</div>
-                    <CopyText text="idk">email goes here</CopyText>
+                    <CopyText text="idk">{{ userFromUID(currentSeason.officers.vice_president)?.email }}</CopyText>
                     <div>Club Advisor:</div>
-                    <CopyText text="idk">email goes here</CopyText>
+                    <CopyText text="idk">email goes here</CopyText> -->
                 </div>
             </div>
         </Section>

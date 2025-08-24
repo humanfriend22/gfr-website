@@ -113,7 +113,8 @@ async function save() {
                         <legend class="fieldset-legend">Officers</legend>
                         <div class="flex flex-row gap-4">
                             <div role="tablist" class="tabs tabs-box flex flex-col h-65 w-40">
-                                <a v-for="key of Object.keys(season.officers)" role="tab" @click="() => { if (key === 'president' ? creating : true) currentOfficer = key as keyof Season['officers'] }"
+                                <a v-for="key of sortOfficerKeys(Object.keys(season.officers) as (keyof SeasonOfficerMap)[])" role="tab"
+                                    @click="() => { if (key === 'president' ? creating : true) currentOfficer = key as keyof Season['officers'] }"
                                     :class="'tab flex-1 ' + (key === currentOfficer ? 'tab-active' : '')">
                                     {{ officerTitleMap[key as keyof typeof officerTitleMap] }}
                                 </a>

@@ -16,7 +16,8 @@ const season = computed(() => currentSeason.value);
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 md:w-4/5 gap-1">
                     <ClientOnly>
-                        <OfficerCard v-for="[title, uid] of Object.entries(season.officers || {})" v-if="season" :user="userFromUID(uid)" :title="title as keyof Season['officers']" />
+                        <OfficerCard v-for="key of sortOfficerKeys(Object.keys(season.officers) as (keyof SeasonOfficerMap)[])" v-if="season" :user="userFromUID(season.officers[key])"
+                            :title="key as keyof Season['officers']" />
                     </ClientOnly>
                 </div>
             </div>

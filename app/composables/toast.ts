@@ -6,11 +6,10 @@ type Toast = {
 export const toasts = ref<Toast[]>([]);
 
 export function launchToast(toast: Toast) {
-    toasts.value.push();
+    toasts.value.push(toast);
     setTimeout(() => {
-        const index = toasts.value.indexOf(toast);
-        if (index !== -1) {
-            toasts.value.splice(index, 1);
-        }
+        toasts.value = toasts.value.filter((t) =>
+            !(t.message === toast.message && t.purpose === toast.purpose)
+        );
     }, 5000);
 }

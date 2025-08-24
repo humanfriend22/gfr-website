@@ -10,11 +10,17 @@ function closeDrawer() {
         drawer.checked = false;
     }
 }
+
+function checkForDrawerClose(event: MouseEvent) {
+    if (!(event.target as HTMLElement).closest('ul.menu')) {
+        closeDrawer();
+    }
+}
 </script>
 
 <template>
     <div class="drawer drawer-end h-screen w-screen">
-        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" tabindex="-1" />
+        <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" inert tabindex="-1" />
         <div class="drawer-content">
             <div class="min-h-screen">
                 <div id="banner" class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerMarkdown !== ''">
@@ -30,7 +36,7 @@ function closeDrawer() {
                 <Footer />
             </div>
         </div>
-        <div class="drawer-side drawer-end z-60">
+        <div class="drawer-side drawer-end z-60" @click="checkForDrawerClose">
             <!-- <label for="mobile-links-drawer" aria-label="close sidebar" class="drawer-overlay"></label> -->
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <li v-for="(vnode, index) in $slots.links?.()" :key="index" @click="closeDrawer">

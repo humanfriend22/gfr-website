@@ -18,19 +18,21 @@ onMounted(() => {
         });
     };
 
-    const { hash } = router.currentRoute.value;
-    const element = document.querySelector(
-        hash === '' ? '#banner' : router.currentRoute.value.hash,
-    ) as HTMLElement;
-    if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-    }
+    if (import.meta.env.PROD)
+        router.afterEach(() => {
+            const { hash } = router.currentRoute.value;
+            const element = document.querySelector(
+                hash === '' ? '#banner' : router.currentRoute.value.hash,
+            ) as HTMLElement;
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+            }
+        });
 })
 </script>
 
 <template>
     <NuxtLayout data-theme="dark">
         <NuxtPage></NuxtPage>
-        <ToastContainer />
     </NuxtLayout>
 </template>

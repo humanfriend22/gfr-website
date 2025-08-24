@@ -15,6 +15,8 @@ function handleLoginClick() {
 
 <template>
     <PageContainer>
+
+        <ToastContainer />
         <template #links>
             <HeaderLink to="/teams">Teams</HeaderLink>
             <div class="dropdown dropdown-hover">

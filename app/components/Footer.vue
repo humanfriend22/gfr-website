@@ -18,6 +18,7 @@ async function update() {
                 <br>
                 Developed by Saketh
             </p>
+            <Socials :width="6" :gap="2" discord="https://discord.gg/DShA3vWjGX" instagram="gfr5327" github="humanfriend22/gfr-website" />
             <DevOnly>
                 <button class="btn btn-sm text-gray-400 hover:text-gray-300" @click="update">Force Update Data</button>
             </DevOnly>

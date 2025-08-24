@@ -24,10 +24,7 @@ const errorMessage = computed(() => {
 const logo = useTemplateRef('logo');
 const logoPreviewSrc = ref(team.logo || '');
 function updateLogoPreview() {
-    const files = logo.value?.files;
-    if (files && files.length > 0) {
-        logoPreviewSrc.value = URL.createObjectURL(files[0]);
-    };
+    logoPreviewSrc.value = readObjectURLFromImage(logo);
 };
 
 // Captains & Members
@@ -82,6 +79,7 @@ async function save() {
         };
 
         const seasonIndex = seasons.value.findIndex(season => season.id === seasonId);
+        if (seasonIndex === -1) throw new Error('Season not found');
         const newTeam = {
             name: team.name === '' ? `5327${team.letter}` : team.name,
             letter: team.letter,
@@ -95,14 +93,14 @@ async function save() {
         };
         if (creating) {
             await setDoc(teamDoc, newTeam);
-            seasons.value[seasonIndex].teams.push(newTeam);
+            seasons.value[seasonIndex]!.teams.push(newTeam);
         } else {
             // @ts-ignore
             if (logoUrl === '') delete newTeam['logo'];
             await updateDoc(teamDoc, newTeam);
 
-            const teamIndex = seasons.value[seasonIndex].teams.findIndex(oldTeam => oldTeam.letter === team.letter);
-            seasons.value[seasonIndex].teams[teamIndex] = { ...team };
+            const teamIndex = seasons.value[seasonIndex]!.teams.findIndex(oldTeam => oldTeam.letter === team.letter);
+            seasons.value[seasonIndex]!.teams[teamIndex] = { ...team };
         };
 
         if (isCurrentPresident.value) {
@@ -155,7 +153,7 @@ async function updateREId() {
                     <div>
                         <fieldset class="fieldset" v-if="creating">
                             <legend class="fieldset-legend">Letter</legend>
-                            <select class="select" v-model="team.letter">
+                            <select class="select" v-model="team.letter" @change="() => updateREId()">
                                 <option disabled selected>Pick a team letter</option>
                                 <option v-for="letter of allowedLetters" :value="letter.toUpperCase()">{{ letter.toUpperCase() }}</option>
                             </select>

@@ -206,13 +206,13 @@ if ((await siteDocument.get()).exists) {
     console.log("Site document already exists, skipping creation.");
 } else {
     await lenientCreateDocument(siteDocument, {
-        homeImage: "/gfr-worlds-2023.jpeg",
+        homeImage: "",
         bannerMarkdown: "Welcome to the GFR Website",
         currentSeason: "high-stakes-2425",
         admins: [googlePresidentUser, googleCaptainUser],
         steps: Array(10).fill({
-            title: "",
-            markdown: "",
+            title: "Step title",
+            markdown: "some super duper long description ig idk",
         }),
         programs: Array(6).fill(""),
     });
