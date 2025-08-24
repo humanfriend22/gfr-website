@@ -34,7 +34,7 @@ onMounted(() => {
         </Section>
         <Section class="px-5 md:px-20" id="programs">
             <h1 class="text-4xl text-center font-bold mb-15">
-                Our <span class="gfr-gradient">Programs</span>
+                Our <span class="gfr-gradient">Programs & Events</span>
             </h1>
             <ClientOnly>
                 <div class="grid md:grid-cols-2 gap-5">

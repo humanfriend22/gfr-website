@@ -25,23 +25,20 @@ async function update() {
         </aside>
         <nav>
             <h1 class="footer-title">Explore</h1>
-            <a class="link hover:text-blue-500 duration-200 no-underline">About Us</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Officers</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Blog</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline" href="/#contact">Contact</a>
+            <FooterLink link="/#join-us">Join Us</FooterLink>
+            <FooterLink link="/officers">Officers</FooterLink>
+            <FooterLink link="/blog">Blog</FooterLink>
+            <FooterLink link="/#contact">Contact</FooterLink>
         </nav>
         <nav>
-            <h1 class="footer-title">Events</h1>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Game Day</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Battle of the Bay</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Girl Powered</a>
+            <h1 class="footer-title">Programs & Events</h1>
+            <FooterLink v-for="program in programBlogs" :link="'/blog/' + program.id">
+                {{ program.title }}
+            </FooterLink>
         </nav>
         <nav>
             <h1 class="footer-title">Teams</h1>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Resurgence</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Kittens</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Ascension</a>
-            <a class="link hover:text-blue-500 duration-200 no-underline">Velocity</a>
+            <FooterLink v-for="team of currentSeason.teams" :link="'/teams/' + currentSeason.id + '/' + team.letter">{{ team.name }}</FooterLink>
         </nav>
     </footer>
 </template>
