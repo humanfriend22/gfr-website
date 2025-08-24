@@ -41,7 +41,7 @@ async function update() {
         <nav>
             <h1 class="footer-title">Teams</h1>
             <ClientOnly>
-                <FooterLink v-for="team of currentSeason.teams" :link="'/teams/' + currentSeason.id + '/' + team.letter">{{ team.name }}</FooterLink>
+                <FooterLink v-for="team of currentSeason?.teams" :link="'/teams/' + currentSeason.id + '/' + team.letter">{{ team.name }}</FooterLink>
             </ClientOnly>
         </nav>
     </footer>

@@ -72,17 +72,14 @@ onMounted(() => {
                 <div class="stat text-center">
                     <div class="stat-title">Awards</div>
                     <div class="stat-value">180+</div>
-                    <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>
                 <div class="stat text-center">
                     <div class="stat-title">Worlds Quals</div>
                     <div class="stat-value">25+</div>
-                    <div class="stat-desc">Jan 1st - Feb 1st</div>
                 </div>
                 <div class="stat text-center">
                     <div class="stat-title">Events Hosted</div>
-                    <div class="stat-value">31K</div>
-                    <div class="stat-desc">Jan 1st - Feb 1st</div>
+                    <div class="stat-value">15+</div>
                 </div>
             </div>
         </Section>
