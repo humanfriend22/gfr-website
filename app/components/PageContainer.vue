@@ -23,9 +23,11 @@ function checkForDrawerClose(event: MouseEvent) {
         <input id="mobile-links-drawer" type="checkbox" class="drawer-toggle" inert tabindex="-1" />
         <div class="drawer-content">
             <div class="min-h-screen">
-                <div id="banner" class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerMarkdown !== ''">
-                    <p class="font-semibold banner-container" v-html="renderBannerMarkdown(site.bannerMarkdown)"></p>
-                </div>
+                <ClientOnly>
+                    <div id="banner" class="stick top-0 z-50 bg-red-600/80 text-white font-mono font-semibold text-center py-2 text-lg" v-if="site.bannerMarkdown !== ''">
+                        <p class="font-semibold banner-container" v-html="renderBannerMarkdown(site.bannerMarkdown)"></p>
+                    </div>
+                </ClientOnly>
                 <Header>
                     <slot name="links" />
                 </Header>

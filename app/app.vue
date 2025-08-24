@@ -17,17 +17,6 @@ onMounted(() => {
             event.target.remove();
         });
     };
-
-    if (import.meta.env.PROD)
-        router.afterEach(() => {
-            const { hash } = router.currentRoute.value;
-            const element = document.querySelector(
-                hash === '' ? '#banner' : router.currentRoute.value.hash,
-            ) as HTMLElement;
-            if (element) {
-                element.scrollIntoView({ behavior: "smooth" });
-            }
-        });
 })
 </script>
 

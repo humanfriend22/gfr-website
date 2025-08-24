@@ -21,7 +21,7 @@ function handleLoginClick() {
             <HeaderLink to="/teams">Teams</HeaderLink>
             <div class="dropdown dropdown-hover">
                 <div>
-                    <HeaderLink>Programs</HeaderLink>
+                    <HeaderLink to="/#programs">Programs</HeaderLink>
                     <div tabindex="0" class="dropdown-content p-0 gap-0">
                         <ClientOnly>
                             <div class="box bg-off-black flex flex-col gap-3 rounded-box z-60 w-max mt-1.5 p-2 shadow-sm">
