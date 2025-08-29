@@ -5,7 +5,7 @@ import {
     uploadBytes,
 } from "firebase/storage";
 import reduce from "image-blob-reduce";
-import { useMediaQuery } from "@vueuse/core";
+import pica from "pica";
 
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);

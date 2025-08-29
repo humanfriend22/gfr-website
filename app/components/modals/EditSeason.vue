@@ -120,8 +120,9 @@ async function save() {
                                 </a>
                             </div>
                             <div class="w-fit h-40">
-                                <ModalsUserMiniCard class="mb-2" v-for="uid of Object.values(season.officers)" mode="remove" @click="removeOfficer(uid)" :disabled="season.officers.president === uid">
-                                    {{ uid === '' ? 'n/a' : userFromUID(uid)?.name }}
+                                <ModalsUserMiniCard class="mb-2" v-for="key of sortOfficerKeys(Object.keys(season.officers) as (keyof SeasonOfficerMap)[])" mode="remove"
+                                    @click="removeOfficer(season.officers[key])" :disabled="season.officers.president === season.officers[key]">
+                                    {{ season.officers[key] === '' ? 'n/a' : userFromUID(season.officers[key])?.name }}
                                 </ModalsUserMiniCard>
                             </div>
                             <div>
