@@ -9,8 +9,6 @@ function handleLoginClick() {
         }
     } else login();
 };
-
-
 </script>
 
 <template>
