@@ -137,10 +137,9 @@ const shouldRefreshUsers = createTTLGuard(1000 * 60 * 5, "app-users"); // 5 minu
  * @returns Updates the `users` ref with all users from Firestore
  */
 export async function updateUsers(force = false) {
-    if (users.value.length > 0 && !force) {
-        return console.warn("Users already loaded, skipping update.");
-    } else if (!shouldRefreshUsers()) {
-        return console.warn("Users recently loaded, skipping update.");
+    const x = shouldRefreshUsers();
+    if (users.value.length > 0 && !force && !x) {
+        return console.warn(`Users already loaded, skipping update. TTL: ${x}`);
     }
 
     const usersCollection = collection(firestore.value!, "users");
