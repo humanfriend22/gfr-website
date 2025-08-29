@@ -125,3 +125,20 @@ export const sortOfficerKeys = (officerKeys: (keyof SeasonOfficerMap)[]) => {
     ];
     return officerKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
 };
+
+/**
+ * @param ttl in milliseconds
+ * @param key key
+ * @returns shouldRefresh
+ */
+export function createTTLGuard(ttl: number, key: string) {
+    return function () {
+        const last = parseInt(localStorage.getItem(`${key}-ttl`) || "0");
+        const now = Date.now();
+        if ((now - last) > ttl) {
+            localStorage.setItem(`${key}-ttl`, now.toString());
+            return true;
+        }
+        return false;
+    };
+}

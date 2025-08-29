@@ -34,6 +34,7 @@ import {
 } from "firebase/storage";
 import type { ShallowRef } from "vue";
 import type { Season, SeasonOfficerMap, Site, Team, User } from "./types";
+import { createTTLGuard } from "./utils";
 
 // LOG EVERY SINGLE FIRESTORE REQUEST
 export function getDoc<AppModelType, DbModelType extends DocumentData>(
@@ -129,6 +130,7 @@ export async function updateFiles(force: boolean = false) {
 // USERS DATA
 let userLoadFailCount = 0;
 export const users = useLocalStorage<User[]>("app-users", []);
+const shouldRefreshUsers = createTTLGuard(1000 * 60 * 5, "app-users"); // 5 minutes
 /**
  * Doesn't make sense to ship with the site but is pretty crucial and so it is fetched on app startup but cached.
  * @param force Fetch all users from Firebase no matter what
@@ -137,7 +139,10 @@ export const users = useLocalStorage<User[]>("app-users", []);
 export async function updateUsers(force = false) {
     if (users.value.length > 0 && !force) {
         return console.warn("Users already loaded, skipping update.");
+    } else if (!shouldRefreshUsers()) {
+        return console.warn("Users recently loaded, skipping update.");
     }
+
     const usersCollection = collection(firestore.value!, "users");
     const snapshot = await getCollectionDocs(usersCollection);
     users.value = snapshot.docs.map((doc) => {
