@@ -16,8 +16,8 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         </div>
         <div class="grid grid-cols-2 gap-10" v-else>
             <ul class="steps steps-vertical w-full">
-                <li v-for="(step, index) in site.steps" v-show="step.title !== ''" :class="'step ' + (index <= stepIndex ? 'step-primary' : '')" @click="stepIndex = index" class="cursor-pointer">
-                    <span :class="'step-icon ' + (index == stepIndex + 1 ? 'animate-pulse' : '')">{{ index }}</span>{{ step.title }}
+                <li v-for="(step, index) in site.steps.filter(s => s.title !== '')" :class="'step ' + (index <= stepIndex ? 'step-primary' : '')" @click="stepIndex = index" class="cursor-pointer">
+                    <span :class="'step-icon ' + (index == stepIndex + 1 ? 'animate-pulse' : '')">{{ site.steps[0]?.title === '' ? index + 1 : index }}</span>{{ step.title }}
                 </li>
                 <!-- <li class="step">
                         <span class="step-icon  animate-pulse">1</span>Test
