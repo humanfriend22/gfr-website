@@ -39,7 +39,7 @@ function launchEditStepsModal() {
                 <ModalsEditUserContent :for-owner="true" v-if="currentUserData" :user="currentUserData" class="h-fit">
                     Manage Account
                 </ModalsEditUserContent>
-                <div class="w-130 h-fit box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentPREDorSecretary">
+                <div class="w-130 h-fit box flex flex-col justify-between" v-if="isCurrentPresident || isCurrentVicePresident || isCurrentPREDorSecretary">
                     <div>
                         <h1 class="font-bold">Landing Page</h1>
                         <p class="mt-2 text-gray-500 text-sm">You can use links, bold, and italics in Markdown below to display in the page banner. Leaving it blank will disable it.</p>

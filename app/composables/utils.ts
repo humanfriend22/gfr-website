@@ -122,6 +122,7 @@ export const sortOfficerKeys = (officerKeys: (keyof SeasonOfficerMap)[]) => {
         "treasurer",
         "senior_pred",
         "junior_pred",
+        "dev",
     ];
     return officerKeys.sort((a, b) => order.indexOf(a) - order.indexOf(b));
 };

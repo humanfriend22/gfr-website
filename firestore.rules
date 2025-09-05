@@ -25,6 +25,10 @@ service cloud.firestore {
             return request.auth != null && (request.auth.uid == 'h4OHCNqfnGNtePbgJFUhoJCGkL62' || request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
         }
 
+        function isVicePresident(seasonId) {
+            return (request.auth != null) && ((request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.vice_president))
+        }
+
         function isJuniorPRED(seasonId) {
             return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.junior_pred)
         }
@@ -64,20 +68,20 @@ service cloud.firestore {
 
         match /site/site {
             allow read: if true;
-            allow write: if isPresident(getCurrentSeason());
+            allow write: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason());
         }
         match /users/{documentId} {
             allow read: if true;
             // president can update, user or their captain can update if admin field is unchanged and team field is unchanged/empty
-            allow update: if isPresident(getCurrentSeason()) || request.auth.uid == documentId;
+            allow update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || request.auth.uid == documentId;
         }
         match /seasons/{seasonId} {
             allow read: if true;
             allow create, update: if isPresident(getCurrentSeason());
             match /teams/{teamId} {
                 allow read: if true;
-                allow create: if isPresident(seasonId);
-                allow update: if isPresident(seasonId) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
+                allow create: if isPresident(getCurrentSeason());
+                allow update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
             }
         }
     // match /events/{eventId} {
@@ -86,7 +90,7 @@ service cloud.firestore {
         // }
         match /blogs/{blogId} {
             allow read: if true;
-            allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
+            allow create, update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
         }
     }
 }

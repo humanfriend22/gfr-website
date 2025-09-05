@@ -311,6 +311,13 @@ export const isCurrentPresident = computed<boolean>(() => {
     return currentUser.value.uid === "h4OHCNqfnGNtePbgJFUhoJCGkL62" ||
         currentOfficerPosition.value === "president";
 });
+export const isCurrentVicePresident = computed<boolean>(() => {
+    if (!currentUser.value) return false;
+    if (!currentSeason.value?.officers.vice_president) return false;
+
+    // Little backdoor
+    return currentOfficerPosition.value === "vice_president";
+});
 
 export const isCurrentPREDorSecretary = computed<boolean>(() => {
     if (!currentUser.value) return false;

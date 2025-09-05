@@ -13,6 +13,10 @@ service firebase.storage {
             return (request.auth != null) && ((request.auth.uid == 'h4OHCNqfnGNtePbgJFUhoJCGkL62') || (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.president))
         }
 
+        function isVicePresident(seasonId) {
+            return (request.auth != null) && ((request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.vice_president))
+        }
+
         function isJuniorPRED(seasonId) {
             return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.junior_pred)
         }
@@ -27,7 +31,7 @@ service firebase.storage {
 
         match /site/{file} {
             allow read: if true;
-            allow create, update: if isPresident(getCurrentSeason());
+            allow create, update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason());
         }
 
         match /users/{userId} {

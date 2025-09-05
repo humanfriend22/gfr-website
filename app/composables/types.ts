@@ -61,6 +61,7 @@ export interface SeasonOfficerMap {
     treasurer: string;
     junior_pred: string;
     senior_pred: string;
+    dev: string;
 }
 
 // Name + years is the document ID (e.g high-stakes-2425)
@@ -115,4 +116,5 @@ export const officerTitleMap = {
     treasurer: "Treasurer",
     junior_pred: "Junior PRED",
     senior_pred: "Senior PRED",
+    dev: "Dev Officer",
 };
