@@ -36,7 +36,7 @@ const errorMessage = computed(() => {
     if (!user.name.includes(' ')) return 'Invalid name (must include first and last name)';
     const min = (new Date()).getFullYear();
     if (user.graduatingYear < min || user.graduatingYear > min + 5) return `Invalid graduating year (${min}-${min + 5})`;
-    if (user.bio?.length > 200) return 'Invalid bio (max 300 characters)';
+    if (user.bio?.length > 400) return 'Invalid bio (max 400 characters)';
     return '';
 });
 
