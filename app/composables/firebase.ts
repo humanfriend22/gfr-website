@@ -370,6 +370,12 @@ export const blogContents = useLocalStorage<{ [id: string]: string }>(
     "app-blog-contents",
     {},
 );
+export const blogContentDownloadTimestamps = useLocalStorage<
+    { [id: string]: number }
+>(
+    "app-blog-content-timeouts",
+    {},
+);
 
 export async function updateBlogs(force: boolean = false) {
     if (!force && blogs.value.length > 0) {
@@ -387,15 +393,26 @@ export async function updateBlogs(force: boolean = false) {
         } as Blog;
     });
 }
+
+const BLOG_DOWNLOAD_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 export async function fetchBlogContent(
     blogId: string,
     blogContentLink: string,
+    force: boolean = false,
 ) {
-    if (blogContents.value[blogId]) {
+    // Check if blog exists, timestamp exists, and was downloaded recently before returning cache
+    if (
+        !force &&
+        blogContents.value[blogId] &&
+        blogContentDownloadTimestamps.value[blogId] &&
+        (Date.now() - blogContentDownloadTimestamps.value[blogId]) < BLOG_DOWNLOAD_TIMEOUT
+    ) {
         return blogContents.value[blogId];
     }
 
+    // Fetch blog content and store in cache
     blogContents.value[blogId] = await (await fetch(blogContentLink)).text();
+    blogContentDownloadTimestamps.value[blogId] = Date.now() + BLOG_DOWNLOAD_TIMEOUT; // 5 minutes
     return blogContents.value[blogId];
 }
 export const programBlogs = computed(() => {

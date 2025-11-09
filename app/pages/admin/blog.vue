@@ -44,12 +44,11 @@ function launchCreateBlogModal() {
 async function launchEditBlogModal(blog: Blog) {
     if (!isCurrentPresident.value && !isCurrentPREDorSecretary.value) return;
 
-
     creating.value = false;
     editingBlog.value = { ...blog };
     const modal = document.getElementById('edit_blog_modal') as HTMLDialogElement;
     modal.showModal();
-    initialMarkdown.value = await (await fetch(blog.content)).text();
+    initialMarkdown.value = await fetchBlogContent(blog.id, blog.content, true);
     console.log(initialMarkdown.value);
 }
 
