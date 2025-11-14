@@ -1,17 +1,3 @@
-<script setup lang="ts">
-onMounted(() => {
-    const commit = useRuntimeConfig().public.gitCommit;
-    const oldCommit = localStorage.getItem('commit') || '';
-    console.log('Old commit:', oldCommit);
-    console.log('New commit:', commit);
-    if (commit !== oldCommit && commit !== 'dev' && commit.length > 0) {
-        console.warn('COMMIT CHANGED. ERASING LOCAL STORAGE');
-        localStorage.clear();
-        localStorage.setItem('commit', commit);
-    }
-});
-</script>
-
 <template>
     <div>
         <Section class="flex flex-col items-center min-h-screen pt-[10vh] md:pt-[25vh]" id="home">

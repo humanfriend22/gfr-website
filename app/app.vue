@@ -16,6 +16,17 @@ onMounted(() => {
             event.target.remove();
         });
     };
+
+    // COMMIT CHECK - refresh all cache if a new build was deployed
+    const commit = useRuntimeConfig().public.gitCommit;
+    const oldCommit = localStorage.getItem('commit') || '';
+    console.log('Old commit:', oldCommit);
+    console.log('New commit:', commit);
+    if (commit !== oldCommit && commit !== 'dev' && commit.length > 0) {
+        console.warn('COMMIT CHANGED. ERASING LOCAL STORAGE');
+        localStorage.clear();
+        localStorage.setItem('commit', commit);
+    }
 })
 </script>
 

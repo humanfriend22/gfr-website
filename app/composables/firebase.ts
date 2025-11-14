@@ -164,7 +164,7 @@ export function userFromUID(uid: string) {
         console.warn(`Woah, that user doesnt exist! (${uid})`);
         userLoadFailCount++;
         if (userLoadFailCount > 10) {
-            console.log("User load failed too many times, updating users...");
+            console.warn("User load failed too many times, updating users...");
             updateUsers(true);
             userLoadFailCount = -10000000000;
         }
@@ -400,6 +400,7 @@ export async function fetchBlogContent(
     blogContentLink: string,
     force: boolean = false,
 ) {
+    
     // Check if blog exists, timestamp exists, and was downloaded recently before returning cache
     if (
         !force &&
@@ -407,12 +408,14 @@ export async function fetchBlogContent(
         blogContentDownloadTimestamps.value[blogId] &&
         (Date.now() - blogContentDownloadTimestamps.value[blogId]) < BLOG_DOWNLOAD_TIMEOUT
     ) {
+        console.info(`Blog content request for ${blogId} resolved from cache.`);
         return blogContents.value[blogId];
     }
 
     // Fetch blog content and store in cache
     blogContents.value[blogId] = await (await fetch(blogContentLink)).text();
     blogContentDownloadTimestamps.value[blogId] = Date.now() + BLOG_DOWNLOAD_TIMEOUT; // 5 minutes
+    console.info(`Blog content request for ${blogId} resolved from server.`);
     return blogContents.value[blogId];
 }
 export const programBlogs = computed(() => {
@@ -470,7 +473,7 @@ export const initializeFirebase = async () => {
             console.warn("Site document not found, using default values.");
         } else {
             site.value = siteSnapshot.data() as Site;
-            console.log("Site data loaded:", site.value);
+            console.info("Site data loaded:", site.value);
         }
 
         await updateUsers();
