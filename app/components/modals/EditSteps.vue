@@ -14,6 +14,8 @@ async function save() {
             { steps: site.value.steps }
         );
         errorMessage.value = '';
+        const modal = document.getElementById('edit_steps_modal') as HTMLDialogElement;
+        modal.close();
     } catch (error) {
         console.error('Error saving steps:', error);
         errorMessage.value = 'Failed to save steps. Please try again.';

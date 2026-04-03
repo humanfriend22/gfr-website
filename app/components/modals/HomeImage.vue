@@ -21,7 +21,7 @@ async function save() {
     //     i = parseInt(u.pathname.split('/').pop()!.split('.')[0].split('').pop()!) || 0;
     // }
 
-    if (input.value?.files) {
+    if ((input.value?.files?.length || 0) > 0) {
         // const file = input.value.files[0];
         // const reference = storageRef(storage.value!, `site/home.` + file.name.split('.').pop());
         // await uploadBytes(reference, file);

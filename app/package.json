@@ -1,37 +1,42 @@
 {
-    "name": "nuxt-app",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "build": "GIT_COMMIT=$(git rev-parse HEAD) nuxt build --prerender",
-        "build:ssr": "nuxt build",
-        "dev": "nuxt dev",
-        "dev:host": "nuxt dev --host",
-        "generate": "nuxt generate",
-        "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
-    },
-    "devDependencies": {
-        "@tailwindcss/typography": "^0.5.16",
-        "@types/image-blob-reduce": "^4.1.4",
-        "@types/markdown-it": "^14.1.2",
-        "@types/showdown": "^2.0.6",
-        "daisyui": "^5.0.43"
-    },
-    "dependencies": {
-        "@nuxt/image": "^1.10.0",
-        "@tailwindcss/vite": "^4.1.11",
-        "@tato30/vue-pdf": "^1.11.4",
-        "@vueuse/core": "^13.6.0",
-        "debounce": "^2.2.0",
-        "firebase": "^11.10.0",
-        "image-blob-reduce": "^4.1.0",
-        "lucide-vue-next": "^0.536.0",
-        "marked": "^16.1.1",
-        "nuxt": "^4.0.3",
-        "pretty-bytes": "^7.0.0",
-        "tailwindcss": "^4.1.11",
-        "vue": "^3.5.17",
-        "vue-router": "^4.5.1"
-    }
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "GIT_COMMIT=$(git rev-parse HEAD) nuxt build --prerender",
+    "build:ssr": "nuxt build",
+    "dev": "nuxt dev",
+    "dev:host": "nuxt dev --host",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/image-blob-reduce": "^4.1.4",
+    "@types/markdown-it": "^14.1.2",
+    "@types/showdown": "^2.0.6",
+    "daisyui": "^5.0.43"
+  },
+  "dependencies": {
+    "@nuxt/image": "^1.10.0",
+    "@tailwindcss/vite": "^4.1.11",
+    "@tato30/vue-pdf": "^1.11.4",
+    "@vueuse/core": "^13.6.0",
+    "debounce": "^2.2.0",
+    "firebase": "^11.10.0",
+    "image-blob-reduce": "^4.1.0",
+    "lucide-vue-next": "^0.536.0",
+    "marked": "^16.1.1",
+    "nuxt": "^4.0.3",
+    "pretty-bytes": "^7.0.0",
+    "tailwindcss": "^4.1.11",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1"
+  },
+  "trustedDependencies": [
+    "@firebase/util",
+    "@parcel/watcher",
+    "protobufjs"
+  ]
 }
