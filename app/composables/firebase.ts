@@ -437,7 +437,7 @@ export const initializeFirebase = async () => {
     }
 
     // Connect to emulators
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && !config.public.FIREBASE_EMULATOR_PROD) {
         connectAuthEmulator(
             auth.value,
             `http://${window.location.hostname}:9099`,

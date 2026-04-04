@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     css: ["@/assets/app.css"],
     runtimeConfig: {
         public: {
+            FIREBASE_EMULATOR_PROD: process.env.FIREBASE_EMULATOR_PROD === "true",
             gitCommit: process.env.GIT_COMMIT || "dev",
             // set NUXT_PUBLIC_FIREBASE_API_KEY environment variable
             firebase: {
