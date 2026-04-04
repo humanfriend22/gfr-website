@@ -65,7 +65,7 @@ onMounted(async () => {
                     </thead>
                     <tbody>
                         <tr v-for="user of sortedUsers">
-                            <td class="underline hover:text-gfr-blue duration-300 cursor-pointer" @click="showEditUserModal(user)">{{ user.name }}</td>
+                            <td class="underline hover:text-gfr-blue duration-300 cursor-pointer" @click="() => showEditUserModal(user)">{{ user.name }}</td>
                             <td>{{ user.uid }}</td>
                             <td>{{ user.email }}</td>
                             <td class="flex flex-row">
