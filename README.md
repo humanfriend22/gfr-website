@@ -1,6 +1,10 @@
 ![Hacktime](https://hackatime-badge.hackclub.com/U091GTVS93M/gfr-website)
 # Gael Force Robotics Website
 
+View the website here: [https://gaelforcerobotics.com](https://gaelforcerobotics.com)
+
+---
+
 This is the full codebase for the Gael Force Robotics Website. This design takes inspriation from [Lukas' original version](https://github.com/ItsJustLukas78/GFRWebsite) but makes it dynamic with a working backend. Instead of static data that only developers can modify, this web app encompasses a full fledged admin panel for the GFR officer board and captains. Here are a list of main features:
 
 - **Full landing page control**: presidents can edit the full-site banner, the main image, the `Programs` section, and the steps for the `Join Us` section.
