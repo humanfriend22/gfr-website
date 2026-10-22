@@ -1,10 +1,10 @@
 name: Deploy Preview
 
 on:
-  push:
-    branches:
-      - main
-      - preview-*
+  # push:
+  #   branches:
+  #     - main
+  #     - preview-*
   workflow_dispatch:
 
 defaults:
@@ -50,7 +50,7 @@ jobs:
             firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GAEL_FORCE_ROBOTICS_HF }}
             projectId: gael-force-robotics-hf
             channelId: ${{ github.ref_name == 'main' && 'preview' || format('preview-{0}', github.ref_name) }}
-        
+
         - name: Write Preview Link to Summary
           run: |
               echo "### ✅ Firebase Preview Deployed" >> $GITHUB_STEP_SUMMARY
