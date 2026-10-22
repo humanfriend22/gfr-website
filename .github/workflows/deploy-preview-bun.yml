@@ -24,6 +24,7 @@ jobs:
             bun-version: 1.4.3
 
         - name: Cache Bun
+          id: cache-bun
           uses: actions/cache@v6
           with:
             path: ~/.bun/install/cache
@@ -32,14 +33,23 @@ jobs:
               ${{ runner.os }}-bun-
 
         - name: Install dependencies
-          run: bun install --frozen-lockfile
+          id: install
+          run: |
+            START_TIME=$SECONDS
+            bun install --frozen-lockfile
+            echo "secs=$((SECONDS - START_TIME))" >> $GITHUB_OUTPUT
 
         - name: List deps state
+          id: list-deps
           continue-on-error: true
           run: bun pm ls
 
         - name: Build the app
-          run: bun run build
+          id: build
+          run: |
+            START_TIME=$SECONDS
+            bun run build
+            echo "secs=$((SECONDS - START_TIME))" >> $GITHUB_OUTPUT
 
         - uses: FirebaseExtended/action-hosting-deploy@v0
           id: deploy
@@ -49,7 +59,11 @@ jobs:
             projectId: gael-force-robotics-hf
             channelId: ${{ github.ref_name == 'main' && 'preview' || format('preview-{0}', github.ref_name) }}
 
-        - name: Write Preview Link to Summary
+        - name: Write Summary
           run: |
-              echo "### ✅ Firebase Preview Deployed" >> $GITHUB_STEP_SUMMARY
-              echo "[${{ steps.deploy.outputs.details_url }}](${{ steps.deploy.outputs.details_url }})" >> $GITHUB_STEP_SUMMARY
+              {
+                echo "**view:** ${{ steps.deploy.outputs.details_url }}"
+                echo "**metrics:**"
+                echo "- deps install (${{ steps.cache-bun.outputs.cache-hit == 'true' && 'cached' || 'uncached' }}): ${{ steps.install.outputs.secs }}s"
+                echo "- app build: ${{ steps.build.outputs.secs }}s"
+              } >> $GITHUB_STEP_SUMMARY
