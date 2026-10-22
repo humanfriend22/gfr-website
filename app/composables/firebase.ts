@@ -1,4 +1,5 @@
 import { type FirebaseApp, initializeApp } from "firebase/app";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import {
     type Auth,
     browserSessionPersistence,
@@ -400,7 +401,7 @@ export async function fetchBlogContent(
     blogContentLink: string,
     force: boolean = false,
 ) {
-    
+
     // Check if blog exists, timestamp exists, and was downloaded recently before returning cache
     if (
         !force &&
@@ -427,6 +428,10 @@ export const initializeFirebase = async () => {
     const config = useRuntimeConfig();
     try {
         firebase.value = initializeApp(config.public.firebase);
+        initializeAppCheck(firebase.value, {
+          provider: new ReCaptchaV3Provider('6LfQw_stAAAAAI_FB0Lb3KqrpbN2lwJTyWB2wpVH'),
+          isTokenAutoRefreshEnabled: true
+        });
         firestore.value = getFirestore(firebase.value);
         storage.value = getStorage(firebase.value);
         auth.value = getAuth(firebase.value);
