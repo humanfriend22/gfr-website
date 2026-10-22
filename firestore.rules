@@ -9,88 +9,123 @@ service cloud.firestore {
 
         // Simple Data Fetchers
         function getCurrentSeason() {
-            return get(/databases/$(database)/documents/site/site).data.currentSeason
+            return get(/databases/$(database)/documents/site/site).data.currentSeason;
         }
 
         function getTeamDoc(seasonId, teamId) {
-            return get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data
+            return get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data;
         }
 
-        function getUserDoc(userId) {
-            return get(/databases/$(database)/documents/users/$(userId)).data
-        }
+        // function getUserDoc(userId) {
+        //     return get(/databases/$(database)/documents/users/$(userId)).data
+        // }
 
-        // Real Checks for role
+        // Real checks for role
         function isPresident(seasonId) {
-            return request.auth != null && (request.auth.uid == 'h4OHCNqfnGNtePbgJFUhoJCGkL62' || request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president)
+            return request.auth != null
+                && (request.auth.uid == 'h4OHCNqfnGNtePbgJFUhoJCGkL62'
+                    || request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.president);
         }
 
         function isVicePresident(seasonId) {
-            return (request.auth != null) && ((request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.vice_president))
+            return request.auth != null
+                && request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.vice_president;
         }
 
         function isJuniorPRED(seasonId) {
-            return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.junior_pred)
+            return request.auth != null
+                && request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.junior_pred;
         }
 
         function isSeniorPRED(seasonId) {
-            return request.auth != null && (request.auth.uid == firestore.get(/databases/(default)/documents/seasons/$(seasonId)).data.officers.senior_pred)
+            return request.auth != null
+                && request.auth.uid == get(/databases/$(database)/documents/seasons/$(seasonId)).data.officers.senior_pred;
         }
 
         function isCaptain(seasonId, teamId) {
-            return request.auth != null && (request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains)
+            return request.auth != null
+                && request.auth.uid in get(/databases/$(database)/documents/seasons/$(seasonId)/teams/$(teamId)).data.captains;
         }
 
-        function isCaptainOfTheirTeam(userId) {
-            return isCaptain(getCurrentSeason(), getUserDoc(userId).team)
+        // function isCaptainOfTheirTeam(userId) {
+        //     return isCaptain(getCurrentSeason(), getUserDoc(userId).team)
+        // }
+
+        // User Document Field comparisons (storage.rules-style versions, kept for reference)
+        // function adminFieldIsUnchanged(userId) {
+        //     return get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == request.resource.data.isAdmin
+        // }
+
+        // function emailFieldIsUnchanged(userId) {
+        //     return get(/databases/$(database)/documents/users/$(userId)).data.email == request.resource.data.email
+        // }
+
+        // function grFieldIsUnchanged(userId) {
+        //     return get(/databases/$(database)/documents/users/$(userId)).data.graduatingYear == request.resource.data.graduatingYear
+        // }
+
+        // function originalTeamFieldIsEmpty(userId) {
+        //     return get(/databases/$(database)/documents/users/$(userId)).data.team == ""
+        // }
+
+        // function teamFieldIsUnchangedOrEmpty(userId) {
+        //     return (get(/databases/$(database)/documents/users/$(userId)).data.team == request.resource.data.team) || originalTeamFieldIsEmpty(userId)
+        // }
+
+        // User document field protections (Firestore-native, used by /users update rule)
+        function protectedUserFieldsUnchanged() {
+            return !request.resource.data.diff(resource.data).affectedKeys()
+                .hasAny(['isAdmin', 'email', 'graduatingYear']);
         }
 
-        // User Document Field comparisions
-        function adminFieldIsUnchanged(userId) {
-            return get(/databases/$(database)/documents/users/$(userId)).data.isAdmin == request.resource.data.isAdmin
-        }
-
-        function emailFieldIsUnchanged(userId) {
-            return get(/databases/$(database)/documents/users/$(userId)).data.email == request.resource.data.email
-        }
-
-        function grFieldIsUnchanged(userId) {
-            return get(/databases/$(database)/documents/users/$(userId)).data.graduatingYear == request.resource.data.graduatingYear
-        }
-
-        function originalTeamFieldIsEmpty(userId) {
-            return get(/databases/$(database)/documents/users/$(userId)).data.team == ""
-        }
-
-        function teamFieldIsUnchangedOrEmpty(userId) {
-            return (get(/databases/$(database)/documents/users/$(userId)).data.team == request.resource.data.team) || originalTeamFieldIsEmpty(userId)
+        function teamUnchangedOrWasEmpty() {
+            return resource.data.get('team', '') == ''
+                || !request.resource.data.diff(resource.data).affectedKeys().hasAny(['team']);
         }
 
         match /site/site {
             allow read: if true;
             allow write: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason());
         }
+
         match /users/{documentId} {
             allow read: if true;
-            // president can update, user or their captain can update if admin field is unchanged and team field is unchanged/empty
-            allow update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || request.auth.uid == documentId;
+            // President/VP can update anything. A user can update their own doc
+            // as long as isAdmin, email and graduatingYear are unchanged, and
+            // team is unchanged (or was previously empty).
+            allow update: if isPresident(getCurrentSeason())
+                || isVicePresident(getCurrentSeason())
+                || (request.auth != null
+                    && request.auth.uid == documentId
+                    && protectedUserFieldsUnchanged()
+                    && teamUnchangedOrWasEmpty());
         }
+
         match /seasons/{seasonId} {
             allow read: if true;
             allow create, update: if isPresident(getCurrentSeason());
+
             match /teams/{teamId} {
                 allow read: if true;
                 allow create: if isPresident(getCurrentSeason());
-                allow update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || (isCaptain(seasonId, teamId) && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains)
+                allow update: if isPresident(getCurrentSeason())
+                    || isVicePresident(getCurrentSeason())
+                    || (isCaptain(seasonId, teamId)
+                        && getTeamDoc(seasonId, teamId).captains == request.resource.data.captains);
             }
         }
-    // match /events/{eventId} {
+
+        // match /events/{eventId} {
         //     allow read: if true;
         //     allow create, update: if isPresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
         // }
+
         match /blogs/{blogId} {
             allow read: if true;
-            allow create, update: if isPresident(getCurrentSeason()) || isVicePresident(getCurrentSeason()) || isJuniorPRED(getCurrentSeason()) || isSeniorPRED(getCurrentSeason());
+            allow create, update: if isPresident(getCurrentSeason())
+                || isVicePresident(getCurrentSeason())
+                || isJuniorPRED(getCurrentSeason())
+                || isSeniorPRED(getCurrentSeason());
         }
     }
 }
