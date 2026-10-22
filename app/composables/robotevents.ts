@@ -16,7 +16,7 @@ async function fetchRE(url: string) {
 
 export async function fetchSeasonREId(seasonId: string) {
     const seasons = await fetchRE(
-        `https://www.robotevents.com/api/v2/seasons?program%5B%5D=1`,
+        `https://${useRuntimeConfig().public.roboteventsDomain}/api/v2/seasons?program%5B%5D=1`,
     );
     return seasons.find((season: any) =>
         season.name.toLowerCase().includes(
@@ -31,7 +31,7 @@ export const latestSeason = ref({
 });
 export async function updateLatestSeason() {
     const season = (await fetchRE(
-        "https://www.robotevents.com/api/v2/seasons?program%5B%5D=1&active=true",
+      `https://${useRuntimeConfig().public.roboteventsDomain}/api/v2/seasons?program%5B%5D=1&active=true`,
     ))[0];
     // 'VEX V5 Robotics Competition 2025-2026: Push Back' -> 'push-back-2526'
     const seasonName: string = season?.name;
@@ -39,10 +39,10 @@ export async function updateLatestSeason() {
         throw new Error("Season name not found in API response");
     }
     const parts = seasonName.replace(":", "").split(" ");
-    const yearParts = parts.find((part) => !!parseInt(part[0]))?.split("-")!;
+    const yearParts = parts.find((part) => !!parseInt(part[0] || "0"))?.split("-")!;
 
-    const word1 = parts[parts.length - 2].toLowerCase(),
-        word2 = parts[parts.length - 1].toLowerCase();
+    const word1 = parts[parts.length - 2]!.toLowerCase(),
+        word2 = parts[parts.length - 1]!.toLowerCase();
 
     latestSeason.value = {
         id: `${word1}-${word2}-${
@@ -66,14 +66,14 @@ export async function fetchTeamCompetitions(
     teamId: number,
 ) {
     const competitions = await fetchRE(
-        `https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=${seasonId}`,
+        `https://${useRuntimeConfig().public.roboteventsDomain}/api/v2/teams/${teamId}/events?season%5B%5D=${seasonId}`,
     );
     console.info(
         `Fetched competitions for team ${teamId} in season ${seasonId}:`,
         competitions,
     );
 
-    "https://www.robotevents.com/api/v2/teams/93449/awards?event%5B%5D=0&season%5B%5D=190";
+    "https://${useRuntimeConfig().public.roboteventsDomain}/api/v2/teams/93449/awards?event%5B%5D=0&season%5B%5D=190";
 
     return await Promise.all(competitions.map(async (competition: any) => {
         const { venue, city, region, country } = competition.location;
@@ -84,7 +84,7 @@ export async function fetchTeamCompetitions(
             location: `${venue} @ ${city}, ${region}, ${country}`,
             date: competition.start,
             awards: (await fetchRE(
-                `https://www.robotevents.com/api/v2/teams/${teamId}/awards?event%5B%5D=${competition.id}&season%5B%5D=${seasonId}`,
+                `https://${useRuntimeConfig().public.roboteventsDomain}/api/v2/teams/${teamId}/awards?event%5B%5D=${competition.id}&season%5B%5D=${seasonId}`,
             )).map((award: any) =>
                 award.title.slice(
                     0,

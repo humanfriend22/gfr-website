@@ -22,5 +22,10 @@
     "firebase-functions-test": "^3.1.0",
     "typescript": "^5.7.3"
   },
-  "private": true
+  "private": true,
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "protobufjs",
+    "unrs-resolver"
+  ]
 }

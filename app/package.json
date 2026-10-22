@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "GIT_COMMIT=$(git rev-parse HEAD) nuxt build --prerender",
+    "deploy:prod": "npm run build && firebase deploy --only hosting",
     "build:ssr": "nuxt build",
     "dev": "nuxt dev",
     "dev:prod": "FIREBASE_EMULATOR_PROD=true nuxt dev",
@@ -38,6 +39,8 @@
   "trustedDependencies": [
     "@firebase/util",
     "@parcel/watcher",
-    "protobufjs"
+    "esbuild",
+    "protobufjs",
+    "sharp"
   ]
 }

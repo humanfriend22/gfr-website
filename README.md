@@ -11,7 +11,7 @@ This is the full codebase for the Gael Force Robotics Website. This design takes
 
 ## Technologies Used
 - Github Actions (click the actions tab on this repository to see all the auto deploys)
-- [RobotEvents API](https://www.robotevents.com/api/v2) (used to propagate team competition/award data)
+- [VEX Events API](https://events.vex.com/api/v2) (used to propagate team competition/award data)
 - [Firebase](https://firebase.google.com/products-build)
   - Authentication (Google SSO)
   - Firestore

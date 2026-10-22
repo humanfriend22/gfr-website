@@ -25,7 +25,7 @@ export const createUserDocument = functions.auth.user().onCreate(
         await userRef.create({
             name: user.displayName,
             email: user.email,
-            graduatingYear: 2027,
+            graduatingYear: new Date().getFullYear()+1,
             bio: "",
         });
     },
